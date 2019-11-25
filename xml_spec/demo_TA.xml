@@ -1,0 +1,25 @@
+<XML>
+    <Goods>
+        <Good>
+            //一种商品
+            < GoodID> 000 </GoodID> //物品的 ID，ID 是唯一可区分物品的标识
+                <Info>
+                    //商品信息
+                    <BasicInfo> //商品基本信息
+                        <Name> 衬衫 </ Name> //商品名称
+            <Describe> 爆款女士衬衫，网红最爱 </Describe> //具体描述 <Label>衣服</Label>//类别
+            <Price> 100</Price>//价格
+            < SellerID </BasicInfo>> 111</SellerID>//卖家 ID
+                < Comments> //买家评论
+                    <Comment> //评论 1
+                        <BuyerName> 如花 </BuyerName> //买家名称
+                        <Content>衣服很好看，穿上显瘦</ Content>//评论内容
+                </Comment>
+                …
+                <Comment>//评论 n
+                    …
+                </Comment></Comments></Info></Good>
+        … //其它商品
+        <Good>//商品 n
+            …//商品描述
+        </Good></Goods></XML>

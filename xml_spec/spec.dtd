@@ -1,0 +1,16 @@
+<!DOCTYPE Goods[
+    <!ELEMENT Goods (Good+)>
+    <!ELEMENT Good (GoodID, Info)>
+    <!ELEMENT Info (BasicInfo, Comments)>
+    <!ELEMENT BasicInfo (Name, Describe, Label, Prize, SellerID)>
+    <!ELEMENT Comments (Comment+)>
+    <!ELEMENT Comment (BuyerName, Content)>
+    <!ELEMENT GoodID (#PCDATA)>
+    <!ELEMENT Name (#PCDATA)>
+    <!ELEMENT Describe (#PCDATA)>
+    <!ELEMENT Label (#PCDATA)>
+    <!ELEMENT Prize (#PCDATA)>
+    <!ELEMENT SellerID (#PCDATA)>
+    <!ELEMENT BuyerName (#PCDATA)>
+    <!ELEMENT Content (#PCDATA)>
+]>
