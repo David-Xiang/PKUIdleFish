@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class XML {
-    public List<Good> goods;
+    public List<Product> products;
 }
