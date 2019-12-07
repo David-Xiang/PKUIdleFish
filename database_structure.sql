@@ -8,8 +8,7 @@ CREATE TABLE account(
     sex CHAR(1) NOT NULL,
     email VARCHAR(32) NOT NULL,
     phone BIGINT NOT NULL,
-    isseller TINYINT NOT NULL,
-    deleted TINYINT NOT NULL,
+    magicint TINYINT NOT NULL,
     PRIMARY KEY(id)
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci AUTO_INCREMENT = 1000;
 
@@ -44,8 +43,6 @@ CREATE TABLE IF NOT EXISTS product(
     sellerid INT UNSIGNED NOT NULL,
     description TINYTEXT NOT NULL,
     saletime DATETIME NOT NULL,
-    sold TINYINT NOT NULL,
-    visible TINYINT NOT NULL,
-    deleted TINYINT NOT NULL,
+    magicint TINYINT NOT NULL,
     PRIMARY KEY(id)
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
