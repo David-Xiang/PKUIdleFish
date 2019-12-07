@@ -28,6 +28,9 @@ SET time_zone = "+00:00";
 -- 表的结构 `account`
 --
 
+
+-- TODO: account的id为自动分配，从四位数开始
+-- TODO: name的约束：不可重复，不可以空格开头或结尾，及字数限制
 CREATE TABLE `account` (
   `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
