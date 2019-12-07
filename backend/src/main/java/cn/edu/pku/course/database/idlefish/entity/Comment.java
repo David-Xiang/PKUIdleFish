@@ -1,9 +1,12 @@
 package cn.edu.pku.course.database.idlefish.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
 
+
+@AllArgsConstructor
 @Data
 public class Comment {
     public int productID;

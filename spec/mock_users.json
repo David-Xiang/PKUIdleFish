@@ -1,0 +1,49 @@
+{
+    "users": [
+        {
+            "id": 123763456,
+            "name": "向东伟",
+            "birthday": "1997-05-14 16:00:00",
+            "sex": "M",
+            "email": "xingaondwe@pku.edu.cn",
+            "phone": "15000000234",
+            "status": 2
+        },
+        {
+            "id": 456356345,
+            "name": "甄有钱",
+            "birthday": "2001-01-14 16:00:00",
+            "sex": "M",
+            "email": "zhenyq@pku.edu.cn",
+            "phone": "150021300234",
+            "status": 0
+        },
+        {
+            "id": 956782563,
+            "name": "贾名牌",
+            "birthday": "3890-10-07 16:00:00",
+            "sex": "F",
+            "email": "mingpaijia@pku.edu.cn",
+            "phone": "15000000234",
+            "status": 1
+        },
+        {
+            "id": 456356345,
+            "name": "王黑户",
+            "birthday": "1900-01-31 15:54:17",
+            "sex": "M",
+            "email": "heihuw@pku.edu.cn",
+            "phone": "150021300234",
+            "status": -1
+        },
+        {
+            "id": 956782563,
+            "name": "李享麦",
+            "birthday": "1990-10-19 16:00:00",
+            "sex": "F",
+            "email": "xiangmai@pku.edu.cn",
+            "phone": "15000000234",
+            "status": 3
+        }
+    ]
+}

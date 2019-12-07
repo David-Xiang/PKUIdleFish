@@ -7,8 +7,6 @@ import java.util.List;
 
 @AllArgsConstructor
 @Data
-public class Product {
-    public int productID;
-    public ProductInfo productInfo;
-    public List<Comment> comments;
+public class UserResponse {
+    public List<User> users;
 }
