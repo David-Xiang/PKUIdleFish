@@ -29,6 +29,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `account` (
+  `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
   `passwd` varchar(16) NOT NULL,
   `birth` int(11) NOT NULL,
@@ -102,7 +103,7 @@ CREATE TABLE `product` (
 -- 表的索引 `account`
 --
 ALTER TABLE `account`
-  ADD PRIMARY KEY (`name`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- 表的索引 `category`
