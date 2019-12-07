@@ -46,7 +46,7 @@ CREATE TABLE `account` (
 --
 
 CREATE TABLE `cart` (
-  `buyername` varchar(32) NOT NULL,
+  `buyerid` int(11) NOT NULL,
   `productid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -68,7 +68,7 @@ CREATE TABLE `category` (
 --
 
 CREATE TABLE `comment` (
-  `buyername` int(11) NOT NULL,
+  `buyerid` int(11) NOT NULL,
   `productid` int(11) NOT NULL,
   `datetime` varchar(16) NOT NULL,
   `content` text NOT NULL
