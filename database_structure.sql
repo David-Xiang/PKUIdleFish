@@ -1,4 +1,5 @@
 -- TODO: name的约束：不可以空格开头或结尾，及字数限制
+-- TODO: date运算
 DROP DATABASE IF EXISTS pkuidlefish;
 CREATE DATABASE pkuidlefish;
 USE pkuidlefish;
