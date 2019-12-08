@@ -13,7 +13,7 @@ CREATE TABLE account(
     sex CHAR(1) NOT NULL,
     email VARCHAR(32) NOT NULL,
     phone BIGINT NOT NULL,
-    state ENUM('buyer','forseller','seller','admin','deleted') NOT NULL DEFAULT 'buyer',
+    type ENUM('buyer','forseller','seller','admin','deleted') NOT NULL DEFAULT 'buyer',
     PRIMARY KEY (id)
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci AUTO_INCREMENT = 1000;
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS product(
     sellerid INT UNSIGNED NOT NULL,
     description TINYTEXT NOT NULL,
     saletime DATETIME NOT NULL,
-    state ENUM('draft','sale','sold','returned','deleted') NOT NULL DEFAULT 'draft',
+    status ENUM('draft','sale','sold','returned','deleted') NOT NULL DEFAULT 'draft',
     PRIMARY KEY (id),
     CONSTRAINT fk_product_categoryid FOREIGN KEY (categoryid)
     REFERENCES category(id) ON UPDATE CASCADE ON DELETE RESTRICT,
