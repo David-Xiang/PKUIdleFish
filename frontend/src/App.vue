@@ -3,7 +3,7 @@
     <el-container>
       <el-header style="font-size: 40px; color: #820010">北大有鱼，其名为闲。</el-header>
       <el-container>
-        <el-aside width="200px">
+        <el-aside width="100px">
           <el-menu>
             <el-menu-item :index="'index'">
               <template slot="title"><i class="el-icon-menu"></i>首页</template>
@@ -14,10 +14,10 @@
           </el-menu>
         </el-aside>
         <el-container>
-          <el-main style="margin-left: 10px;" v-loading="isLoading">
-            <el-row>
-              <el-col :span="6" v-for="(o, index) in 20" :key="o" >
-                <el-card shadow="hover" body-style="padding: 0px" style="height: 360px; margin: 10px;">
+          <el-main v-loading="isLoading">
+            <el-row :gutter="20">
+              <el-col :gutter="15" :span="6" v-for="(o, index) in 20" :key="o" >
+                <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin-bottom: 20px">
                   <el-image style="width: 100%; height: 220px" v-bind:src="products[index%3].productInfo.imgsrc" fit="cover"/>  
                   <div style="margin-left: 10px; margin-right: 10px">
                     <div align="left">
@@ -35,11 +35,11 @@
                         <el-table-column width="70" property="time" label="日期"></el-table-column>
                         <el-table-column width="330" property="content" show-overflow-tooltip="true" label="评论"></el-table-column>
                       </el-table>
-                      <el-badge v-bind:value="products[index%3].comments.length" style="margin: 7px" slot="reference">
+                      <el-badge class="hidden-md-and-down" v-bind:value="products[index%3].comments.length" style="margin-right: 7px" slot="reference">
                         <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
                       </el-badge>
                     </el-popover>
-                    <el-button size="medium" style="margin: 5px">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
+                    <el-button size="medium" style="margin-left: 5px">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
                   </div>
                 </el-card>
               </el-col>
@@ -47,7 +47,7 @@
           </el-main>
         </el-container>
       </el-container>
-      <el-footer style="color: black; font-size: 12px; margin: 20px">
+      <el-footer style="color: black; font-size: 12px">
         版权所有©北京大学数据库概论课程 | 地址：北京市海淀区颐和园路5号第二教学楼316 | 邮编：100871 | xdw@pku.edu.cn | 京ICP备05065075号-1 | 京公网安备 110402430047 号
       </el-footer>
     </el-container>
@@ -55,7 +55,6 @@
 </template>
 
 <script>
-// import Login from './components/Login.vue'
 import mock_products from './assets/mock_products.js'
 
 export default {
@@ -80,9 +79,6 @@ export default {
 
   },
   methods: {
-    // comment(i){
-    //   product.i = 0;
-    // }
   }
 }
 </script>
