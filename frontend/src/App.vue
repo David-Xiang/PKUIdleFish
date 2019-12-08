@@ -39,7 +39,7 @@
                         <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
                       </el-badge>
                     </el-popover>
-                    <el-button size="medium" style="margin-left: 5px">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
+                    <el-button size="medium" style="margin-left: 5px" @click="addcart(products[index%3].productInfo.title)">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
                   </div>
                 </el-card>
               </el-col>
@@ -79,6 +79,13 @@ export default {
 
   },
   methods: {
+    addcart(title) {
+      this.$notify({
+        title: '成功',
+        message: title + " 已成功放入购物车，快去看看吧～",
+        type: 'success'
+      });
+    } 
   }
 }
 </script>
