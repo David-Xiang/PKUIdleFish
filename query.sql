@@ -4,7 +4,7 @@
 -- user_type: in ['buyer','forseller','seller','admin','deleted']
 -- 注意: 账号不存在时返回为空！
 
-SELECT IF(tmp.en_passwd = myhash(?), 0, 1), tmp.type as user_type
+SELECT IF(tmp.en_passwd = myhash(?), 0, 1) as incorrect_password, tmp.type as user_type
 FROM (SELECT a.en_passwd, a.type FROM account AS a WHERE a.name = ?) AS tmp
 
 -- 第一个问号填密码
