@@ -1,4 +1,5 @@
 -- TODO: name的约束：不可重复，不可以空格开头或结尾，及字数限制
+-- TODO: 将magicint变为枚举类型，增加可读性
 DROP TABLE IF EXISTS account;
 CREATE TABLE account(
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
