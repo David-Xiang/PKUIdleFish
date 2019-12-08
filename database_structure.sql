@@ -1,5 +1,6 @@
 -- TODO: name的约束：不可以空格开头或结尾，及字数限制
--- TODO: date运算
+-- TODO: 添加索引
+-- 检查上架时间是否超过5年（1800天): SET now = CURDATE(); DATEDIFF(now, ?) < 1800
 DROP DATABASE IF EXISTS pkuidlefish;
 CREATE DATABASE pkuidlefish;
 USE pkuidlefish;
