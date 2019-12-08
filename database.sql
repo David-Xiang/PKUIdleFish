@@ -1,6 +1,11 @@
 -- TODO: name的约束：不可以空格开头或结尾，及字数限制
 -- TODO: 添加索引
 -- 检查上架时间是否超过5年（1800天): SET now = CURDATE(); DATEDIFF(now, ?) < 1800
+
+-- 
+-- Structure
+-- 
+
 DROP DATABASE IF EXISTS pkuidlefish;
 CREATE DATABASE pkuidlefish;
 USE pkuidlefish;
@@ -59,3 +64,18 @@ CREATE TABLE comment(
     CONSTRAINT fk_comment_productid FOREIGN KEY (productid)
     REFERENCES product(id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+
+-- 
+-- Data
+-- 
+
+INSERT INTO account(name, passwd, birth, sex, email, phone, type)
+VALUES ('abc', '123456', '20000101', 'M', 'abc@pku.edu.cn', '10086', 'seller');
+
+-- 
+-- Functions
+-- 
+
+CREATE FUNCTION myhash(original VARCHAR(16))
+RETURNS CHAR(128) DETERMINISTIC
+RETURN SHA2(CONCAT('sha2', original, 'pkuidlefish2019'), 512);
