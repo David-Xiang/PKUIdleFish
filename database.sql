@@ -13,7 +13,7 @@ USE pkuidlefish;
 CREATE TABLE account(
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(32) NOT NULL UNIQUE,
-    passwd VARCHAR(16) NOT NULL,
+    en_passwd CHAR(128) NOT NULL,
     birth DATE NOT NULL,
     sex CHAR(1) NOT NULL,
     email VARCHAR(32) NOT NULL,
@@ -66,16 +66,16 @@ CREATE TABLE comment(
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
 
 -- 
--- Data
--- 
-
-INSERT INTO account(name, passwd, birth, sex, email, phone, type)
-VALUES ('abc', '123456', '20000101', 'M', 'abc@pku.edu.cn', '10086', 'seller');
-
--- 
 -- Functions
 -- 
 
 CREATE FUNCTION myhash(original VARCHAR(16))
 RETURNS CHAR(128) DETERMINISTIC
 RETURN SHA2(CONCAT('sha2', original, 'pkuidlefish2019'), 512);
+
+-- 
+-- Data
+-- 
+
+INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
+VALUES ('abc', myhash('123456'), '20000101', 'M', 'abc@pku.edu.cn', '10086', 'seller');
