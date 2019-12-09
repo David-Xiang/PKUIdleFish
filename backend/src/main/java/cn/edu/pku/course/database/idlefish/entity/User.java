@@ -12,7 +12,7 @@ import java.util.Date;
 public class User {
     public int id;
     public String name;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd")
     public Date birthday;
     public String sex;
     public String email;

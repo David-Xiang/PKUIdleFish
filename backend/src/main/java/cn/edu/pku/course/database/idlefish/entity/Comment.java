@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 public class Comment {
     public int productID;
-    @JsonFormat(pattern="yy.MM.dd")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date time;
     public int buyerID;
     public String buyerName;
