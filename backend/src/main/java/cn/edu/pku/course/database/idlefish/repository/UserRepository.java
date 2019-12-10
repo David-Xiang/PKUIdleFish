@@ -28,4 +28,8 @@ public class UserRepository {
 		return jdbcTemplate.queryForList(sql);
 	}
 
+	public String getUserName(int id) {
+		return jdbcTemplate.queryForObject("SELECT name FROM account WHERE id = '" + id + "'", String.class);
+	}
+
 }

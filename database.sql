@@ -39,9 +39,9 @@ CREATE TABLE seller(
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE category(
-    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    categoryid TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(16) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (categoryid)
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS product(
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS product(
     status ENUM('draft','sale','sold','returned','deleted') NOT NULL DEFAULT 'draft',
     PRIMARY KEY (id),
     CONSTRAINT fk_product_categoryid FOREIGN KEY (categoryid)
-    REFERENCES category(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    REFERENCES category(categoryid) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_product_sellerid FOREIGN KEY (sellerid)
     REFERENCES account(id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
@@ -110,3 +110,10 @@ INSERT INTO forseller(forsellerid, requesttime)
 VALUES ('1002', '2010-10-11 10:10:10');
 INSERT INTO seller(sellerid, approvetime)
 VALUES ('1003', '2009-09-08 09:09:09');
+
+INSERT INTO `category` (`categoryid`, `name`) VALUES ('1', 'category1'), ('2', 'category2') ;
+INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid`, `description`, `saletime`, `status`) VALUES (NULL, '1', 'title1', 'imgsrc1', '11', '1001', 'description1', '2018-10-01 00:00:00', 'sale');
+INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid`, `description`, `saletime`, `status`) VALUES (NULL, '2', 'title2', 'imgsrc2', '12', '1003', 'description2', '2018-10-02 00:00:00', 'sold');
+INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid`, `description`, `saletime`, `status`) VALUES (NULL, '1', 'title3', 'imgsrc3', '13', '1001', 'description3', '2018-10-03 00:00:00', 'sale');
+INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid`, `description`, `saletime`, `status`) VALUES (NULL, '1', 'title4', 'imgsrc4', '14', '1003', 'description4', '2018-10-04 00:00:00', 'sale');
+INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid`, `description`, `saletime`, `status`) VALUES (NULL, '2', 'title5', 'imgsrc5', '15', '1001', 'description5', '2018-10-05 00:00:00', 'draft');
