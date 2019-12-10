@@ -9,23 +9,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.edu.pku.course.database.idlefish.repository.ProductRepository;
-<<<<<<< Updated upstream
-=======
 import cn.edu.pku.course.database.idlefish.repository.UserRepository;
->>>>>>> Stashed changes
 
 @RestController
 public class CommonController {
 
 	@Autowired
-<<<<<<< Updated upstream
-	ProductRepository productRepository;
-=======
 	ProductRepository productRepo;
 
 	@Autowired
 	UserRepository userRepo;
->>>>>>> Stashed changes
 
 	private static int itemPerPage = 2;
 
@@ -34,9 +27,6 @@ public class CommonController {
 	 */
 	@GetMapping("product")
 	public List<Map<String, Object>> product(@RequestParam int page, @RequestParam String category) {
-<<<<<<< Updated upstream
-		return productRepository.viewProducts(page, category, itemPerPage);
-=======
 		return productRepo.viewProducts(page, category, itemPerPage);
 	}
 
@@ -46,7 +36,6 @@ public class CommonController {
 	@GetMapping("login")
 	public boolean login(@RequestParam String username, @RequestParam String password) {
 		return userRepo.checkLogin(username, password);
->>>>>>> Stashed changes
 	}
 
 }
