@@ -32,4 +32,14 @@ public class UserRepository {
 		return jdbcTemplate.queryForObject("SELECT name FROM account WHERE id = '" + id + "'", String.class);
 	}
 
+<<<<<<< Updated upstream
+=======
+	public boolean checkLogin(String name, String passwd) {
+		String hash1 = jdbcTemplate.queryForObject("SELECT en_passwd FROM account WHERE name = '" + name + "'",
+				String.class);
+		String hash2 = jdbcTemplate.queryForObject("SELECT myhash('" + passwd + "')", String.class);
+		return hash1.equals(hash2);
+	}
+
+>>>>>>> Stashed changes
 }
