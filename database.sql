@@ -19,7 +19,7 @@ CREATE TABLE account(
     email VARCHAR(32),
     phone BIGINT,
     accountstatus ENUM('buyer','forseller','seller','admin','deleted') DEFAULT 'buyer',
-    updatetime DATETIME DEFAULT CURRENT_TIMESTAMP
+    accupdatetime DATETIME DEFAULT CURRENT_TIMESTAMP
 ) AUTO_INCREMENT = 1000;
 
 CREATE TABLE category(
@@ -37,7 +37,7 @@ CREATE TABLE product(
     sellername VARCHAR(32),
     description TINYTEXT,
     productstatus ENUM('draft','sale','sold','returned','deleted') DEFAULT 'draft',
-    updatetime DATETIME DEFAULT CURRENT_TIMESTAMP
+    produpdatetime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE transaction(
@@ -45,7 +45,7 @@ CREATE TABLE transaction(
     buyername VARCHAR(32),
     productid INT UNSIGNED,
     transactionstatus ENUM('cart', 'bought', 'returned'),
-    updatetime DATETIME DEFAULT CURRENT_TIMESTAMP
+    transupdatetime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE comment(
@@ -68,7 +68,7 @@ RETURN SHA2(CONCAT('sha2', original, 'pkuidlefish2019'), 512);
 -- Data
 -- 
 
-INSERT INTO account(username, en_passwd, birth, sex, email, phone, accountstatus, updatetime) VALUES
+INSERT INTO account(username, en_passwd, birth, sex, email, phone, accountstatus, accupdatetime) VALUES
 ('user1', myhash('passwd1'), '2000-01-01', 'M', 'user1@pku.edu.cn', '10086000001', 'forseller', '2011-11-11'),
 ('user2', myhash('passwd2'), '2000-01-02', 'F', 'user2@pku.edu.cn', '10086000002', 'seller', '2010-10-10'),
 ('user3', myhash('passwd3'), '2000-01-03', 'M', 'user3@pku.edu.cn', '10086000003', 'forseller', '2009-09-09'),
@@ -79,13 +79,13 @@ INSERT INTO account(username, en_passwd, birth, sex, email, phone, accountstatus
 INSERT INTO category (categoryid, categoryname) VALUES
 ('1', 'category1'),
 ('2', 'category2');
-INSERT INTO product (categoryid, title, imgsrc, price, sellerid, sellername, description, updatetime, productstatus) VALUES
+INSERT INTO product (categoryid, title, imgsrc, price, sellerid, sellername, description, produpdatetime, productstatus) VALUES
 ('1', 'title1', 'imgsrc1', '11', '1001', 'user1', 'description1', '2018-10-01', 'sale'),
 ('2', 'title2', 'imgsrc2', '12', '1003', 'user3', 'description2', '2018-10-02', 'sold'),
 ('1', 'title3', 'imgsrc3', '13', '1003', 'user3', 'description3', '2018-10-03', 'sale'),
 ('1', 'title4', 'imgsrc4', '14', '1003', 'user3', 'description4', '2018-10-04', 'sale'),
 ('2', 'title5', 'imgsrc5', '15', '1001', 'user1', 'description5', '2018-10-05', 'draft');
 
-INSERT INTO transaction(productid, buyerid, buyername, updatetime, transactionstatus) VALUES
+INSERT INTO transaction(productid, buyerid, buyername, transupdatetime, transactionstatus) VALUES
 ('3', '1007', 'user7', '2019-05-05', 'cart'),
 ('2', '1007', 'user7', '2019-10-01', 'bought');

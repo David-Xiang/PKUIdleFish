@@ -21,40 +21,22 @@ public class CommonController {
 	@Autowired
 	UserRepository userRepo;
 
-	private static int itemPerPage = 2;
+	private static int ITEM_PER_PAGE = 20;
 
-	/*
-	 * Gets a certain page of products of a certain category
-	 */
 	@GetMapping("product")
 	public List<Map<String, Object>> product(@RequestParam int page, @RequestParam String category) {
-		return productRepo.viewProducts(page, category, itemPerPage);
+		return productRepo.viewProducts(category.equals("0") ? "%" : category, "sale", page, ITEM_PER_PAGE);
 	}
 
-	/*
-	 * Login, returns 1 if succeeded, 0 if failed
-	 */
 	@GetMapping("login")
 	public boolean login(@RequestParam String username, @RequestParam String password) {
 		return userRepo.checkLogin(username, password);
 	}
 
-	/*
-	 * register, returns 1 if succeeded, 0 if failed
-	 */
 	@PostMapping("register")
-	public boolean register(@RequestParam Map<String, String> form) {
-		return userRepo.register(form.get("username"), form.get("password"), form.get("birth"), form.get("sex"),
-				form.get("email"), form.get("phone"));
-	}
-
-	/*
-	 * modify user data, returns 1 if succeeded, 0 if failed
-	 */
-	@PostMapping("modify")
-	public boolean modify(@RequestParam Map<String, String> form) {
-		return userRepo.modify(form.get("username"), form.get("password"), form.get("birth"), form.get("sex"),
-				form.get("email"), form.get("phone"));
+	public boolean registerOrModify(@RequestParam Map<String, String> form) {
+		return userRepo.registerOrModify(form.get("type"), form.get("username"), form.get("password"),
+				form.get("birth"), form.get("sex"), form.get("email"), form.get("phone"));
 	}
 
 }

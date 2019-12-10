@@ -13,42 +13,27 @@ public class UserRepository {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	private static String viewInfo = "id, name, birth, sex, email, phone, type";
+	private static String ORDER = "ORDER BY accupdatetime DESC";
 
-	public List<Map<String, Object>> getUsers(String type, String orderBy, String order) {
-		String sql = "SELECT " + viewInfo;
-		if (type == "forseller") {
-			sql += ", requesttime FROM account INNER JOIN forseller ON id = forsellerid";
-		} else if (type == "seller") {
-			sql += ", approvetime FROM account INNER JOIN seller ON id = sellerid";
-		} else {
-			sql += " FROM account";
-		}
-		sql += " WHERE type = '" + type + "' ORDER BY " + orderBy + " " + order;
-		return jdbcTemplate.queryForList(sql);
+	public List<Map<String, Object>> userList(String status) {
+		String sql = "SELECT * FROM account WHERE accountstatus LIKE ? " + ORDER;
+		return jdbcTemplate.queryForList(sql, status);
 	}
 
-	public boolean checkLogin(String name, String passwd) {
-		String hash1 = jdbcTemplate.queryForObject("SELECT en_passwd FROM account WHERE name = '" + name + "'",
-				String.class);
-		String hash2 = jdbcTemplate.queryForObject("SELECT myhash('" + passwd + "')", String.class);
+	public boolean checkLogin(String username, String passwd) {
+		String hash1 = jdbcTemplate.queryForObject("SELECT en_passwd FROM account WHERE username = ?", String.class,
+				username);
+		String hash2 = jdbcTemplate.queryForObject("SELECT myhash(?)", String.class, passwd);
 		return hash1.equals(hash2);
 	}
 
-	public boolean register(String name, String passwd, String birth, String sex, String email, String phone) {
-		String sql = "INSERT INTO account(name, en_passwd, birth, sex, email, phone) VALUES (?, myhash(?), ?, ?, ?, ?)";
+	public boolean registerOrModify(String type, String username, String passwd, String birth, String sex, String email,
+			String phone) {
+		String sql = type.equals("register")
+				? "INSERT INTO account(en_passwd, birth, sex, email, phone, username) VALUES (myhash(?), ?, ?, ?, ?, ?)"
+				: "UPDATE account SET en_passwd = myhash(?), birth = ?, sex = ?, email = ?, phone = ? WHERE username = ?";
 		try {
-			jdbcTemplate.update(sql, name, passwd, birth, sex, email, phone);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	public boolean modify(String name, String passwd, String birth, String sex, String email, String phone) {
-		String sql = "UPDATE account SET en_passwd = myhash(?), birth = ?, sex = ?, email = ?, phone = ? WHERE name = ?";
-		try {
-			jdbcTemplate.update(sql, passwd, birth, sex, email, phone, name);
+			jdbcTemplate.update(sql, passwd, birth, sex, email, phone, username);
 			return true;
 		} catch (Exception e) {
 			return false;

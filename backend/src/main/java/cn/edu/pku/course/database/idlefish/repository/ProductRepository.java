@@ -13,30 +13,23 @@ public class ProductRepository {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	private static String viewInfo = "title, imgsrc, price, sellerid, description, saletime";
+	private static String ORDER = "ORDER BY produpdatetime DESC";
 
-	public String getCategoryName(int categoryid) {
-		return jdbcTemplate.queryForObject("SELECT name FROM category WHERE categoryid = '" + categoryid + "'",
-				String.class);
+	public List<Map<String, Object>> viewProducts(String categoryid, String status, int page, int itemPerPage) {
+		String sql = "SELECT *, count(*) AS hot FROM product INNER JOIN category USING (categoryid) LEFT JOIN transaction ON id = productid";
+		sql += " WHERE categoryid LIKE ? AND productstatus LIKE ? GROUP BY id " + ORDER + " LIMIT ?, ?";
+		return jdbcTemplate.queryForList(sql, categoryid, status, (page - 1) * itemPerPage, itemPerPage);
 	}
 
-	public List<Map<String, Object>> getProducts(boolean sold, int page, int itemPerPage) {
-		return null;
+	public List<Map<String, Object>> buyList(String username, String status) {
+		String subsql = "(SELECT * FROM transaction WHERE buyername LIKE ? AND transactionstatus LIKE ?) AS sub";
+		String sql = "SELECT * FROM product INNER JOIN " + subsql + " ON id = productid " + ORDER;
+		return jdbcTemplate.queryForList(sql, username, status);
 	}
 
-	public List<Map<String, Object>> viewProducts(int page, String category, int itemPerPage) {
-		String sql = "SELECT " + viewInfo + " FROM product INNER JOIN category USING (categoryid)";
-		sql += " WHERE name = '" + category + "' AND status = 'sale'";
-		sql += " ORDER BY saletime DESC";
-		sql += " LIMIT " + (page - 1) * itemPerPage + ", " + itemPerPage;
-		return jdbcTemplate.queryForList(sql);
-	}
-
-	public List<Map<String, Object>> viewCart(String username) {
-		String sql = "SELECT " + viewInfo + ", status FROM product";
-		sql += " WHERE id in (SELECT productid FROM cart";
-		sql += " WHERE buyername = '" + username + "')";
-		return jdbcTemplate.queryForList(sql);
+	public List<Map<String, Object>> sellList(String username, String status) {
+		String sql = "SELECT * FROM product WHERE sellername LIKE ? AND productstatus LIKE ? " + ORDER;
+		return jdbcTemplate.queryForList(sql, username, status);
 	}
 
 }
