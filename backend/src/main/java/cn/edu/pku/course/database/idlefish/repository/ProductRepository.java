@@ -32,4 +32,11 @@ public class ProductRepository {
 		return jdbcTemplate.queryForList(sql);
 	}
 
+	public List<Map<String, Object>> viewCart(String username) {
+		String sql = "SELECT " + viewInfo + ", status FROM product";
+		sql += " WHERE id in (SELECT productid FROM cart";
+		sql += " WHERE buyername = '" + username + "')";
+		return jdbcTemplate.queryForList(sql);
+	}
+
 }

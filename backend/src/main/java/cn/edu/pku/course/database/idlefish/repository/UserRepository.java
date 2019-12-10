@@ -45,10 +45,10 @@ public class UserRepository {
 		}
 	}
 
-	public boolean modify(String id, String passwd, String birth, String sex, String email, String phone) {
-		String sql = "UPDATE account SET en_passwd = myhash(?), birth = ?, sex = ?, email = ?, phone = ? WHERE id = ?";
+	public boolean modify(String name, String passwd, String birth, String sex, String email, String phone) {
+		String sql = "UPDATE account SET en_passwd = myhash(?), birth = ?, sex = ?, email = ?, phone = ? WHERE name = ?";
 		try {
-			jdbcTemplate.update(sql, passwd, birth, sex, email, phone, id);
+			jdbcTemplate.update(sql, passwd, birth, sex, email, phone, name);
 			return true;
 		} catch (Exception e) {
 			return false;

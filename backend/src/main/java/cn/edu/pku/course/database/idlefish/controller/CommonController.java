@@ -39,15 +39,21 @@ public class CommonController {
 		return userRepo.checkLogin(username, password);
 	}
 
+	/*
+	 * register, returns 1 if succeeded, 0 if failed
+	 */
 	@PostMapping("register")
 	public boolean register(@RequestParam Map<String, String> form) {
 		return userRepo.register(form.get("username"), form.get("password"), form.get("birth"), form.get("sex"),
 				form.get("email"), form.get("phone"));
 	}
 
+	/*
+	 * modify user data, returns 1 if succeeded, 0 if failed
+	 */
 	@PostMapping("modify")
 	public boolean modify(@RequestParam Map<String, String> form) {
-		return userRepo.modify(form.get("id"), form.get("password"), form.get("birth"), form.get("sex"),
+		return userRepo.modify(form.get("username"), form.get("password"), form.get("birth"), form.get("sex"),
 				form.get("email"), form.get("phone"));
 	}
 
