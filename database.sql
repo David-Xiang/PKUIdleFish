@@ -22,6 +22,14 @@ CREATE TABLE account(
     PRIMARY KEY (id)
 ) ENGINE = InnoDB COLLATE = utf8mb4_general_ci AUTO_INCREMENT = 1000;
 
+CREATE TABLE forseller(
+    forsellerid INT UNSIGNED NOT NULL,
+    requesttime DATETIME NOT NULL,
+    PRIMARY KEY (forsellerid),
+    CONSTRAINT fk_forseller_forsellerid FOREIGN KEY (forsellerid)
+    REFERENCES account(id) ON UPDATE CASCADE ON DELETE CASCADE
+)
+
 CREATE TABLE category(
     id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(16) NOT NULL,
@@ -78,10 +86,13 @@ RETURN SHA2(CONCAT('sha2', original, 'pkuidlefish2019'), 512);
 -- 
 
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user1', myhash('passwd1'), '20000101', 'M', 'user1@pku.edu.cn', '10086000001', 'seller');
+VALUES ('user1', myhash('passwd1'), '2000-01-01', 'M', 'user1@pku.edu.cn', '10086000001', 'seller');
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user2', myhash('passwd2'), '20000102', 'F', 'user2@pku.edu.cn', '10086000002', 'buyer');
+VALUES ('user2', myhash('passwd2'), '2000-01-02', 'F', 'user2@pku.edu.cn', '10086000002', 'buyer');
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user3', myhash('passwd3'), '20000103', 'M', 'user3@pku.edu.cn', '10086000003', 'buyer');
+VALUES ('user3', myhash('passwd3'), '2000-01-03', 'M', 'user3@pku.edu.cn', '10086000003', 'buyer');
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user4', myhash('passwd4'), '20000104', 'F', 'user4@pku.edu.cn', '10086000004', 'forseller');
+VALUES ('user4', myhash('passwd4'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'forseller');
+
+INSERT INTO forseller(forsellerid, requesttime)
+VALUES ('1004', '2010-10-10 10:10:10');
