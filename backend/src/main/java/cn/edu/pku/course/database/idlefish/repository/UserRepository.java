@@ -37,7 +37,12 @@ public class UserRepository {
 
 	public boolean register(String name, String passwd, String birth, String sex, String email, String phone) {
 		String sql = "INSERT INTO account(name, en_passwd, birth, sex, email, phone) VALUES (?, myhash(?), ?, ?, ?, ?)";
-		return jdbcTemplate.update(sql, name, passwd, birth, sex, email, phone) > 0;
+		try {
+			jdbcTemplate.update(sql, name, passwd, birth, sex, email, phone);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }
