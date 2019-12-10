@@ -45,4 +45,10 @@ public class CommonController {
 				form.get("email"), form.get("phone"));
 	}
 
+	@PostMapping("modify")
+	public boolean modify(@RequestParam Map<String, String> form) {
+		return userRepo.modify(form.get("id"), form.get("password"), form.get("birth"), form.get("sex"),
+				form.get("email"), form.get("phone"));
+	}
+
 }

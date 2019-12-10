@@ -45,4 +45,14 @@ public class UserRepository {
 		}
 	}
 
+	public boolean modify(String id, String passwd, String birth, String sex, String email, String phone) {
+		String sql = "UPDATE account SET en_passwd = myhash(?), birth = ?, sex = ?, email = ?, phone = ? WHERE id = ?";
+		try {
+			jdbcTemplate.update(sql, passwd, birth, sex, email, phone, id);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 }
