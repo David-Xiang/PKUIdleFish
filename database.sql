@@ -11,75 +11,56 @@ CREATE DATABASE pkuidlefish;
 USE pkuidlefish;
 
 CREATE TABLE account(
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(32) NOT NULL UNIQUE,
-    en_passwd CHAR(128) NOT NULL,
-    birth DATE NOT NULL,
-    sex CHAR(1) NOT NULL,
-    email VARCHAR(32) NOT NULL,
-    phone BIGINT NOT NULL,
-    type ENUM('buyer','forseller','seller','admin','deleted') NOT NULL DEFAULT 'buyer',
-    PRIMARY KEY (id)
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci AUTO_INCREMENT = 1000;
-
-CREATE TABLE forseller(
-    forsellerid INT UNSIGNED NOT NULL,
-    requesttime DATETIME NOT NULL,
-    PRIMARY KEY (forsellerid),
-    CONSTRAINT fk_forseller_forsellerid FOREIGN KEY (forsellerid)
-    REFERENCES account(id) ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
-
-CREATE TABLE seller(
-    sellerid INT UNSIGNED NOT NULL,
-    approvetime DATETIME NOT NULL,
-    PRIMARY KEY (sellerid),
-    CONSTRAINT fk_seller_sellerid FOREIGN KEY (sellerid)
-    REFERENCES account(id) ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
-
-CREATE TABLE category(
-    categoryid TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(16) NOT NULL,
-    PRIMARY KEY (categoryid)
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(32) UNIQUE,
+    en_passwd CHAR(128),
+    birth DATE,
+    sex CHAR(1),
+    email VARCHAR(32),
+    phone BIGINT,
+    type ENUM('buyer','forseller','seller','admin','deleted') DEFAULT 'buyer'
+) AUTO_INCREMENT = 1000;
 
 CREATE TABLE IF NOT EXISTS product(
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    categoryid TINYINT UNSIGNED NOT NULL,
-    title VARCHAR(128) NOT NULL,
-    imgsrc VARCHAR(256) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    sellerid INT UNSIGNED NOT NULL,
-    description TINYTEXT NOT NULL,
-    saletime DATETIME NOT NULL,
-    status ENUM('draft','sale','sold','returned','deleted') NOT NULL DEFAULT 'draft',
-    PRIMARY KEY (id),
-    CONSTRAINT fk_product_categoryid FOREIGN KEY (categoryid)
-    REFERENCES category(categoryid) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_product_sellerid FOREIGN KEY (sellerid)
-    REFERENCES account(id) ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    categoryid TINYINT UNSIGNED,
+    title VARCHAR(128),
+    imgsrc VARCHAR(256),
+    price DECIMAL(10, 2),
+    sellerid INT UNSIGNED,
+    description TINYTEXT,
+    saletime DATETIME,
+    status ENUM('draft','sale','sold','returned','deleted') DEFAULT 'draft'
+);
+
+CREATE TABLE category(
+    categoryid TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(16)
+);
+
+CREATE TABLE forseller(
+    forsellerid INT UNSIGNED,
+    requesttime DATETIME
+);
+
+CREATE TABLE seller(
+    sellerid INT UNSIGNED,
+    approvetime DATETIME
+);
 
 CREATE TABLE cart(
-    buyerid INT UNSIGNED NOT NULL,
-    productid INT UNSIGNED NOT NULL,
-    CONSTRAINT fk_cart_buyerid FOREIGN KEY (buyerid)
-    REFERENCES account(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_cart_productid FOREIGN KEY (productid)
-    REFERENCES product(id) ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+    buyerid INT UNSIGNED,
+    buyername VARCHAR(32),
+    productid INT UNSIGNED
+);
 
 CREATE TABLE comment(
-    buyerid INT UNSIGNED NOT NULL,
-    productid INT UNSIGNED NOT NULL,
-    time DATETIME NOT NULL,
-    content TEXT NOT NULL,
-    CONSTRAINT fk_comment_buyerid FOREIGN KEY (productid)
-    REFERENCES account(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_comment_productid FOREIGN KEY (productid)
-    REFERENCES product(id) ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+    buyerid INT UNSIGNED,
+    buyername VARCHAR(32),
+    productid INT UNSIGNED,
+    time DATETIME,
+    content TEXT
+);
 
 -- 
 -- Functions
@@ -100,7 +81,11 @@ VALUES ('user2', myhash('passwd2'), '2000-01-02', 'F', 'user2@pku.edu.cn', '1008
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
 VALUES ('user3', myhash('passwd3'), '2000-01-03', 'M', 'user3@pku.edu.cn', '10086000003', 'forseller');
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user4', myhash('passwd4'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'seller');
+VALUES ('user5', myhash('passwd5'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'seller');
+INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
+VALUES ('user6', myhash('passwd6'), '2000-01-05', 'M', 'user5@pku.edu.cn', '10086000005', 'buyer');
+INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
+VALUES ('user7', myhash('passwd7'), '2000-01-06', 'M', 'user6@pku.edu.cn', '10086000006', 'buyer');
 
 INSERT INTO forseller(forsellerid, requesttime)
 VALUES ('1000', '2010-10-10 10:10:10');
@@ -117,3 +102,5 @@ INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid
 INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid`, `description`, `saletime`, `status`) VALUES (NULL, '1', 'title3', 'imgsrc3', '13', '1001', 'description3', '2018-10-03 00:00:00', 'sale');
 INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid`, `description`, `saletime`, `status`) VALUES (NULL, '1', 'title4', 'imgsrc4', '14', '1003', 'description4', '2018-10-04 00:00:00', 'sale');
 INSERT INTO `product` (`id`, `categoryid`, `title`, `imgsrc`, `price`, `sellerid`, `description`, `saletime`, `status`) VALUES (NULL, '2', 'title5', 'imgsrc5', '15', '1001', 'description5', '2018-10-05 00:00:00', 'draft');
+
+INSERT INTO cart(productid, buyerid, buyername) VALUES ('2', '1007', 'user7');
