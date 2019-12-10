@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +37,12 @@ public class CommonController {
 	@GetMapping("login")
 	public boolean login(@RequestParam String username, @RequestParam String password) {
 		return userRepo.checkLogin(username, password);
+	}
+
+	@PostMapping("register")
+	public boolean register(@RequestParam Map<String, String> form) {
+		return userRepo.register(form.get("username"), form.get("password"), form.get("birth"), form.get("sex"),
+				form.get("email"), form.get("phone"));
 	}
 
 }

@@ -18,6 +18,9 @@ public class AdminController {
 	@Autowired
 	UserRepository userRepository;
 
+	/*
+	 * test
+	 */
 	@GetMapping("test")
 	public String test() {
 		return "it works!";

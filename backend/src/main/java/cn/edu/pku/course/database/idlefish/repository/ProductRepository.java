@@ -13,7 +13,7 @@ public class ProductRepository {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	private static String viewInfo = "title, imgsrc, price, description, saletime";
+	private static String viewInfo = "title, imgsrc, price, sellerid, description, saletime";
 
 	public String getCategoryName(int categoryid) {
 		return jdbcTemplate.queryForObject("SELECT name FROM category WHERE categoryid = '" + categoryid + "'",

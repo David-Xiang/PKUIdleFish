@@ -13,10 +13,10 @@ public class UserRepository {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	private static String basicInfo = "id, name, birth, sex, email, phone, type";
+	private static String viewInfo = "id, name, birth, sex, email, phone, type";
 
 	public List<Map<String, Object>> getUsers(String type, String orderBy, String order) {
-		String sql = "SELECT " + basicInfo;
+		String sql = "SELECT " + viewInfo;
 		if (type == "forseller") {
 			sql += ", requesttime FROM account INNER JOIN forseller ON id = forsellerid";
 		} else if (type == "seller") {
@@ -28,15 +28,16 @@ public class UserRepository {
 		return jdbcTemplate.queryForList(sql);
 	}
 
-	public String getUserName(int id) {
-		return jdbcTemplate.queryForObject("SELECT name FROM account WHERE id = '" + id + "'", String.class);
-	}
-
 	public boolean checkLogin(String name, String passwd) {
 		String hash1 = jdbcTemplate.queryForObject("SELECT en_passwd FROM account WHERE name = '" + name + "'",
 				String.class);
 		String hash2 = jdbcTemplate.queryForObject("SELECT myhash('" + passwd + "')", String.class);
 		return hash1.equals(hash2);
+	}
+
+	public boolean register(String name, String passwd, String birth, String sex, String email, String phone) {
+		String sql = "INSERT INTO account(name, en_passwd, birth, sex, email, phone) VALUES (?, myhash(?), ?, ?, ?, ?)";
+		return jdbcTemplate.update(sql, name, passwd, birth, sex, email, phone) > 0;
 	}
 
 }
