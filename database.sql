@@ -94,15 +94,19 @@ RETURN SHA2(CONCAT('sha2', original, 'pkuidlefish2019'), 512);
 -- 
 
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user1', myhash('passwd1'), '2000-01-01', 'M', 'user1@pku.edu.cn', '10086000001', 'seller');
+VALUES ('user1', myhash('passwd1'), '2000-01-01', 'M', 'user1@pku.edu.cn', '10086000001', 'forseller');
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user2', myhash('passwd2'), '2000-01-02', 'F', 'user2@pku.edu.cn', '10086000002', 'buyer');
+VALUES ('user2', myhash('passwd2'), '2000-01-02', 'F', 'user2@pku.edu.cn', '10086000002', 'seller');
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user3', myhash('passwd3'), '2000-01-03', 'M', 'user3@pku.edu.cn', '10086000003', 'buyer');
+VALUES ('user3', myhash('passwd3'), '2000-01-03', 'M', 'user3@pku.edu.cn', '10086000003', 'forseller');
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('user4', myhash('passwd4'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'forseller');
+VALUES ('user4', myhash('passwd4'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'seller');
 
 INSERT INTO forseller(forsellerid, requesttime)
-VALUES ('1004', '2010-10-10 10:10:10');
+VALUES ('1000', '2010-10-10 10:10:10');
 INSERT INTO seller(sellerid, approvetime)
 VALUES ('1001', '2009-09-09 09:09:09');
+INSERT INTO forseller(forsellerid, requesttime)
+VALUES ('1002', '2010-10-11 10:10:10');
+INSERT INTO seller(sellerid, approvetime)
+VALUES ('1003', '2009-09-08 09:09:09');
