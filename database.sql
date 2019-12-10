@@ -28,7 +28,15 @@ CREATE TABLE forseller(
     PRIMARY KEY (forsellerid),
     CONSTRAINT fk_forseller_forsellerid FOREIGN KEY (forsellerid)
     REFERENCES account(id) ON UPDATE CASCADE ON DELETE CASCADE
-)
+) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+
+CREATE TABLE seller(
+    sellerid INT UNSIGNED NOT NULL,
+    approvetime DATETIME NOT NULL,
+    PRIMARY KEY (sellerid),
+    CONSTRAINT fk_seller_sellerid FOREIGN KEY (sellerid)
+    REFERENCES account(id) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE category(
     id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -96,3 +104,5 @@ VALUES ('user4', myhash('passwd4'), '2000-01-04', 'F', 'user4@pku.edu.cn', '1008
 
 INSERT INTO forseller(forsellerid, requesttime)
 VALUES ('1004', '2010-10-10 10:10:10');
+INSERT INTO seller(sellerid, approvetime)
+VALUES ('1001', '2009-09-09 09:09:09');
