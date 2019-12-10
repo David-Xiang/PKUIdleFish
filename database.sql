@@ -78,4 +78,10 @@ RETURN SHA2(CONCAT('sha2', original, 'pkuidlefish2019'), 512);
 -- 
 
 INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('abc', myhash('123456'), '20000101', 'M', 'abc@pku.edu.cn', '10086', 'seller');
+VALUES ('user1', myhash('passwd1'), '20000101', 'M', 'user1@pku.edu.cn', '10086000001', 'seller');
+INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
+VALUES ('user2', myhash('passwd2'), '20000102', 'F', 'user2@pku.edu.cn', '10086000002', 'buyer');
+INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
+VALUES ('user3', myhash('passwd3'), '20000103', 'M', 'user3@pku.edu.cn', '10086000003', 'buyer');
+INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
+VALUES ('user4', myhash('passwd4'), '20000104', 'F', 'user4@pku.edu.cn', '10086000004', 'forseller');
