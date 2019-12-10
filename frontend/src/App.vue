@@ -5,11 +5,15 @@
       <el-container>
         <el-aside width="100px">
           <el-menu>
+            <el-menu-item :index="'login'" @click="dialogVisible = true">
+              <template slot="title"><i class="el-icon-location-outline"></i>登录</template>
+            </el-menu-item>
+
             <el-menu-item :index="'index'">
-              <template slot="title"><i class="el-icon-menu"></i>首页</template>
+              <template slot="title"><i class="el-icon-goods"></i>首页</template>
             </el-menu-item>
             <el-menu-item :index="'analysis'">
-              <template slot="title"><i class="el-icon-menu"></i>分析</template>
+              <template slot="title"><i class="el-icon-info"></i>分析</template>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -51,6 +55,33 @@
         版权所有©北京大学数据库概论课程 | 地址：北京市海淀区颐和园路5号第二教学楼316 | 邮编：100871 | xdw@pku.edu.cn | 京ICP备05065075号-1 | 京公网安备 110402430047 号
       </el-footer>
     </el-container>
+    <!--在这里加入了注册登录的弹出窗口。暂时让所有登录都失败，因为不知道怎么存放登录状态-->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      center>
+    <el-form :rules="loginRules" ref="loginRuleForm" :model="loginRuleForm" label-width="100px">
+      <el-row type="flex" >
+        <el-col :span="15" :offset="3">
+          <el-form-item label="账户：" prop="name">
+          <el-input placeholder="请输入用户名" v-model = "loginRuleForm.name" size="small"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row type="flex" >
+        <el-col :span="15" :offset="3">
+          <el-form-item label="密码：" prop="password">
+          <el-input placeholder="请输入密码" v-model = "loginRuleForm.password" size="small" show-password></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">注 册</el-button>
+      <el-button type="primary" @click="submitForm('loginRuleForm')">登 录</el-button>
+    </span>
+  </el-dialog>
   </div>
 </template>
 
@@ -64,8 +95,18 @@ export default {
       isLogin: false,
       isLoading: false,
       products: Array(20).fill(null).map((_, h)=>mock_products.products[h%3]),
-      commentData: []
-    }
+      commentData: [],
+      dialogVisible: false,
+      loginRuleForm:{
+        name:'',
+        password:'',
+     },
+      loginRules:
+      {
+        name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
+        password:[{required:true,message:'密码不能为空', trigger:'blur'}]
+      }
+    };
   }, 
   created(){
   
@@ -85,7 +126,22 @@ export default {
         message: title + " 已成功放入购物车，快去看看吧～",
         type: 'success'
       });
-    } 
+    } ,
+    //<!--注册登录函数-->
+     submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            //alert('submit!');
+            this.dialogVisible = false;
+          } else {
+             //alert('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      }
   }
 }
 </script>
