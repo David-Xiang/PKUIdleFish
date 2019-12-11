@@ -5,7 +5,7 @@
       <el-container>
         <el-aside width="100px">
           <el-menu>
-            <el-menu-item :index="'login'" @click="dialogVisible = true">
+            <el-menu-item :index="'login'" @click="loginDialogVisible = true">
               <template slot="title"><i class="el-icon-location-outline"></i>登录</template>
             </el-menu-item>
 
@@ -57,29 +57,53 @@
     </el-container>
     <!--在这里加入了注册登录的弹出窗口。暂时让所有登录都失败，因为不知道怎么存放登录状态-->
     <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%"
+      title="欢迎使用北大闲鱼"
+      :visible.sync="loginDialogVisible"
+      width="500px"
       center>
     <el-form :rules="loginRules" ref="loginRuleForm" :model="loginRuleForm" label-width="100px">
-      <el-row type="flex" >
-        <el-col :span="15" :offset="3">
-          <el-form-item label="账户：" prop="name">
-          <el-input placeholder="请输入用户名" v-model = "loginRuleForm.name" size="small"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" >
-        <el-col :span="15" :offset="3">
-          <el-form-item label="密码：" prop="password">
-          <el-input placeholder="请输入密码" v-model = "loginRuleForm.password" size="small" show-password></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item label="用户名" prop="name">
+      <el-input placeholder="请输入用户名" v-model = "loginRuleForm.name" size="small"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+      <el-input placeholder="请输入密码" v-model = "loginRuleForm.password" size="small" show-password></el-input>
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">注 册</el-button>
-      <el-button type="primary" @click="submitForm('loginRuleForm')">登 录</el-button>
+      <el-button @click="loginDialogVisible = false;registerDialogVisible = true">注 册</el-button>
+      <el-button type="primary" @click="submitLoginForm('loginRuleForm')">登 录</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+      title="注册北大闲鱼"
+      :visible.sync="registerDialogVisible"
+      width="500px"
+      center>
+    <el-form :rules="registerRules" ref="registerRuleForm" :model="registerRuleForm" label-width="100px">
+      <el-form-item label="用户名" prop="name">
+        <el-input placeholder="起个什么名字好呢" v-model = "registerRuleForm.name" size="small"></el-input>
+      </el-form-item>
+        <el-form-item label="密码" prop="password">
+        <el-input placeholder="密码要好好想想" v-model = "registerRuleForm.password" size="small" show-password></el-input>
+      </el-form-item>
+        <el-form-item label="出生日期" prop="birthday">
+        <el-date-picker type="date" placeholder="日期是多少呢" v-model= "registerRuleForm.birthday" style="width: 100%;"></el-date-picker>
+      </el-form-item>
+      <el-form-item label="性别" prop="sex">
+        <el-radio-group v-model= "registerRuleForm.sex">
+          <el-radio label="女"></el-radio>
+          <el-radio label="男"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input placeholder="电子邮箱会梦见真实邮箱吗" v-model = "registerRuleForm.email" size="small"></el-input>
+      </el-form-item>
+      <el-form-item label="电话" prop="phone">
+        <el-input placeholder="怎么样才能联系到你呢" v-model = "registerRuleForm.phone" size="small"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="submitLoginForm('registerRuleForm')">注 册</el-button>
     </span>
   </el-dialog>
   </div>
@@ -96,7 +120,7 @@ export default {
       isLoading: false,
       products: Array(20).fill(null).map((_, h)=>mock_products.products[h%3]),
       commentData: [],
-      dialogVisible: false,
+      loginDialogVisible: false,
       loginRuleForm:{
         name:'',
         password:'',
@@ -105,7 +129,26 @@ export default {
       {
         name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
         password:[{required:true,message:'密码不能为空', trigger:'blur'}]
-      }
+      },
+      registerDialogVisible: false,
+      registerRuleForm:{
+        name:'',
+        password:'',
+        birthday:"",
+        sex:"",
+        email:"",
+        phone:"",
+     },
+      registerRules:
+      {
+        name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
+        password:[{required:true,message:'密码不能为空', trigger:'blur'}],
+        birthday:[{type:'date',required: true, message:'请选择出生日期', trigger:'change'}],
+        sex:[{required:true,message:'请选择性别', trigger:'change'}],
+        email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
+        phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
+
+      },
     };
   }, 
   created(){
@@ -128,13 +171,22 @@ export default {
       });
     } ,
     //<!--注册登录函数-->
-     submitForm(formName) {
+     submitLoginForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            //alert('submit!');
-            this.dialogVisible = false;
+            //TODO:成功登录需要做什么？
+            this.loginDialogVisible = false;
           } else {
-             //alert('error submit!!');
+            return false;
+          }
+        });
+      },
+      submitRegisterForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            //TODO:成功注册需要做什么？
+            this.registerDialogVisible = false;
+          } else {
             return false;
           }
         });
