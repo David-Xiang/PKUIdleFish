@@ -8,9 +8,11 @@
             <el-menu-item :index="'login'" @click="loginDialogVisible = true">
               <template slot="title"><i class="el-icon-location-outline"></i>登录</template>
             </el-menu-item>
-
             <el-menu-item :index="'index'">
               <template slot="title"><i class="el-icon-goods"></i>首页</template>
+            </el-menu-item>
+            <el-menu-item :index="'cart'" @click="cartVisible = true"> 
+              <template slot="title"><i class="el-icon-goods"></i>购物车</template>
             </el-menu-item>
             <el-menu-item :index="'analysis'">
               <template slot="title"><i class="el-icon-info"></i>分析</template>
@@ -106,6 +108,26 @@
       <el-button type="primary" @click="submitLoginForm('registerRuleForm')">注 册</el-button>
     </span>
   </el-dialog>
+  <!--购物车-->
+  <el-dialog
+      title="购物车"
+      :visible.sync="cartVisible"
+      width="800px"
+      center>
+    <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin-bottom: 20px">
+      <el-row type="flex" justify="center" align="middle" gutter="20"> 
+        <el-col :span="12">
+          <el-image style="width: 100%; height: 220px" :src="testUrl" fit="cover"/> 
+        </el-col>
+        <el-col type="flex" justify="center" align="middle" :span="12">
+                              <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px">{{"product.productInfo.title"}}</div>
+
+          <el-button type="danger">删 除</el-button>
+          <el-button type="primary">购 买</el-button>
+        </el-col>
+      </el-row>
+    </el-card>
+  </el-dialog>
   </div>
 </template>
 
@@ -147,8 +169,10 @@ export default {
         sex:[{required:true,message:'请选择性别', trigger:'change'}],
         email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
         phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
-
       },
+      cartVisible: false,
+      testUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1576077318175&di=26d19907bdb7582e0c4f18279bb036aa&imgtype=0&src=http%3A%2F%2Fwww.nyasama.com%2Fbsup%2Fnyaup%2Fattachment%2Fforum%2F201307%2F13%2F133141nvycyyvv11v81vt0.jpg'
+      //不知道怎么获取图片
     };
   }, 
   created(){
