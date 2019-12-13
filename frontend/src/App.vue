@@ -1,57 +1,53 @@
 <template>
   <div id="app">
     <el-container>
+      <el-menu mode="horizontal">
+          <el-menu-item :index="'login'" @click="loginDialogVisible = true">
+            <template slot="title"><i class="el-icon-location-outline"></i>登录</template>
+          </el-menu-item>
+          <el-menu-item :index="'index'">
+            <template slot="title"><i class="el-icon-goods"></i>首页</template>
+          </el-menu-item>
+          <el-menu-item :index="'cart'" @click="cartVisible = true"> 
+            <template slot="title"><i class="el-icon-goods"></i>购物车</template>
+          </el-menu-item>
+          <el-menu-item :index="'analysis'">
+            <template slot="title"><i class="el-icon-info"></i>分析</template>
+          </el-menu-item>
+        </el-menu>
       <el-header style="font-size: 40px; color: #820010">北大有鱼，其名为闲。</el-header>
       <el-container>
-        <el-aside width="100px">
-          <el-menu>
-            <el-menu-item :index="'login'" @click="loginDialogVisible = true">
-              <template slot="title"><i class="el-icon-location-outline"></i>登录</template>
-            </el-menu-item>
-            <el-menu-item :index="'index'">
-              <template slot="title"><i class="el-icon-goods"></i>首页</template>
-            </el-menu-item>
-            <el-menu-item :index="'cart'" @click="cartVisible = true"> 
-              <template slot="title"><i class="el-icon-goods"></i>购物车</template>
-            </el-menu-item>
-            <el-menu-item :index="'analysis'">
-              <template slot="title"><i class="el-icon-info"></i>分析</template>
-            </el-menu-item>
-          </el-menu>
-        </el-aside>
-        <el-container>
-          <el-main v-loading="isLoading">
-            <el-row :gutter="20">
-              <el-col :gutter="15" :span="6" v-for="(product, index) in products" :key='index'>
-                <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin-bottom: 20px">
-                  <el-image style="width: 100%; height: 220px" v-bind:src="product.productInfo.imgsrc" fit="cover"/>  
-                  <div style="margin-left: 10px; margin-right: 10px">
-                    <div align="left">
-                      <div style="display:inline; color: red; font-size: 14px">¥</div>
-                      <div style="display:inline; color: red; font-size: 22px">{{product.productInfo.price.toFixed(2)}}</div>
-                    </div>
-                    <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px">{{product.productInfo.title}}</div>
-                    <div style="margin: 5px"/>
-                    <el-popover
-                      placement="top-start"
-                      width="500px"
-                      trigger="hover">
-                      <el-table height="200px" :data="product.comments.slice(0,Math.min(5,product.comments.length))">
-                        <el-table-column width="100" property="buyerName" show-overflow-tooltip label="姓名"></el-table-column>
-                        <el-table-column width="70" property="time" label="日期"></el-table-column>
-                        <el-table-column width="330" property="content" :show-overflow-tooltip="true" label="评论"></el-table-column>
-                      </el-table>
-                      <el-badge class="hidden-md-and-down" v-bind:value="product.comments.length" style="margin-right: 7px" slot="reference">
-                        <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
-                      </el-badge>
-                    </el-popover>
-                    <el-button size="medium" style="margin-left: 5px" @click="addcart(product.productInfo.title)">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
+        <el-main v-loading="isLoading">
+          <el-row :gutter="20" v-infinite-scroll="loadmore">
+            <el-col :gutter="15" :span="6" v-for="(product, index) in products" :key='index'>
+              <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin: 15px">
+                <el-image style="width: 100%; height: 220px" v-bind:src="product.productInfo.imgsrc" fit="cover"/>  
+                <div style="margin-left: 10px; margin-right: 10px">
+                  <div align="left">
+                    <div style="display:inline; color: red; font-size: 14px">¥</div>
+                    <div style="display:inline; color: red; font-size: 22px">{{product.productInfo.price.toFixed(2)}}</div>
                   </div>
-                </el-card>
-              </el-col>
-            </el-row>
-          </el-main>
-        </el-container>
+                  <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px">{{product.productInfo.title}}</div>
+                  <div style="margin: 5px"/>
+                  <el-popover
+                    placement="top-start"
+                    width="500px"
+                    trigger="hover">
+                    <el-table height="200px" :data="product.comments.slice(0,Math.min(5,product.comments.length))">
+                      <el-table-column width="100" property="buyerName" show-overflow-tooltip label="姓名"></el-table-column>
+                      <el-table-column width="70" property="time" label="日期"></el-table-column>
+                      <el-table-column width="330" property="content" :show-overflow-tooltip="true" label="评论"></el-table-column>
+                    </el-table>
+                    <el-badge class="hidden-md-and-down" v-bind:value="product.comments.length" style="margin-right: 7px" slot="reference">
+                      <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
+                    </el-badge>
+                  </el-popover>
+                  <el-button size="medium" style="margin-left: 5px" @click="addcart(product.productInfo.title)">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-main>
       </el-container>
       <el-footer style="color: black; font-size: 12px">
         版权所有©北京大学数据库概论课程 | 地址：北京市海淀区颐和园路5号第二教学楼316 | 邮编：100871 | xdw@pku.edu.cn | 京ICP备05065075号-1 | 京公网安备 110402430047 号
@@ -212,31 +208,34 @@ export default {
         message: title + " 已成功放入购物车，快去看看吧～",
         type: 'success'
       });
-    } ,
-    //<!--注册登录函数-->
-     submitLoginForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            //TODO:成功登录需要做什么？
-            this.loginDialogVisible = false;
-          } else {
-            return false;
-          }
-        });
-      },
-      submitRegisterForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            //TODO:成功注册需要做什么？
-            this.registerDialogVisible = false;
-          } else {
-            return false;
-          }
-        });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      }
+    },
+    loadmore() {
+      this.products = this.products.concat(Array(20).fill(null).map((_, h)=>mock_products.products[h%3]));
+    },
+    // 注册登录函数
+    submitLoginForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          //TODO:成功登录需要做什么？
+          this.loginDialogVisible = false;
+        } else {
+          return false;
+        }
+      });
+    },
+    submitRegisterForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          //TODO:成功注册需要做什么？
+          this.registerDialogVisible = false;
+        } else {
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    }
   }
 }
 </script>
