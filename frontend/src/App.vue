@@ -57,82 +57,100 @@
         版权所有©北京大学数据库概论课程 | 地址：北京市海淀区颐和园路5号第二教学楼316 | 邮编：100871 | xdw@pku.edu.cn | 京ICP备05065075号-1 | 京公网安备 110402430047 号
       </el-footer>
     </el-container>
-    <!--在这里加入了注册登录的弹出窗口。暂时让所有登录都失败，因为不知道怎么存放登录状态-->
+      
+      <!--在这里加入了注册登录的弹出窗口。暂时让所有登录都失败，因为不知道怎么存放登录状态-->
     <el-dialog
       title="欢迎使用北大闲鱼"
       :visible.sync="loginDialogVisible"
       width="500px"
       center>
-    <el-form :rules="loginRules" ref="loginRuleForm" :model="loginRuleForm" label-width="100px">
-      <el-form-item label="用户名" prop="name">
-      <el-input placeholder="请输入用户名" v-model = "loginRuleForm.name" size="small"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-      <el-input placeholder="请输入密码" v-model = "loginRuleForm.password" size="small" show-password></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="loginDialogVisible = false;registerDialogVisible = true">注 册</el-button>
-      <el-button type="primary" @click="submitLoginForm('loginRuleForm')">登 录</el-button>
-    </span>
-  </el-dialog>
-  <el-dialog
-      title="注册北大闲鱼"
-      :visible.sync="registerDialogVisible"
-      width="500px"
-      center>
-    <el-form :rules="registerRules" ref="registerRuleForm" :model="registerRuleForm" label-width="100px">
-      <el-form-item label="用户名" prop="name">
-        <el-input placeholder="起个什么名字好呢" v-model = "registerRuleForm.name" size="small"></el-input>
-      </el-form-item>
+      <el-form :rules="loginRules" ref="loginRuleForm" :model="loginRuleForm" label-width="100px">
+        <el-form-item label="用户名" prop="name">
+          <el-input placeholder="请输入用户名" v-model = "loginRuleForm.name" size="small"></el-input>
+        </el-form-item>
         <el-form-item label="密码" prop="password">
-        <el-input placeholder="密码要好好想想" v-model = "registerRuleForm.password" size="small" show-password></el-input>
-      </el-form-item>
-        <el-form-item label="出生日期" prop="birthday">
-        <el-date-picker type="date" placeholder="日期是多少呢" v-model= "registerRuleForm.birthday" style="width: 100%;"></el-date-picker>
-      </el-form-item>
-      <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model= "registerRuleForm.sex">
-          <el-radio label="女"></el-radio>
-          <el-radio label="男"></el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input placeholder="电子邮箱会梦见真实邮箱吗" v-model = "registerRuleForm.email" size="small"></el-input>
-      </el-form-item>
-      <el-form-item label="电话" prop="phone">
-        <el-input placeholder="怎么样才能联系到你呢" v-model = "registerRuleForm.phone" size="small"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitLoginForm('registerRuleForm')">注 册</el-button>
-    </span>
-  </el-dialog>
-  <!--购物车-->
-  <el-dialog
-      title="购物车"
-      :visible.sync="cartVisible"
-      width="800px"
-      center>
-    <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin-bottom: 20px">
-      <el-row type="flex" justify="center" align="middle" gutter="20"> 
-        <el-col :span="12">
-          <el-image style="width: 100%; height: 220px" :src="testUrl" fit="cover"/> 
-        </el-col>
-        <el-col type="flex" justify="center" align="middle" :span="12">
-                              <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px">{{"product.productInfo.title"}}</div>
-
-          <el-button type="danger">删 除</el-button>
-          <el-button type="primary">购 买</el-button>
-        </el-col>
-      </el-row>
-    </el-card>
-  </el-dialog>
+          <el-input placeholder="请输入密码" v-model = "loginRuleForm.password" size="small" show-password></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="loginDialogVisible = false;registerDialogVisible = true">注 册</el-button>
+        <el-button type="primary" @click="submitLoginForm('loginRuleForm')">登 录</el-button>
+      </span>
+    </el-dialog>
+    
+    <el-dialog
+        title="注册北大闲鱼"
+        :visible.sync="registerDialogVisible"
+        width="500px"
+        center>
+      <el-form :rules="registerRules" ref="registerRuleForm" :model="registerRuleForm" label-width="100px">
+        <el-form-item label="用户名" prop="name">
+          <el-input placeholder="起个什么名字好呢" v-model = "registerRuleForm.name" size="small"></el-input>
+        </el-form-item>
+          <el-form-item label="密码" prop="password">
+          <el-input placeholder="密码要好好想想" v-model = "registerRuleForm.password" size="small" show-password></el-input>
+        </el-form-item>
+          <el-form-item label="出生日期" prop="birthday">
+          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "registerRuleForm.birthday" style="width: 100%;"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model= "registerRuleForm.sex">
+            <el-radio label="女"></el-radio>
+            <el-radio label="男"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input placeholder="电子邮箱会梦见真实邮箱吗" v-model = "registerRuleForm.email" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="phone">
+          <el-input placeholder="怎么样才能联系到你呢" v-model = "registerRuleForm.phone" size="small"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitLoginForm('registerRuleForm')">注 册</el-button>
+      </span>
+    </el-dialog>
+    
+    
+    <!--购物车-->
+    <el-drawer title="购物车" :visible.sync="cartVisible" size="600px">
+      <el-table
+        :data="cartData"
+        style="width: 100%">
+        <el-table-column
+          label="图片"
+          prop="productInfo.title"
+          width="80px">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 70px; height: 70px"
+              :src="scope.row.productInfo.imgsrc"
+              fit="cover"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="名称"
+          prop="productInfo.title"
+          width="300px"/>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="$alert(scope.$index)">下单</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="$alert(scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import mock_products from './assets/mock_products.js'
+import mock_cart from './assets/mock_cart.js'
 
 export default {
   name: 'app',
@@ -141,6 +159,7 @@ export default {
       isLogin: false,
       isLoading: false,
       products: Array(20).fill(null).map((_, h)=>mock_products.products[h%3]),
+      cartData: mock_cart.products,
       commentData: [],
       loginDialogVisible: false,
       loginRuleForm:{
