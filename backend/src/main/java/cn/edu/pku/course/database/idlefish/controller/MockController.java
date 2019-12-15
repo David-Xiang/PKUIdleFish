@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class MockController {
@@ -63,7 +64,19 @@ public class MockController {
         return new UserResponse(Arrays.asList(user1, user2, user3, user4, user5));
     }
 
-    @GetMapping("/mock/product")
+    @GetMapping("/related")
+    @ResponseBody
+    public List<ProductResponse> getOrders() {
+        return Arrays.asList(getProducts(), getProducts());
+    }
+
+    @GetMapping("/cart")
+    @ResponseBody
+    public ProductResponse getCart() {
+        return getProducts();
+    }
+
+    @GetMapping("/product")
     @ResponseBody
     public ProductResponse getProducts() {
         Product product1 = new Product(
@@ -75,7 +88,7 @@ public class MockController {
                         1399.00,
                         1234124,
                         "品牌: 麻霖适用年龄: 30-34周岁材质: 羊绒尺码: S M L图案: 纯色领子: 圆领风格: 通勤通勤: 文艺颜色分类: 杏色 米白面料材质: 羊绒袖型: 常规组合形式: 单件货号: 19WM1596成分含量: 96%及以上年份季节: 2019年秋季袖长: 长袖款式: 套头厚薄: 加厚衣长: 常规服装版型: 宽松",
-                        null,
+                        new Date(119, 12, 05),
                         1
                 ),
                 Arrays.asList(
