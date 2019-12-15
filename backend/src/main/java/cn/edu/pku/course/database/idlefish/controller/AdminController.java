@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,8 +35,8 @@ public class AdminController {
 	@GetMapping("user")
 	public List<Map<String, Object>> user() {
 		List<Map<String, Object>> userList = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < USER_STATUS.length; ++i) {
-			userList.addAll(userRepo.userList(USER_STATUS[i]));
+		for (String s : USER_STATUS) {
+			userList.addAll(userRepo.userList(s));
 		}
 		return userList;
 	}
@@ -43,6 +44,16 @@ public class AdminController {
 	@GetMapping("product")
 	public List<Map<String, Object>> product(@RequestParam int page, @RequestParam String sold) {
 		return productRepo.viewProducts("%", sold.equals("0") ? "%" : "sold", page, ITEM_PER_PAGE);
+	}
+
+	@PostMapping("offline/product")
+	public boolean offproduct(@RequestParam String productid) {
+		return productRepo.deleteProduct(productid);
+	}
+
+	@PostMapping("offline/user")
+	public boolean offuser(@RequestParam String username) {
+		return userRepo.deleteUser(username);
 	}
 
 }

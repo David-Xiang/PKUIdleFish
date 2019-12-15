@@ -28,6 +28,11 @@ public class CommonController {
 		return productRepo.viewProducts(category.equals("0") ? "%" : category, "sale", page, ITEM_PER_PAGE);
 	}
 
+	@GetMapping("wealthiest")
+	public List<Map<String, Object>> wealthiest() {
+		return userRepo.wealthiest();
+	}
+
 	@GetMapping("login")
 	public boolean login(@RequestParam String username, @RequestParam String password) {
 		return userRepo.checkLogin(username, password);
