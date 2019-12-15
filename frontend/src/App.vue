@@ -1,23 +1,40 @@
 <template>
   <div id="app">
     <el-container>
-      <el-menu mode="horizontal">
-          <el-menu-item :index="'login'" @click="loginDialogVisible = true">
-            <template slot="title"><i class="el-icon-location-outline"></i>登录</template>
+      <el-menu mode="horizontal" default-active="1">
+          <el-menu-item index="0" @click="loginDialogVisible = true">
+            <template slot="title" style="font-size: 40px;"><i class="el-icon-user-solid"></i>登录/注册</template>
           </el-menu-item>
-          <el-menu-item :index="'index'">
-            <template slot="title"><i class="el-icon-goods"></i>首页</template>
+          <el-menu-item index="1">
+            <template slot="title"><i class="el-icon-s-home"></i>首页</template>
           </el-menu-item>
-          <el-menu-item :index="'cart'" @click="cartVisible = true"> 
-            <template slot="title"><i class="el-icon-goods"></i>购物车</template>
+          <el-menu-item index="2" @click="cartVisible = true; loadCart();" :disabled="!isLogin"> 
+            <template slot="title"><i class="el-icon-s-goods"></i>购物车</template>
           </el-menu-item>
-          <el-menu-item :index="'analysis'">
-            <template slot="title"><i class="el-icon-info"></i>分析</template>
+          <el-menu-item index="3" @click="orderVisible = true; loadRelated(0);" :disabled="!isLogin"> 
+            <template slot="title"><i class="el-icon-s-order"></i>订单</template>
+          </el-menu-item>
+          <el-menu-item index="4" @click="ownVisible = true; loadRelated(1);" :disabled="!isLogin||!isSeller"> 
+            <template slot="title"><i class="el-icon-s-management"></i>自家宝贝</template>
+          </el-menu-item>
+          <el-menu-item index="5">
+            <template slot="title"><i class="el-icon-s-data"></i>分析</template>
           </el-menu-item>
         </el-menu>
-      <el-header style="font-size: 40px; color: #820010">北大有鱼，其名为闲。</el-header>
+      <el-header style="font-size: 40px; color: #820010; margin-top:20px">北大有鱼，其名为闲。</el-header>
+
       <el-container>
         <el-main v-loading="isLoading">
+          <el-container>
+            <el-input placeholder="请输入关键字" v-model="keyword" clearable @keyup.enter.native="handleSearch" style="margin:20px">
+              <el-select v-model="categorySelect" slot="prepend" placeholder="分类">
+                <el-option label="家用电器" value="1"></el-option>
+                <el-option label="衣装服饰" value="2"></el-option>
+                <el-option label="图书文娱" value="3"></el-option>
+              </el-select>
+              <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
+            </el-input> 
+          </el-container>
           <el-row :gutter="20">
             <el-col :gutter="15" :span="6" v-for="(product, index) in products" :key='index'>
               <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin: 15px">
@@ -42,11 +59,18 @@
                       <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
                     </el-badge>
                   </el-popover>
-                  <el-button size="medium" style="margin-left: 5px" @click="addcart(product.productInfo.title)">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
+                  <el-button size="medium" style="margin-left: 5px" @click="addCart(product.productInfo.title)">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
                 </div>
               </el-card>
             </el-col>
           </el-row>
+          <div/>
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            @current-change="handlePage"
+            :total="100">
+          </el-pagination>
         </el-main>
       </el-container>
       <el-footer style="color: black; font-size: 12px">
@@ -141,33 +165,112 @@
         </el-table-column>
       </el-table>
     </el-drawer>
+
+
+    <!--订单管理-->
+    <el-drawer title="订单" :visible.sync="orderVisible" size="800px">
+      <el-table
+        :data="orderData"
+        style="width: 100%">
+        <el-table-column
+          label="图片"
+          prop="productInfo.title"
+          width="80px">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 70px; height: 70px"
+              :src="scope.row.productInfo.imgsrc"
+              fit="cover"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="名称"
+          prop="productInfo.title"
+          width="300px"/>
+        <el-table-column
+          label="下单日期"
+          prop="productInfo.sellTime"
+          width="200px"/>  
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="$alert(scope.$index)">评价</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="$alert(scope.$index)">退货</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-drawer>
+
+    <!--宝贝管理-->
+    <el-drawer title="自家宝贝" :visible.sync="ownVisible" size="600px">
+      <el-table
+        :data="cartData"
+        style="width: 100%">
+        <el-table-column
+          label="图片"
+          prop="productInfo.title"
+          width="80px">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 70px; height: 70px"
+              :src="scope.row.productInfo.imgsrc"
+              fit="cover"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="名称"
+          prop="productInfo.title"
+          width="300px"/>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="$alert(scope.$index)">下单</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="$alert(scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-drawer>
   </div>
 </template>
 
 <script>
-import mock_products from './assets/mock_products.js'
-import mock_cart from './assets/mock_cart.js'
-
 export default {
   name: 'app',
   data(){
     return {
-      isLogin: false,
+      domain: "http://localhost",
+      isLogin: true, // TODO
       isLoading: false,
-      products: Array(20).fill(null).map((_, h)=>mock_products.products[h%3]),
-      cartData: mock_cart.products,
+      isSeller: false,
+      username: "dong", // TODO
+      products: [],
+      cartData: [],
+      orderData: [],
+      ownData: [],
       commentData: [],
       loginDialogVisible: false,
+      registerDialogVisible: false,
+      cartVisible: false,
+      orderVisible: false,
+      ownVisible: false,
+      keyword:"",
+      categorySelect: "",
       loginRuleForm:{
         name:'',
         password:'',
-     },
-      loginRules:
-      {
+      },
+      loginRules:{
         name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
         password:[{required:true,message:'密码不能为空', trigger:'blur'}]
       },
-      registerDialogVisible: false,
       registerRuleForm:{
         name:'',
         password:'',
@@ -175,9 +278,8 @@ export default {
         sex:"",
         email:"",
         phone:"",
-     },
-      registerRules:
-      {
+      },
+      registerRules:{
         name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
         password:[{required:true,message:'密码不能为空', trigger:'blur'}],
         birthday:[{type:'date',required: true, message:'请选择出生日期', trigger:'change'}],
@@ -185,32 +287,84 @@ export default {
         email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
         phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
       },
-      cartVisible: false,
       testUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1576077318175&di=26d19907bdb7582e0c4f18279bb036aa&imgtype=0&src=http%3A%2F%2Fwww.nyasama.com%2Fbsup%2Fnyaup%2Fattachment%2Fforum%2F201307%2F13%2F133141nvycyyvv11v81vt0.jpg'
       //不知道怎么获取图片
     };
   }, 
   created(){
-  
-    // this.$axios({
-    //   method: 'GET',
-    //   url: 'http://localhost/mock/login',
-    //   }).then((res)=>{
-    //   window.console.log(res)
-    //   this.xml = res.data;
-    // })
-
+    this.isLoading = true;
+    this.loadProduct(0, "");
   },
   methods: {
-    addcart(title) {
+    formUrl(action, params) {
+      let url = this.domain + "/" + action;
+      if (Object.keys(params).length > 0) {
+        let i = 0;
+        for (let key in params) {
+          if (i == 0){
+            url += "?";
+          } else {
+            url += "&";
+          }
+          i++;
+          url += key + "=" + params[key];
+        }
+      }
+      window.console.log("[formUrl] " + url);
+      return url;
+    },
+    addCart(title) {
+      // TODO
       this.$notify({
         title: '成功',
         message: title + " 已成功放入购物车，快去看看吧～",
         type: 'success'
       });
     },
-    loadmore() {
-      this.products = this.products.concat(this.products);
+    loadProduct(category, keyword, page=1) {
+      let params = {
+        "category": category,
+        "page": page-1
+      };
+      if (keyword.length >0) {
+        params["keyword"] = keyword;
+      }
+      let url = this.formUrl("product", params);
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+        this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
+        this.isLoading = false;
+      });
+    },
+    loadCart() {
+      let url = this.formUrl("cart", {
+        "username": this.username
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+        this.cartData = res.data.products;
+      });
+    },
+    loadRelated(type) {
+      let url = this.formUrl("related", {
+        "username": this.username
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+        if (type == 0){
+          // 订单
+          this.orderData = res.data[0].products;
+        } else if (type == 1) {
+          // 自家宝贝
+          this.ownData = res.data[1].products;
+        }
+      });
     },
     // 注册登录函数
     submitLoginForm(formName) {
@@ -235,6 +389,14 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    handleSearch() {
+      window.console.log("[handleSearch] " + this.keyword);
+      this.loadProduct(this.categorySelect, this.keyword);
+    },
+    handlePage(page) {
+      window.console.log("[handlePage] " + page);
+      this.loadProduct(this.categorySelect, this.keyword, page);
     }
   }
 }
@@ -255,5 +417,8 @@ export default {
       display: -webkit-box; /* 必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 */
       -webkit-box-orient: vertical; /* 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 */
       -webkit-line-clamp: 2; /* 文本需要显示多少行 */
+}
+.el-select .el-input {
+    width: 130px;
 }
 </style>
