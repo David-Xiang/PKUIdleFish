@@ -18,7 +18,7 @@
       <el-header style="font-size: 40px; color: #820010">北大有鱼，其名为闲。</el-header>
       <el-container>
         <el-main v-loading="isLoading">
-          <el-row :gutter="20" v-infinite-scroll="loadmore">
+          <el-row :gutter="20">
             <el-col :gutter="15" :span="6" v-for="(product, index) in products" :key='index'>
               <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin: 15px">
                 <el-image style="width: 100%; height: 220px" v-bind:src="product.productInfo.imgsrc" fit="cover"/>  
@@ -210,7 +210,7 @@ export default {
       });
     },
     loadmore() {
-      this.products = this.products.concat(Array(20).fill(null).map((_, h)=>mock_products.products[h%3]));
+      this.products = this.products.concat(this.products);
     },
     // 注册登录函数
     submitLoginForm(formName) {
