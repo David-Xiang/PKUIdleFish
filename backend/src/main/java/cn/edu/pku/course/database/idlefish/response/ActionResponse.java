@@ -1,4 +1,4 @@
-package cn.edu.pku.course.database.idlefish.entity;
+package cn.edu.pku.course.database.idlefish.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

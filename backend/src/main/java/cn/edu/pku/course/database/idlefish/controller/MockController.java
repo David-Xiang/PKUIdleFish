@@ -1,26 +1,39 @@
 package cn.edu.pku.course.database.idlefish.controller;
 
-import cn.edu.pku.course.database.idlefish.entity.*;
+import cn.edu.pku.course.database.idlefish.entity.Comment;
+import cn.edu.pku.course.database.idlefish.entity.Product;
+import cn.edu.pku.course.database.idlefish.entity.ProductInfo;
+import cn.edu.pku.course.database.idlefish.entity.User;
+import cn.edu.pku.course.database.idlefish.response.LoginResponse;
+import cn.edu.pku.course.database.idlefish.response.ProductResponse;
+import cn.edu.pku.course.database.idlefish.response.UsersResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
 public class MockController {
     @GetMapping("/mock/login")
     @ResponseBody
-    public ActionResponse login(@RequestParam String username, @RequestParam String password){
-        return new ActionResponse(true);
+    public LoginResponse login(@RequestParam String username, @RequestParam String password){
+        User user = new User(123763456,
+                "向东伟",
+                new Date(97, 4, 15),
+                "M",
+                "xingaondwe@pku.edu.cn",
+                "15000000234",
+                2);
+        return new LoginResponse(true, user);
     }
 
     @GetMapping("/mock/user")
     @ResponseBody
-    public UserResponse getUsers(){
+    public UsersResponse getUsers(){
         User user1 = new User(
                 123763456,
                 "向东伟",
@@ -61,7 +74,7 @@ public class MockController {
                 "xiangmai@pku.edu.cn",
                 "15000000234",
                 3);
-        return new UserResponse(Arrays.asList(user1, user2, user3, user4, user5));
+        return new UsersResponse(Arrays.asList(user1, user2, user3, user4, user5));
     }
 
     @GetMapping("/related")
@@ -89,7 +102,7 @@ public class MockController {
                         1234124,
                         "品牌: 麻霖适用年龄: 30-34周岁材质: 羊绒尺码: S M L图案: 纯色领子: 圆领风格: 通勤通勤: 文艺颜色分类: 杏色 米白面料材质: 羊绒袖型: 常规组合形式: 单件货号: 19WM1596成分含量: 96%及以上年份季节: 2019年秋季袖长: 长袖款式: 套头厚薄: 加厚衣长: 常规服装版型: 宽松",
                         new Date(119, 12, 05),
-                        1
+                        4
                 ),
                 Arrays.asList(
                         new Comment(
@@ -117,7 +130,7 @@ public class MockController {
                         1234124,
                         "证书编号：2019011606187963证书状态：有效产品名称：TD-LTE数字移动电话机3C规格型号：SEA-AL10(开关电源适配器：HW-100400C00，输出：5VDC，2A 或 9VDC，2A...产品名称：HUAWEI nova 5 Pro华为型号: nova 5 Pro机身颜色: 苏音蓝 绮境森林 珊瑚橙 仲夏紫 珊瑚橙·星耀礼盒版 亮黑色运行内存RAM: 8GB存储容量: 8+128GB 8+256GB网络模式: 双卡双待CPU型号: 980",
                         null,
-                        1
+                        3
                 ),
                 Arrays.asList(
                         new Comment(
@@ -145,7 +158,7 @@ public class MockController {
                         1234124,
                         "转手原因：怀孕了，为了宝宝的健康，化妆品都不用了，年头跟我老公去香港买到两支，还有一支是我生日闺蜜送我的，一共三支低价出了！！！全新的！！我去心心鉴定过了，正品，支持你去坚定的，假了包退，可以直接拍下，点我想要联系我！",
                         null,
-                        1
+                        0
                 ),
                 Arrays.asList(
                         new Comment(
