@@ -38,13 +38,13 @@
           <el-row :gutter="20">
             <el-col :gutter="15" :span="6" v-for="(product, index) in products" :key='index'>
               <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin: 15px">
-                <el-image style="width: 100%; height: 220px" v-bind:src="product.productInfo.imgsrc" fit="cover"/>  
-                <div style="margin-left: 10px; margin-right: 10px">
+                <el-image style="width: 100%; height: 220px" v-bind:src="product.productInfo.imgsrc" fit="cover" @click="handleProduct(product)"/>  
+                <div v-on:click="handleProduct(product)" style="margin-left: 10px; margin-right: 10px">
                   <div align="left">
                     <div style="display:inline; color: red; font-size: 14px">¥</div>
                     <div style="display:inline; color: red; font-size: 22px">{{product.productInfo.price.toFixed(2)}}</div>
                   </div>
-                  <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px">{{product.productInfo.title}}</div>
+                  <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px" >{{product.productInfo.title}}</div>
                   <div style="margin: 5px"/>
                   <el-popover
                     placement="top-start"
@@ -130,6 +130,11 @@
         <el-button type="primary" @click="submitLoginForm('registerRuleForm')">注 册</el-button>
       </span>
     </el-dialog>
+
+    <!--详情-->
+    <el-drawer title="商品详情" :visible.sync="selectProductVisible" size="400px">
+      <!--<el-image style="width: 100%; height: 220px" v-bind:src="selectProduct.productInfo.imgsrc" fit="cover"/>  -->
+    </el-drawer>
     
     
     <!--购物车-->
@@ -198,7 +203,6 @@
               @click="$alert(scope.$index)">评价</el-button>
             <el-button
               size="mini"
-              type="danger"
               @click="$alert(scope.$index)">退货</el-button>
           </template>
         </el-table-column>
@@ -206,9 +210,9 @@
     </el-drawer>
 
     <!--宝贝管理-->
-    <el-drawer title="自家宝贝" :visible.sync="ownVisible" size="600px">
+    <el-drawer title="自家宝贝" :visible.sync="ownVisible" size="800px">
       <el-table
-        :data="cartData"
+        :data="ownData"
         style="width: 100%">
         <el-table-column
           label="图片"
@@ -225,15 +229,24 @@
           label="名称"
           prop="productInfo.title"
           width="300px"/>
+        <el-table-column
+          label="金额"
+          prop="productInfo.price"
+          width="100px"/>
+        <el-table-column
+          label="状态"
+          prop="productInfo.statusText"
+          width="100px"/>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">下单</el-button>
+              prop="名字"
+              :disabled="scope.row.productInfo.actionDisable"
+              @click="$alert(scope.$index)">{{scope.row.productInfo.actionText}}</el-button>
             <el-button
               size="mini"
-              type="danger"
-              @click="$alert(scope.$index)">删除</el-button>
+              @click="$alert(scope.$index)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -242,16 +255,19 @@
 </template>
 
 <script>
+import mock_products from './assets/mock_products.js'
+
 export default {
   name: 'app',
   data(){
     return {
       domain: "http://localhost",
-      isLogin: true, // TODO
       isLoading: false,
-      isSeller: false,
+      isLogin: true, // TODO
+      isSeller: true,
       username: "dong", // TODO
       products: [],
+      selectProduct: null, // 商品详情展示 
       cartData: [],
       orderData: [],
       ownData: [],
@@ -261,6 +277,7 @@ export default {
       cartVisible: false,
       orderVisible: false,
       ownVisible: false,
+      selectProductVisible: false,
       keyword:"",
       categorySelect: "",
       loginRuleForm:{
@@ -292,27 +309,26 @@ export default {
     };
   }, 
   created(){
-    this.isLoading = true;
     this.loadProduct(0, "");
   },
   methods: {
-    formUrl(action, params) {
-      let url = this.domain + "/" + action;
-      if (Object.keys(params).length > 0) {
-        let i = 0;
-        for (let key in params) {
-          if (i == 0){
-            url += "?";
-          } else {
-            url += "&";
-          }
-          i++;
-          url += key + "=" + params[key];
-        }
-      }
-      window.console.log("[formUrl] " + url);
-      return url;
-    },
+    // formUrl(action, params) {
+    //   let url = this.domain + "/" + action;
+    //   if (Object.keys(params).length > 0) {
+    //     let i = 0;
+    //     for (let key in params) {
+    //       if (i == 0){
+    //         url += "?";
+    //       } else {
+    //         url += "&";
+    //       }
+    //       i++;
+    //       url += key + "=" + params[key];
+    //     }
+    //   }
+    //   window.console.log("[formUrl] " + url);
+    //   return url;
+    // },
     addCart(title) {
       // TODO
       this.$notify({
@@ -322,6 +338,7 @@ export default {
       });
     },
     loadProduct(category, keyword, page=1) {
+      this.isLoading = true;
       let params = {
         "category": category,
         "page": page-1
@@ -329,42 +346,80 @@ export default {
       if (keyword.length >0) {
         params["keyword"] = keyword;
       }
-      let url = this.formUrl("product", params);
-      this.$axios({
-        method: 'GET',
-        url: url,
-      }).then((res)=>{
-        this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
-        this.isLoading = false;
-      });
+      // let url = this.formUrl("product", params);
+      // this.$axios({
+      //   method: 'GET',
+      //   url: url,
+      // }).then((res)=>{
+      //   this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
+      //   this.isLoading = false;
+      // });
+      this.products = Array(20).fill(null).map((_, h)=>mock_products.products[h%3]);
+      this.isLoading = false;
     },
     loadCart() {
-      let url = this.formUrl("cart", {
-        "username": this.username
-      });
-      this.$axios({
-        method: 'GET',
-        url: url,
-      }).then((res)=>{
-        this.cartData = res.data.products;
-      });
+      // let url = this.formUrl("cart", {
+      //   "username": this.username
+      // });
+      // this.$axios({
+      //   method: 'GET',
+      //   url: url,
+      // }).then((res)=>{
+      //   this.cartData = res.data.products;
+      // });
+      this.cartData = mock_products.products;
     },
     loadRelated(type) {
-      let url = this.formUrl("related", {
-        "username": this.username
-      });
-      this.$axios({
-        method: 'GET',
-        url: url,
-      }).then((res)=>{
-        if (type == 0){
+      // let url = this.formUrl("related", {
+      //   "username": this.username
+      // });
+      // this.$axios({
+      //   method: 'GET',
+      //   url: url,
+      // }).then((res)=>{
+      //   if (type == 0){
+      //     // 订单
+      //     this.orderData = res.data[0].products;
+      //   } else if (type == 1) {
+      //     // 自家宝贝
+      //     this.ownData = res.data[1].products;
+      //     window.console.log("ownData");
+      //     window.console.log(this.ownData);
+      //     for (let p of this.ownData) {
+      //       p.productInfo.statusText = this.getOwnStatus(p);
+      //       p.productInfo.actionText = p.productInfo.status > 0 && p.productInfo.status < 3 ? "下架" : "上架";
+      //       p.productInfo.actionDisable = p.productInfo.status == 4;
+      //     }
+      //   }
+      // });
+      if (type == 0){
           // 订单
-          this.orderData = res.data[0].products;
+          this.orderData = mock_products.products;
         } else if (type == 1) {
           // 自家宝贝
-          this.ownData = res.data[1].products;
+          this.ownData = mock_products.products;
+          window.console.log("ownData");
+          window.console.log(this.ownData);
+          for (let p of this.ownData) {
+            p.productInfo.statusText = this.getOwnStatus(p);
+            p.productInfo.actionText = p.productInfo.status > 0 && p.productInfo.status < 3 ? "下架" : "上架";
+            p.productInfo.actionDisable = p.productInfo.status == 4;
+          }
         }
-      });
+    },
+    getOwnStatus(product){
+      let status = product.productInfo.status;
+      if (status == 0) {
+        return "下架";
+      } else if (status == 1) {
+        return "待售";
+      } else if (status == 2) {
+        return "已售";
+      } else if (status == 3) {
+        return "退货";
+      } else if (status == 4) {
+        return "删除";
+      }
     },
     // 注册登录函数
     submitLoginForm(formName) {
@@ -397,6 +452,11 @@ export default {
     handlePage(page) {
       window.console.log("[handlePage] " + page);
       this.loadProduct(this.categorySelect, this.keyword, page);
+    },
+    handleProduct(product) {
+      this.$alert("clicked");
+      this.selectProduct = product;
+      this.selectProductVisible = true;
     }
   }
 }
