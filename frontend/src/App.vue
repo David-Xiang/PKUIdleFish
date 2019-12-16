@@ -1,10 +1,14 @@
 <template>
   <div id="app">
-    <el-container>
+    <el-container style="overflow: scroll;">
       <el-menu mode="horizontal" default-active="1">
-          <el-menu-item index="0" @click="loginDialogVisible = true">
-            <template slot="title" style="font-size: 40px;"><i class="el-icon-user-solid"></i>登录/注册</template>
-          </el-menu-item>
+          <el-submenu index="0">
+            <template slot="title" style="font-size: 40px;"><i class="el-icon-user-solid"></i>{{isLogin?"欢迎回来，" + userData.name:"登录/注册"}}</template>
+            <el-menu-item index="0-1" @click="loginDialogVisible = true" v-if="!isLogin">登陆</el-menu-item>
+            <el-menu-item index="0-2" @click="registerDialogVisible = true" v-if="!isLogin">注册</el-menu-item>
+            <el-menu-item index="0-3" v-if="isLogin">修改信息</el-menu-item>
+            <el-menu-item index="0-4" @click="isLogin=false; userData=null;" v-if="isLogin">登出</el-menu-item>
+          </el-submenu>
           <el-menu-item index="1">
             <template slot="title"><i class="el-icon-s-home"></i>首页</template>
           </el-menu-item>
@@ -26,11 +30,9 @@
       <el-container>
         <el-main v-loading="isLoading">
           <el-container>
-            <el-input placeholder="请输入关键字" v-model="keyword" clearable @keyup.enter.native="handleSearch" style="margin:20px">
-              <el-select v-model="categorySelect" slot="prepend" placeholder="分类">
-                <el-option label="家用电器" value="1"></el-option>
-                <el-option label="衣装服饰" value="2"></el-option>
-                <el-option label="图书文娱" value="3"></el-option>
+            <el-input placeholder="请输入关键字" v-model="keyword" clearable @keyup.enter.native="handleSearch" style="margin-left:20px; margin-right:20px; margin-bottom:20px;">
+              <el-select v-model="categorySelect" slot="prepend" placeholder="分类" >
+                <el-option v-for="(label, index) in categoryLabel" :label="label" :key="index" :value="index"></el-option>
               </el-select>
               <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
             </el-input> 
@@ -38,20 +40,25 @@
           <el-row :gutter="20">
             <el-col :gutter="15" :span="6" v-for="(product, index) in products" :key='index'>
               <el-card shadow="hover" body-style="padding: 0px" style="height: 350px; margin: 15px">
-                <el-image style="width: 100%; height: 220px" v-bind:src="product.productInfo.imgsrc" fit="cover" @click="handleProduct(product)"/>  
-                <div v-on:click="handleProduct(product)" style="margin-left: 10px; margin-right: 10px">
+                <img style="width: 100%; height: 220px; object-fit: cover;" v-bind:src="product.productInfo.imgsrc" @click="handleProduct(product)"/>  
+                <div style="margin-left: 10px; margin-right: 10px">
                   <div align="left">
                     <div style="display:inline; color: red; font-size: 14px">¥</div>
                     <div style="display:inline; color: red; font-size: 22px">{{product.productInfo.price.toFixed(2)}}</div>
                   </div>
-                  <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px" >{{product.productInfo.title}}</div>
+                  <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px" @click="handleProduct(product)">{{product.productInfo.title}}</div>
                   <div style="margin: 5px"/>
+
+                  <el-button size="medium" style="margin: 5px" @click="handleProduct(product)" icon="el-icon-search" class="hidden-lg-and-down">详情</el-button>
+                  <el-button size="medium" style="margin: 5px" @click="addCart(product.productInfo.title)" icon="el-icon-circle-plus-outline">购物车</el-button>
                   <el-popover
+                    style="margin: 5px"
                     placement="top-start"
                     width="500px"
-                    trigger="hover">
+                    trigger="hover"
+                    class="hidden-sm-and-down">
                     <el-table height="200px" :data="product.comments.slice(0,Math.min(5,product.comments.length))">
-                      <el-table-column width="100" property="buyerName" show-overflow-tooltip label="姓名"></el-table-column>
+                      <el-table-column width="100" property="buyer_name" show-overflow-tooltip label="姓名"></el-table-column>
                       <el-table-column width="70" property="time" label="日期"></el-table-column>
                       <el-table-column width="330" property="content" :show-overflow-tooltip="true" label="评论"></el-table-column>
                     </el-table>
@@ -59,7 +66,6 @@
                       <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
                     </el-badge>
                   </el-popover>
-                  <el-button size="medium" style="margin-left: 5px" @click="addCart(product.productInfo.title)">加购<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
                 </div>
               </el-card>
             </el-col>
@@ -77,7 +83,7 @@
         版权所有©北京大学数据库概论课程 | 地址：北京市海淀区颐和园路5号第二教学楼316 | 邮编：100871 | xdw@pku.edu.cn | 京ICP备05065075号-1 | 京公网安备 110402430047 号
       </el-footer>
     </el-container>
-      
+
       <!--在这里加入了注册登录的弹出窗口。暂时让所有登录都失败，因为不知道怎么存放登录状态-->
     <el-dialog
       title="欢迎使用北大闲鱼"
@@ -132,11 +138,14 @@
     </el-dialog>
 
     <!--详情-->
-    <el-drawer title="商品详情" :visible.sync="selectProductVisible" size="400px">
-      <!--<el-image style="width: 100%; height: 220px" v-bind:src="selectProduct.productInfo.imgsrc" fit="cover"/>  -->
-    </el-drawer>
+    <el-dialog title="商品详情" :visible.sync="selectProductVisible">
+      <detail v-bind:product="selectProduct"/>
+    </el-dialog>
     
-    
+    <!--卖家修改/发布商品-->
+    <el-dialog title="编辑商品" :visible.sync="editVisible">
+    </el-dialog>
+
     <!--购物车-->
     <el-drawer title="购物车" :visible.sync="cartVisible" size="600px">
       <el-table
@@ -144,19 +153,20 @@
         style="width: 100%">
         <el-table-column
           label="图片"
-          prop="productInfo.title"
           width="80px">
           <template slot-scope="scope">
-            <el-image
-              style="width: 70px; height: 70px"
-              :src="scope.row.productInfo.imgsrc"
-              fit="cover"/>
+              <el-card style="width: 70px; height: 70px;" body-style="padding: 0px">
+                <img style="width: 70px; height: 70px; object-fit: cover;" v-bind:src="scope.row.productInfo.imgsrc" @click="handleProduct(product)"/> 
+              </el-card>
           </template>
         </el-table-column>
         <el-table-column
           label="名称"
-          prop="productInfo.title"
-          width="300px"/>
+          width="300px">
+          <template slot-scope="scope">
+            <div @click="handleProduct(scope.row)">{{scope.row.productInfo.title}}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
@@ -179,22 +189,23 @@
         style="width: 100%">
         <el-table-column
           label="图片"
-          prop="productInfo.title"
           width="80px">
           <template slot-scope="scope">
-            <el-image
-              style="width: 70px; height: 70px"
-              :src="scope.row.productInfo.imgsrc"
-              fit="cover"/>
+              <el-card style="width: 70px; height: 70px;" body-style="padding: 0px">
+                <img style="width: 70px; height: 70px; object-fit: cover;" v-bind:src="scope.row.productInfo.imgsrc" @click="handleProduct(product)"/> 
+              </el-card>
           </template>
         </el-table-column>
         <el-table-column
           label="名称"
-          prop="productInfo.title"
-          width="300px"/>
+          width="300px">
+          <template slot-scope="scope">
+            <div @click="handleProduct(scope.row)">{{scope.row.productInfo.title}}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           label="下单日期"
-          prop="productInfo.sellTime"
+          prop="productInfo.update_time"
           width="200px"/>  
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -216,13 +227,11 @@
         style="width: 100%">
         <el-table-column
           label="图片"
-          prop="productInfo.title"
           width="80px">
           <template slot-scope="scope">
-            <el-image
-              style="width: 70px; height: 70px"
-              :src="scope.row.productInfo.imgsrc"
-              fit="cover"/>
+              <el-card style="width: 70px; height: 70px;" body-style="padding: 0px">
+                <img style="width: 70px; height: 70px; object-fit: cover;" v-bind:src="scope.row.productInfo.imgsrc"/> 
+              </el-card>
           </template>
         </el-table-column>
         <el-table-column
@@ -250,36 +259,47 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-row>
+        <el-col :offset="9">
+          <el-button style="margin:15px" align="right" type="primary" icon="el-icon-plus" circle @click="editVisible=true;"></el-button>
+        </el-col>
+      </el-row>
     </el-drawer>
   </div>
 </template>
 
 <script>
 import mock_products from './assets/mock_products.js'
+import mock_user from './assets/mock_login.js'
+import detail from './components/detail.vue'
 
 export default {
   name: 'app',
+  components: {
+    detail
+  },
   data(){
     return {
       domain: "http://localhost",
       isLoading: false,
       isLogin: true, // TODO
       isSeller: true,
-      username: "dong", // TODO
       products: [],
       selectProduct: null, // 商品详情展示 
       cartData: [],
       orderData: [],
       ownData: [],
       commentData: [],
+      userData: null,
       loginDialogVisible: false,
       registerDialogVisible: false,
       cartVisible: false,
       orderVisible: false,
       ownVisible: false,
       selectProductVisible: false,
+      editVisible: false,
       keyword:"",
-      categorySelect: "",
+      categorySelect: 0,
       loginRuleForm:{
         name:'',
         password:'',
@@ -304,12 +324,17 @@ export default {
         email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
         phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
       },
-      testUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1576077318175&di=26d19907bdb7582e0c4f18279bb036aa&imgtype=0&src=http%3A%2F%2Fwww.nyasama.com%2Fbsup%2Fnyaup%2Fattachment%2Fforum%2F201307%2F13%2F133141nvycyyvv11v81vt0.jpg'
+      testUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1576077318175&di=26d19907bdb7582e0c4f18279bb036aa&imgtype=0&src=http%3A%2F%2Fwww.nyasama.com%2Fbsup%2Fnyaup%2Fattachment%2Fforum%2F201307%2F13%2F133141nvycyyvv11v81vt0.jpg',
       //不知道怎么获取图片
+      categoryLabel:[
+        "全部分类", "穿戴服饰", "手机数码", "美容化妆"
+      ]
     };
   }, 
   created(){
     this.loadProduct(0, "");
+    this.userData = mock_user.user;
+    this.isLogin = mock_user.success;
   },
   methods: {
     // formUrl(action, params) {
@@ -387,8 +412,8 @@ export default {
       //     window.console.log(this.ownData);
       //     for (let p of this.ownData) {
       //       p.productInfo.statusText = this.getOwnStatus(p);
-      //       p.productInfo.actionText = p.productInfo.status > 0 && p.productInfo.status < 3 ? "下架" : "上架";
-      //       p.productInfo.actionDisable = p.productInfo.status == 4;
+      //       p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
+      //       p.productInfo.actionDisable = p.productInfo.product_status == 4;
       //     }
       //   }
       // });
@@ -402,13 +427,13 @@ export default {
           window.console.log(this.ownData);
           for (let p of this.ownData) {
             p.productInfo.statusText = this.getOwnStatus(p);
-            p.productInfo.actionText = p.productInfo.status > 0 && p.productInfo.status < 3 ? "下架" : "上架";
-            p.productInfo.actionDisable = p.productInfo.status == 4;
+            p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
+            p.productInfo.actionDisable = p.productInfo.product_status == 4;
           }
         }
     },
     getOwnStatus(product){
-      let status = product.productInfo.status;
+      let status = product.productInfo.product_status;
       if (status == 0) {
         return "下架";
       } else if (status == 1) {
@@ -454,7 +479,6 @@ export default {
       this.loadProduct(this.categorySelect, this.keyword, page);
     },
     handleProduct(product) {
-      this.$alert("clicked");
       this.selectProduct = product;
       this.selectProductVisible = true;
     }

@@ -3,13 +3,13 @@ export default{
         {
             "product_id": 8365793,
             "productInfo": {
-                "category": 0,
+                "category": 1,
                 "title": "麻霖原创女装2019冬新品 内蒙古阿拉善 100%软糯细腻山羊绒衫",
                 "imgsrc": "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=878857037,200431388&fm=26&gp=0.jpg",
                 "price": 1399.0,
                 "seller_name": "1234124",
                 "description": "品牌: 麻霖适用年龄: 30-34周岁材质: 羊绒尺码: S M L图案: 纯色领子: 圆领风格: 通勤通勤: 文艺颜色分类: 杏色 米白面料材质: 羊绒袖型: 常规组合形式: 单件货号: 19WM1596成分含量: 96%及以上年份季节: 2019年秋季袖长: 长袖款式: 套头厚薄: 加厚衣长: 常规服装版型: 宽松",
-                "update_time": null,
+                "update_time": "2019-10-15",
                 "product_status": 1
             },
             "comments": [
@@ -30,7 +30,7 @@ export default{
         {
             "product_id": 8365793,
             "productInfo": {
-                "category": 1,
+                "category": 2,
                 "title": "HUAWEI/华为nova 5 Pro麒麟980新品4800万AI四摄超级快充屏内指纹NFC手机",
                 "imgsrc": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575715338590&di=94dbbaeca0758c01902f028c78d54e41&imgtype=0&src=http%3A%2F%2Fclubimg.club.vmall.com%2Fdata%2Fattachment%2Fforum%2F201907%2F02%2F000729yts29urfnynxzpka.jpeg",
                 "price": 3099.0,
@@ -57,7 +57,7 @@ export default{
         {
             "product_id": 8365793,
             "productInfo": {
-                "category": 1,
+                "category": 3,
                 "title": "阿玛尼唇釉新款口红烂番茄色405 204 400",
                 "imgsrc": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575715673561&di=95e92dae6688eef26b5ff07812efc9d4&imgtype=0&src=http%3A%2F%2Fpic6.58cdn.com.cn%2Fzhuanzh%2Fn_v299d82de24a67488a8d5725ea85b0e1d9.jpg%3Fw%3D750%26h%3D0",
                 "price": 56.0,
