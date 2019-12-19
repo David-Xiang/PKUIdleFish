@@ -41,8 +41,9 @@ CREATE TABLE bargain(
 );
 
 CREATE TABLE transaction(
-    buyer_name INT UNSIGNED,
-    seller_name INT UNSIGNED,
+    transaction_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    buyer_name VARCHAR(32),
+    seller_name VARCHAR(32),
     product_id INT UNSIGNED,
     price DECIMAL(10, 2),
     time DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -82,12 +83,12 @@ CREATE TRIGGER generate_transaction
 AFTER UPDATE ON bargain
 FOR EACH ROW
 BEGIN
-  DECLARE seller_name VARCHAR(32);
-  DECLARE price DECIMAL(10,2);
+  DECLARE transaction_seller_name VARCHAR(32);
+  DECLARE transaction_price DECIMAL(10,2);
   IF old.bargain_status = 'cart' AND new.bargain_status = 'done' THEN
-    SELECT seller_name, price INTO seller_name, price FROM product WHERE product_id = new.product_id;
-    INSERT INTO transaction(buyer_name, seller_name, product_id, price, time) VALUES
-    (buyer_name, seller_name, new.product_id, price);
+    SELECT seller_name, price INTO transaction_seller_name, transaction_price FROM product WHERE product_id = new.product_id;
+    INSERT INTO transaction(buyer_name, seller_name, product_id, price) VALUES
+    (new.buyer_name, transaction_seller_name, new.product_id, transaction_price);
   END IF;
 END$
 
@@ -106,19 +107,19 @@ INSERT INTO account(username, en_password, birth, sex, email, phone, account_sta
 ('user7', myhash('passwd7'), '2000-01-06', 'M', 'user6@pku.edu.cn', '10086000006', 'buyer', '2007-07-07');
 
 INSERT INTO category (category, category_name) VALUES
-('1', 'category1'),
-('2', 'category2');
+(1, 'category1'),
+(2, 'category2');
 INSERT INTO product (category, title, imgsrc, price, seller_name, description, update_time, product_status) VALUES
-('1', 'title1', 'imgsrc1', '11', 'user1', 'description1', '2018-10-01', 'sale'),
-('2', 'title2', 'imgsrc2', '12', 'user3', 'description2', '2018-10-02', 'sold'),
-('1', 'title3', 'imgsrc3', '13', 'user3', 'description3', '2018-10-03', 'sale'),
-('1', 'title4', 'imgsrc4', '14', 'user3', 'description4', '2018-10-04', 'sale'),
-('2', 'title5', 'imgsrc5', '15', 'user1', 'description5', '2018-10-05', 'draft');
+(1, 'title1', 'imgsrc1', 11, 'user1', 'description1', '2018-10-01', 'sale'),
+(2, 'title2', 'imgsrc2', 12, 'user3', 'description2', '2018-10-02', 'sold'),
+(1, 'title3', 'imgsrc3', 13, 'user3', 'description3', '2018-10-03', 'sale'),
+(1, 'title4', 'imgsrc4', 14, 'user3', 'description4', '2018-10-04', 'sale'),
+(2, 'title5', 'imgsrc5', 15, 'user1', 'description5', '2018-10-05', 'draft');
 
 INSERT INTO bargain(product_id, buyer_name, bargain_status) VALUES
-('3', 'user1', 'cart'),
-('2', 'user1', 'cart');
+(3, 'user1', 'cart'),
+(2, 'user1', 'cart');
 
 UPDATE bargain
-SET bargain_status = 'cart'
-WHERE product_id = '3' AND buyer_name = 'user1';
+SET bargain_status = 'done'
+WHERE product_id = 3 AND buyer_name = 'user1';
