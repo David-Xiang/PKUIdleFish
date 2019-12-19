@@ -1,7 +1,3 @@
--- TODO: name的约束：不可以空格开头或结尾，及字数限制
--- TODO: 添加索引
--- 检查上架时间是否超过5年（1800天): SET now = CURDATE(); DATEDIFF(now, ?) < 1800
-
 -- 
 -- Structure
 -- 
@@ -10,72 +6,83 @@ DROP DATABASE IF EXISTS pkuidlefish;
 CREATE DATABASE pkuidlefish;
 USE pkuidlefish;
 
+-- en_password为加密过的密码
 CREATE TABLE account(
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(32) NOT NULL UNIQUE,
-    en_passwd CHAR(128) NOT NULL,
-    birth DATE NOT NULL,
-    sex CHAR(1) NOT NULL,
-    email VARCHAR(32) NOT NULL,
-    phone BIGINT NOT NULL,
-    type ENUM('buyer','forseller','seller','admin','deleted') NOT NULL DEFAULT 'buyer',
-    PRIMARY KEY (id)
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci AUTO_INCREMENT = 1000;
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(32) UNIQUE,
+    en_password CHAR(128),
+    birth DATE,
+    sex ENUM('M', 'F'),
+    email VARCHAR(32),
+    phone CHAR(11),
+    account_status ENUM('buyer','forseller','seller','admin','deleted') DEFAULT 'buyer',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP
+) AUTO_INCREMENT = 1000;
 
 CREATE TABLE category(
-    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(16) NOT NULL,
-    PRIMARY KEY (id)
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+    category TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(16)
+);
 
-CREATE TABLE IF NOT EXISTS product(
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    categoryid TINYINT UNSIGNED NOT NULL,
-    title VARCHAR(128) NOT NULL,
-    imgsrc VARCHAR(256) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    sellerid INT UNSIGNED NOT NULL,
-    description TINYTEXT NOT NULL,
-    saletime DATETIME NOT NULL,
-    status ENUM('draft','sale','sold','returned','deleted') NOT NULL DEFAULT 'draft',
-    PRIMARY KEY (id),
-    CONSTRAINT fk_product_categoryid FOREIGN KEY (categoryid)
-    REFERENCES category(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_product_sellerid FOREIGN KEY (sellerid)
-    REFERENCES account(id) ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+CREATE TABLE product(
+    product_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category TINYINT UNSIGNED,
+    title VARCHAR(128),
+    imgsrc VARCHAR(256),
+    price DECIMAL(10, 2),
+    seller_name VARCHAR(32),
+    description TINYTEXT,
+    product_status ENUM('draft','sale','sold','returned','deleted') DEFAULT 'draft',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE cart(
-    buyerid INT UNSIGNED NOT NULL,
-    productid INT UNSIGNED NOT NULL,
-    CONSTRAINT fk_cart_buyerid FOREIGN KEY (buyerid)
-    REFERENCES account(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_cart_productid FOREIGN KEY (productid)
-    REFERENCES product(id) ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+-- 订单是那些bargain_status为'done'或'canceled'的bargin
+-- 订单号即商品号
+-- update_time表示商品加入购物车的时间或购买时间，不储存退货时间
+CREATE TABLE bargain(
+    buyer_name VARCHAR(32),
+    product_id INT UNSIGNED,
+    bargain_status ENUM('cart', 'done', 'canceled') DEFAULT 'cart',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE comment(
-    buyerid INT UNSIGNED NOT NULL,
-    productid INT UNSIGNED NOT NULL,
-    time DATETIME NOT NULL,
-    content TEXT NOT NULL,
-    CONSTRAINT fk_comment_buyerid FOREIGN KEY (productid)
-    REFERENCES account(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_comment_productid FOREIGN KEY (productid)
-    REFERENCES product(id) ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE = InnoDB COLLATE = utf8mb4_general_ci;
+    buyer_name VARCHAR(32),
+    product_id INT UNSIGNED,
+    content TINYTEXT,
+    time DATE
+);
 
 -- 
 -- Functions
 -- 
 
-CREATE FUNCTION myhash(original VARCHAR(16))
+CREATE FUNCTION myhash(raw VARCHAR(16))
 RETURNS CHAR(128) DETERMINISTIC
-RETURN SHA2(CONCAT('sha2', original, 'pkuidlefish2019'), 512);
+RETURN SHA2(CONCAT('sha2', raw, 'pkuidlefish2019'), 512);
 
 -- 
 -- Data
 -- 
 
-INSERT INTO account(name, en_passwd, birth, sex, email, phone, type)
-VALUES ('abc', myhash('123456'), '20000101', 'M', 'abc@pku.edu.cn', '10086', 'seller');
+INSERT INTO account(username, en_password, birth, sex, email, phone, account_status, update_time) VALUES
+('user1', myhash('passwd1'), '2000-01-01', 'M', 'user1@pku.edu.cn', '10086000001', 'forseller', '2011-11-11'),
+('user2', myhash('passwd2'), '2000-01-02', 'F', 'user2@pku.edu.cn', '10086000002', 'seller', '2010-10-10'),
+('user3', myhash('passwd3'), '2000-01-03', 'M', 'user3@pku.edu.cn', '10086000003', 'forseller', '2009-09-09'),
+('user5', myhash('passwd5'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'seller', '2008-08-08'),
+('user6', myhash('passwd6'), '2000-01-05', 'M', 'user5@pku.edu.cn', '10086000005', 'buyer', '2006-06-06'),
+('user7', myhash('passwd7'), '2000-01-06', 'M', 'user6@pku.edu.cn', '10086000006', 'buyer', '2007-07-07');
+
+INSERT INTO category (category, category_name) VALUES
+('1', 'category1'),
+('2', 'category2');
+INSERT INTO product (category, title, imgsrc, price, seller_name, description, update_time, product_status) VALUES
+('1', 'title1', 'imgsrc1', '11', 'user1', 'description1', '2018-10-01', 'sale'),
+('2', 'title2', 'imgsrc2', '12', 'user3', 'description2', '2018-10-02', 'sold'),
+('1', 'title3', 'imgsrc3', '13', 'user3', 'description3', '2018-10-03', 'sale'),
+('1', 'title4', 'imgsrc4', '14', 'user3', 'description4', '2018-10-04', 'sale'),
+('2', 'title5', 'imgsrc5', '15', 'user1', 'description5', '2018-10-05', 'draft');
+
+INSERT INTO bargain(product_id, buyer_name, update_time, bargain_status) VALUES
+('3', 'user7', '2019-05-05', 'cart'),
+('2', 'user7', '2019-10-01', 'done');
