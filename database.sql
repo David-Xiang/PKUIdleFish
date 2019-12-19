@@ -2,11 +2,9 @@
 -- Structure
 -- 
 
-DROP DATABASE IF EXISTS pkuidlefish;
-CREATE DATABASE pkuidlefish;
+CREATE OR REPLACE DATABASE pkuidlefish;
 USE pkuidlefish;
 
--- en_password为加密过的密码
 CREATE TABLE account(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(32) UNIQUE,
@@ -36,14 +34,18 @@ CREATE TABLE product(
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- 订单是那些bargain_status为'done'或'canceled'的bargin
--- 订单号即商品号
--- update_time表示商品加入购物车的时间或购买时间，不储存退货时间
 CREATE TABLE bargain(
     buyer_name VARCHAR(32),
     product_id INT UNSIGNED,
-    bargain_status ENUM('cart', 'done', 'canceled') DEFAULT 'cart',
-    update_time DATETIME DEFAULT CURRENT_TIMESTAMP
+    bargain_status ENUM('cart', 'done', 'canceled') DEFAULT 'cart'
+);
+
+CREATE TABLE transaction(
+    buyer_name INT UNSIGNED,
+    seller_name INT UNSIGNED,
+    product_id INT UNSIGNED,
+    price DECIMAL(10, 2),
+    time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE comment(
@@ -60,6 +62,36 @@ CREATE TABLE comment(
 CREATE FUNCTION myhash(raw VARCHAR(16))
 RETURNS CHAR(128) DETERMINISTIC
 RETURN SHA2(CONCAT('sha2', raw, 'pkuidlefish2019'), 512);
+
+--
+-- Views
+--
+
+CREATE VIEW spent AS
+SELECT buyer_name, sum(transaction.price) as amount
+FROM transaction INNER JOIN product USING (product_id)
+GROUP BY buyer_name;
+
+--
+-- Triggers
+--
+
+DELIMITER $
+
+CREATE TRIGGER generate_transaction
+AFTER UPDATE ON bargain
+FOR EACH ROW
+BEGIN
+  DECLARE seller_name VARCHAR(32);
+  DECLARE price DECIMAL(10,2);
+  IF old.bargain_status = 'cart' AND new.bargain_status = 'done' THEN
+    SELECT seller_name, price INTO seller_name, price FROM product WHERE product_id = new.product_id;
+    INSERT INTO transaction(buyer_name, seller_name, product_id, price, time) VALUES
+    (buyer_name, seller_name, new.product_id, price);
+  END IF;
+END$
+
+DELIMITER ;
 
 -- 
 -- Data
@@ -83,6 +115,10 @@ INSERT INTO product (category, title, imgsrc, price, seller_name, description, u
 ('1', 'title4', 'imgsrc4', '14', 'user3', 'description4', '2018-10-04', 'sale'),
 ('2', 'title5', 'imgsrc5', '15', 'user1', 'description5', '2018-10-05', 'draft');
 
-INSERT INTO bargain(product_id, buyer_name, update_time, bargain_status) VALUES
-('3', 'user7', '2019-05-05', 'cart'),
-('2', 'user7', '2019-10-01', 'done');
+INSERT INTO bargain(product_id, buyer_name, bargain_status) VALUES
+('3', 'user1', 'cart'),
+('2', 'user1', 'cart');
+
+UPDATE bargain
+SET bargain_status = 'cart'
+WHERE product_id = '3' AND buyer_name = 'user1';
