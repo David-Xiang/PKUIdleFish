@@ -6,7 +6,7 @@
             <template slot="title" style="font-size: 40px;"><i class="el-icon-user-solid"></i>{{isLogin?"欢迎回来，" + userData.name:"登录/注册"}}</template>
             <el-menu-item index="0-1" @click="loginDialogVisible = true" v-if="!isLogin">登陆</el-menu-item>
             <el-menu-item index="0-2" @click="registerDialogVisible = true" v-if="!isLogin">注册</el-menu-item>
-            <el-menu-item index="0-3" v-if="isLogin">修改信息</el-menu-item>
+            <el-menu-item index="0-3" @click="offlineDialogVisible = true" v-if="isLogin">修改信息</el-menu-item>
             <el-menu-item index="0-4" @click="isLogin=false; userData=null;" v-if="isLogin">登出</el-menu-item>
           </el-submenu>
           <el-menu-item index="1">
@@ -293,6 +293,7 @@ export default {
       userData: null,
       loginDialogVisible: false,
       registerDialogVisible: false,
+      offlineDialogVisible: false,
       cartVisible: false,
       orderVisible: false,
       ownVisible: false,
@@ -324,8 +325,6 @@ export default {
         email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
         phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
       },
-      testUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1576077318175&di=26d19907bdb7582e0c4f18279bb036aa&imgtype=0&src=http%3A%2F%2Fwww.nyasama.com%2Fbsup%2Fnyaup%2Fattachment%2Fforum%2F201307%2F13%2F133141nvycyyvv11v81vt0.jpg',
-      //不知道怎么获取图片
       categoryLabel:[
         "全部分类", "穿戴服饰", "手机数码", "美容化妆"
       ]

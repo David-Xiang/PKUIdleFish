@@ -17,6 +17,9 @@
                         <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
                         <el-button size="medium" @click="addCart(product.productInfo.title)" icon="el-icon-circle-plus-outline">购物车</el-button>
                         <el-button size="medium" @click="purchase(product.productInfo.title)">下单<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
+                        <!--管理员下架,值得一提的是detail里找不到app的信息，所以userData是null会显示不出来，而且isLogin=false-->
+                        <el-button type = "warning" size="medium" @click="offlineDialogVisible = true" icon="el-icon-delete" v-if="!isLogin || userData.state==4">下架</el-button>
+
                     </el-button-group>
                 </div>
             </el-col>
@@ -40,6 +43,26 @@
                 </el-table>
             </el-collapse-item>
         </el-collapse>
+<!--管理员下架-->
+        <el-dialog
+        title="即将永久下架商品"
+        :visible.sync="offlineDialogVisible"
+        width="500px"
+        center>
+        <div>将以管理员身份永久下架商品，该操作不可逆</div>
+        <div align="left">
+                        <div style="font-color: #F56C6C; font-size: 14px; display:inline-block;margin-bottom:10px;" >{{product.productInfo.title}}</div>
+                        <div style="margin-bottom:10px;">
+                            <div style="display:inline; color: red; font-size: 14px">¥</div>
+                            <div style="display:inline; color: red; font-size: 22px">{{product.productInfo.price.toFixed(2)}}</div>
+                        </div>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="offlineDialogVisible = false">取 消</el-button>
+            <el-button type="danger" @click="offlineDialogVisible = false">确定下架</el-button>
+        </span>
+        </el-dialog>
+
     </el-container>
 </template>
 <script>
