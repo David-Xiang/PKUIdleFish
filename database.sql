@@ -31,13 +31,14 @@ CREATE TABLE product(
     seller_name VARCHAR(32),
     description TINYTEXT,
     product_status ENUM('draft','sale','sold','returned','deleted') DEFAULT 'draft',
-    update_time DATETIME DEFAULT CURRENT_TIMESTAMP
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    hot INT UNSIGNED DEFAULT 0
 );
 
 CREATE TABLE bargain(
     buyer_name VARCHAR(32),
     product_id INT UNSIGNED,
-    bargain_status ENUM('cart', 'done', 'canceled') DEFAULT 'cart'
+    bargain_status ENUM('cart', 'done') DEFAULT 'cart'
 );
 
 CREATE TABLE transaction(
@@ -79,17 +80,32 @@ GROUP BY buyer_name;
 
 DELIMITER $
 
-CREATE TRIGGER generate_transaction
+CREATE TRIGGER cart_trigger
+AFTER INSERT ON bargain
+FOR EACH ROW
+BEGIN
+  UPDATE product SET hot = hot + 1 WHERE product_id = new.product_id;
+END$
+
+CREATE TRIGGER buy_trigger
 AFTER UPDATE ON bargain
 FOR EACH ROW
 BEGIN
   DECLARE transaction_seller_name VARCHAR(32);
   DECLARE transaction_price DECIMAL(10,2);
-  IF old.bargain_status = 'cart' AND new.bargain_status = 'done' THEN
+  IF new.bargain_status = 'done' THEN
+    UPDATE product SET product_status = 'sold' WHERE product_id = new.product_id;
     SELECT seller_name, price INTO transaction_seller_name, transaction_price FROM product WHERE product_id = new.product_id;
     INSERT INTO transaction(buyer_name, seller_name, product_id, price) VALUES
     (new.buyer_name, transaction_seller_name, new.product_id, transaction_price);
   END IF;
+END$
+
+CREATE TRIGGER return_trigger
+AFTER DELETE ON bargain
+FOR EACH ROW
+BEGIN
+  UPDATE product SET product_status = 'returned', hot = hot - 1 WHERE product_id = new.product_id;
 END$
 
 DELIMITER ;
