@@ -1,11 +1,15 @@
 package cn.edu.pku.course.database.idlefish.modules;
 
+import cn.edu.pku.course.database.idlefish.response.ActionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+<<<<<<< HEAD
 import cn.edu.pku.course.database.idlefish.response.ActionResponse;
 
+=======
+>>>>>>> 1ed4b2b1f7b53af852054669ea975fcdcb467b4d
 @Repository
 public class SellerMod {
 
