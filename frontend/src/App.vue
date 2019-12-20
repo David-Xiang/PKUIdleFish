@@ -6,7 +6,7 @@
             <template slot="title" style="font-size: 40px;"><i class="el-icon-user-solid"></i>{{isLogin?"欢迎回来，" + userData.name:"登录/注册"}}</template>
             <el-menu-item index="0-1" @click="loginDialogVisible = true" v-if="!isLogin">登陆</el-menu-item>
             <el-menu-item index="0-2" @click="registerDialogVisible = true" v-if="!isLogin">注册</el-menu-item>
-            <el-menu-item index="0-3" @click="offlineDialogVisible = true" v-if="isLogin">修改信息</el-menu-item>
+            <el-menu-item index="0-3" @click="loadUserData();changeUserDataDialogVisible = true" v-if="isLogin">修改信息</el-menu-item>
             <el-menu-item index="0-4" @click="isLogin=false; userData=null;" v-if="isLogin">登出</el-menu-item>
           </el-submenu>
           <el-menu-item index="1">
@@ -137,7 +137,41 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitLoginForm('registerRuleForm')">注 册</el-button>
+        <el-button type="primary" @click="submitRegisterForm('registerRuleForm')">注 册</el-button>
+      </span>
+    </el-dialog>
+
+    <!--修改个人信息-->
+    <el-dialog
+        title="修改个人信息"
+        :visible.sync="changeUserDataDialogVisible"
+        width="500px"
+        center>
+      <el-form  :rules="changeUserDataRules" ref="changeUserDataRuleForm" :model="changeUserDataRuleForm" label-width="100px">
+        <el-form-item label="用户名" prop="name">
+          <el-input  placeholder="起个什么名字好呢" v-model = "changeUserDataRuleForm.name" size="small"></el-input>
+        </el-form-item>
+          <el-form-item label="密码" prop="password">
+          <el-input placeholder="密码要好好想想" v-model = "changeUserDataRuleForm.password" size="small" show-password></el-input>
+        </el-form-item>
+          <el-form-item label="出生日期" prop="birthday">
+          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "changeUserDataRuleForm.birthday" style="width: 100%;"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model= "changeUserDataRuleForm.sex">
+            <el-radio label="女"></el-radio>
+            <el-radio label="男"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input placeholder="电子邮箱会梦见真实邮箱吗" v-model = "changeUserDataRuleForm.email" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="phone">
+          <el-input placeholder="怎么样才能联系到你呢" v-model = "changeUserDataRuleForm.phone" size="small"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitRegisterForm('changeUserDataForm')">注 册</el-button>
       </span>
     </el-dialog>
 
@@ -332,6 +366,7 @@ export default {
       userData: null,
       loginDialogVisible: false,
       registerDialogVisible: false,
+      changeUserDataDialogVisible: false,
       offlineDialogVisible: false,
       cartVisible: false,
       orderVisible: false,
@@ -357,7 +392,23 @@ export default {
         email:"",
         phone:"",
       },
+      changeUserDataRuleForm:{
+        name:'',
+        password:'',
+        birthday:'',
+        sex:"",
+        email:'',
+        phone:'',
+      },
       registerRules:{
+        name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
+        password:[{required:true,message:'密码不能为空', trigger:'blur'}],
+        birthday:[{type:'date',required: true, message:'请选择出生日期', trigger:'change'}],
+        sex:[{required:true,message:'请选择性别', trigger:'change'}],
+        email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
+        phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
+      },
+      changeUserDataRules:{
         name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
         password:[{required:true,message:'密码不能为空', trigger:'blur'}],
         birthday:[{type:'date',required: true, message:'请选择出生日期', trigger:'change'}],
@@ -589,6 +640,16 @@ export default {
           });
       // TODO XDW stops here
     },
+    loadUserData()//加载当前用户信息，用于修改信息
+    {
+        this.changeUserDataRuleForm.name=this.userData.name;
+        this.changeUserDataRuleForm.birthday=this.userData.birthday;
+        this.changeUserDataRuleForm.phone=this.userData.phone;
+        this.changeUserDataRuleForm.email=this.userData.email;
+        window.console.log(this.changeUserDataRuleForm);
+
+
+    },
     //加载所有用户数据
         loadAllUserData() {
       // let url = this.formUrl("admin/user", {
@@ -640,7 +701,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           //TODO:成功注册需要做什么？
-          this.registerDialogVisible = false;
+          if(!this.isLogin)
+            this.registerDialogVisible = false;
+            this.changeUserDataDialogVisible = false;
         } else {
           return false;
         }
