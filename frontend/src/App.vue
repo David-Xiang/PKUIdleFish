@@ -283,15 +283,35 @@
         <el-table-column
           label="出生日期"
           prop="birthday"
+          width="100px"/> 
+        <el-table-column
+          label="性别"
+          prop="sex"
+          width="50px"/>  
+        <el-table-column
+          label="电子邮箱"
+          prop="email"
+          width="200px"/>  
+        <el-table-column
+          label="电话"
+          prop="phone"
+          width="150px"/>  
+        <el-table-column
+          label="用户身份"
+          prop="statusText"
           width="100px"/>  
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">评价</el-button>
+              prop="名字"
+              type="primary"
+              :disabled="scope.row.status != 4"
+              @click="$alert(scope.$index)">通过</el-button>
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">退货</el-button>
+              :disabled="scope.row.status != 4"
+              @click="$alert(scope.$index)">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -336,6 +356,7 @@ export default {
       editVisible: false,
       keyword:"",
       categorySelect: 0,
+      soldSelectAdmin: 1,//默认只看已售商品
       loginRuleForm:{
         name:'',
         password:'',
@@ -366,9 +387,14 @@ export default {
     };
   }, 
   created(){
-    this.loadProduct(0, "");
     this.userData = mock_user.user;
     this.isLogin = mock_user.success;
+    //如果是管理员则显示不同界面
+    if(this.userData.status != 2)
+      this.loadProduct(0, "");
+    else
+      this.loadProductAdmin(1);
+
   },
   methods: {
     // formUrl(action, params) {
@@ -406,6 +432,28 @@ export default {
         params["keyword"] = keyword;
       }
       // let url = this.formUrl("product", params);
+      // this.$axios({
+      //   method: 'GET',
+      //   url: url,
+      // }).then((res)=>{
+      //   this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
+      //   this.isLoading = false;
+      // });
+      this.products = Array(20).fill(null).map((_, h)=>mock_products.products[h%3]);
+      this.isLoading = false;
+    },
+      loadProductAdmin(sold, page=1) {//管理员查看所有订单
+      this.isLoading = true;
+      let params = {
+        "sold": sold,
+        "page": page-1
+      };
+      if(sold > 5000)//写上这句话，不然报params未使用
+      {
+          params["0"] = sold;
+
+      }
+      // let url = this.formUrl("admin/product", params);
       // this.$axios({
       //   method: 'GET',
       //   url: url,
@@ -482,11 +530,12 @@ export default {
           this.allUserData = mock_allUser.user;
           window.console.log("allUserData");
           window.console.log(this.allUserData);
-          // for (let p of this.ownData) {
-          //   p.productInfo.statusText = this.getOwnStatus(p);
+           for (let p of this.allUserData) 
+           {
+             p.statusText = this.getUserStatus(p.status);
           //   p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
           //   p.productInfo.actionDisable = p.productInfo.product_status == 4;
-          // }
+           }
     },
     getOwnStatus(product){
       let status = product.productInfo.product_status;
@@ -502,6 +551,20 @@ export default {
         return "删除";
       }
     },
+    getUserStatus(statusNumber)
+    {
+        if(statusNumber == 0)
+        return "买家";
+        if(statusNumber == 1)
+        return "卖家";
+        if(statusNumber == 2)
+        return "管理员";
+        if(statusNumber == 3)
+        return "黑户";
+        if(statusNumber == 4)
+        return "申请卖家";
+        return "NULL"
+},
     // 注册登录函数
     submitLoginForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -532,7 +595,11 @@ export default {
     },
     handlePage(page) {
       window.console.log("[handlePage] " + page);
+      if(this.userData.status != 2)//添加了对管理员的判断
       this.loadProduct(this.categorySelect, this.keyword, page);
+      else
+      this.loadProductAdmin(this.soldSelectAdmin, page);
+
     },
     handleProduct(product) {
       this.selectProduct = product;
