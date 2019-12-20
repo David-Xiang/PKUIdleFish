@@ -54,7 +54,7 @@
                   <div style="margin: 5px"/>
 
                   <el-button size="medium" style="margin: 5px" @click="handleProduct(product)" icon="el-icon-search" class="hidden-lg-and-down">详情</el-button>
-                  <el-button size="medium" style="margin: 5px" @click="addCart(product.productInfo.title)" icon="el-icon-circle-plus-outline">购物车</el-button>
+                  <el-button size="medium" style="margin: 5px" @click="addCart(product)" icon="el-icon-circle-plus-outline">购物车</el-button>
                   <el-popover
                     style="margin: 5px"
                     placement="top-start"
@@ -143,7 +143,10 @@
 
     <!--详情-->
     <el-dialog title="商品详情" :visible.sync="selectProductVisible">
-      <detail v-bind:product="selectProduct"/>
+      <detail 
+        v-bind:product="selectProduct"
+        v-on:addCart="addCart"
+      />
     </el-dialog>
     
     <!--卖家修改/发布商品-->
@@ -175,11 +178,11 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">下单</el-button>
+              @click="$alert(scope.row)">下单</el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="$alert(scope.$index)">删除</el-button>
+              @click="deleteCart(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -315,8 +318,10 @@ export default {
     return {
       domain: "http://localhost",
       isLoading: false,
-      isLogin: true, // TODO
+      isLogin: true, // 登出置false
       isSeller: true,
+      isCartLoad: false, // 登出置false
+      isOwnLoad: false, // 登出置false
       products: [],
       selectProduct: null, // 商品详情展示 
       cartData: [],
@@ -388,14 +393,6 @@ export default {
     //   window.console.log("[formUrl] " + url);
     //   return url;
     // },
-    addCart(title) {
-      // TODO
-      this.$notify({
-        title: '成功',
-        message: title + " 已成功放入购物车，快去看看吧～",
-        type: 'success'
-      });
-    },
     loadProduct(category, keyword, page=1) {
       this.isLoading = true;
       let params = {
@@ -416,17 +413,65 @@ export default {
       this.products = Array(20).fill(null).map((_, h)=>mock_products.products[h%3]);
       this.isLoading = false;
     },
-    loadCart() {
+    loadProductAdmin(sold, page=1) {//管理员查看所有订单
+      this.isLoading = true;
+      let params = {
+        "sold": sold,
+        "page": page-1
+      };
+      if(sold > 5000)//写上这句话，不然报params未使用
+      {
+          params["0"] = sold;
+
+      }
+      // let url = this.formUrl("admin/product", params);
+      // this.$axios({
+      //   method: 'GET',
+      //   url: url,
+      // }).then((res)=>{
+      //   this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
+      //   this.isLoading = false;
+      // });
+      this.products = Array(20).fill(null).map((_, h)=>mock_products.products[h%3]);
+      this.isLoading = false;
+    },
+    loadCart(res=null) {
+      if (this.isCartLoad){
+        return;
+      }
       // let url = this.formUrl("cart", {
       //   "username": this.username
       // });
       // this.$axios({
       //   method: 'GET',
       //   url: url,
-      // }).then((res)=>{
-      //   this.cartData = res.data.products;
+      // }).then((resp)=>{
+      //   this.cartData = resp.data.products;
+      //   this.isCartLoad = true;
+      //   if (res != null) {
+      //     res();
+      //   }
       // });
       this.cartData = mock_products.products;
+      this.isCartLoad = true;
+      if (res != null) {
+        res();
+      }
+    },
+    loadBought() {
+      // let url = this.formUrl("bought", {
+      //   "username": this.username
+      // });
+      // this.$axios({
+      //   method: 'GET',
+      //   url: url,
+      // }).then((res)=>{
+      //   this.orderData = res.data.products;
+      // });
+      this.orderData = mock_products.products;
+    },
+    loadOwn() {
+      // TODO
     },
     loadRelated(type) {
       // let url = this.formUrl("related", {
@@ -465,6 +510,84 @@ export default {
             p.productInfo.actionDisable = p.productInfo.product_status == 4;
           }
         }
+    },
+    // 动作类函数
+    addCart(product){
+      this.loadCart(() => {
+        // let url = this.formUrl("addcart", {
+        //   "username": this.username,
+        //   "product_id": product.product_id
+        // });
+        // this.$axios({
+        //   method: 'POST',
+        //   url: url,
+        // }).then((res)=>{
+        //   if (res.data.success == true) {
+        //     this.cartData.push(product);
+        //     this.$notify.info({
+        //       title: '成功',
+        //       message: product.productInfo.title + " 已成功放入购物车，快去看看吧～"
+        //     });
+        //   } else {
+        //     this.$notify.error({
+        //       title: '失败',
+        //       message: product.productInfo.title + " 没能成功放入购物车，这是为什么呢？"
+        //     });
+        //   }
+        // });
+        // TODO delete
+        this.cartData.push(product);
+        this.$notify.info({
+          title: '成功',
+          message: product.productInfo.title + " 已成功放入购物车，快去看看吧～"
+        });
+      });
+    },
+    deleteCart(product) {
+      // let url = this.formUrl("deletecart", {
+      //   "username": this.username,
+      //   "product_id": product.product_id
+      // });
+      // this.$axios({
+      //   method: 'POST',
+      //   url: url,
+      // }).then((res)=>{
+      //   if (res.data.success == true) {
+      //     for(let i = 0; i <  this.cartData.length; i++) {
+      //       if (this.cartData[i].product_id == product.product_id) {
+      //         this.cartData.splice(i, 1);
+      //         continue;
+      //       }
+      //     }
+      //     this.$notify.info({
+      //       title: '成功',
+      //       message: product.productInfo.title + " 已成功从购物车删除"
+      //     });
+      //   } else {
+      //     this.$notify.error({
+      //       title: '失败',
+      //       message: product.productInfo.title + " 没能成功放入购物车，这是为什么呢？"
+      //     });
+      //   }
+      // });
+      // TODO delete
+      for(let i = 0; i <  this.cartData.length; i++) {
+        if (this.cartData[i].product_id == product.product_id) {
+          this.cartData.splice(i, 1);
+          break;
+        }
+      }
+      this.$notify.info({
+        title: '成功',
+        message: product.productInfo.title + " 已成功从购物车删除"
+      });
+    },
+    buy(product){
+      this.$notify.error({
+            title: '未完工',
+            message: product.productInfo.title + " 没能成功放入购物车，这是为什么呢？"
+          });
+      // TODO XDW stops here
     },
     //加载所有用户数据
         loadAllUserData() {

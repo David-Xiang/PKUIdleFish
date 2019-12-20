@@ -15,8 +15,8 @@
                     </div>
                     <el-button-group>
                         <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
-                        <el-button size="medium" @click="addCart(product.productInfo.title)" icon="el-icon-circle-plus-outline">购物车</el-button>
-                        <el-button size="medium" @click="purchase(product.productInfo.title)">下单<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
+                        <el-button size="medium" @click="$emit('addCart', product)" icon="el-icon-circle-plus-outline">购物车</el-button>
+                        <el-button size="medium" @click="purchase(product)">下单<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
                         <!--管理员下架,值得一提的是detail里找不到app的信息，所以userData是null会显示不出来，而且isLogin=false-->
                         <el-button type = "warning" size="medium" @click="offlineDialogVisible = true" icon="el-icon-delete" v-if="isLogin && userData.status==2">下架</el-button>
 
