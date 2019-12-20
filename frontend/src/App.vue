@@ -24,6 +24,10 @@
           <el-menu-item index="5">
             <template slot="title"><i class="el-icon-s-data"></i>分析</template>
           </el-menu-item>
+          <el-menu-item index="6" v-if="isLogin && userData.status == 2" @click="allUserVisible = true; loadAllUserData();">
+            <template slot="title"><i class="el-icon-s-check"></i>管理用户</template>
+          </el-menu-item>
+
         </el-menu>
       <el-header style="font-size: 40px; color: #820010; margin-top:20px">北大有鱼，其名为闲。</el-header>
 
@@ -265,6 +269,34 @@
         </el-col>
       </el-row>
     </el-drawer>
+
+    <!--用户管理-->
+    <el-drawer title="所有用户" :visible.sync="allUserVisible" size="900px">
+      <el-table
+        :data="allUserData"
+        style="width: 100%">
+        <el-table-column
+          label="用户名"
+          prop="name"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          label="出生日期"
+          prop="birthday"
+          width="100px"/>  
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="$alert(scope.$index)">评价</el-button>
+            <el-button
+              size="mini"
+              @click="$alert(scope.$index)">退货</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-drawer>
+
   </div>
 </template>
 
@@ -272,6 +304,7 @@
 import mock_products from './assets/mock_products.js'
 import mock_user from './assets/mock_login.js'
 import detail from './components/detail.vue'
+import mock_allUser from './assets/mock_allUser.js'
 
 export default {
   name: 'app',
@@ -290,6 +323,7 @@ export default {
       orderData: [],
       ownData: [],
       commentData: [],
+      allUserData: [],//所有用户信息
       userData: null,
       loginDialogVisible: false,
       registerDialogVisible: false,
@@ -297,6 +331,7 @@ export default {
       cartVisible: false,
       orderVisible: false,
       ownVisible: false,
+      allUserVisible: false,
       selectProductVisible: false,
       editVisible: false,
       keyword:"",
@@ -430,6 +465,28 @@ export default {
             p.productInfo.actionDisable = p.productInfo.product_status == 4;
           }
         }
+    },
+    //加载所有用户数据
+        loadAllUserData() {
+      // let url = this.formUrl("admin/user", {
+      // });
+      // this.$axios({
+      //   method: 'GET',
+      //   url: url,
+      // }).then((res)=>{
+      //     this.allUserData = res.allUserData.user;
+      //     window.console.log("allUserData");
+      //     window.console.log(this.allUserData);
+      //   }
+      // });
+          this.allUserData = mock_allUser.user;
+          window.console.log("allUserData");
+          window.console.log(this.allUserData);
+          // for (let p of this.ownData) {
+          //   p.productInfo.statusText = this.getOwnStatus(p);
+          //   p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
+          //   p.productInfo.actionDisable = p.productInfo.product_status == 4;
+          // }
     },
     getOwnStatus(product){
       let status = product.productInfo.product_status;
