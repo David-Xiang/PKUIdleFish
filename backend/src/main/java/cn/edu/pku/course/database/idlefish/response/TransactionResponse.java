@@ -2,14 +2,14 @@ package cn.edu.pku.course.database.idlefish.response;
 
 import java.util.List;
 
-import cn.edu.pku.course.database.idlefish.entity.Product;
+import cn.edu.pku.course.database.idlefish.entity.Transaction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class ProductResponse {
+public class TransactionResponse {
 
-	public List<Product> products;
+	public List<Transaction> transaction;
 
 }

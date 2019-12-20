@@ -94,18 +94,20 @@ BEGIN
   DECLARE transaction_seller_name VARCHAR(32);
   DECLARE transaction_price DECIMAL(10,2);
   IF new.bargain_status = 'done' THEN
-    UPDATE product SET product_status = 'sold' WHERE product_id = new.product_id;
+    UPDATE product SET product_status = 'sold', hot = hot - 1 WHERE product_id = new.product_id;
     SELECT seller_name, price INTO transaction_seller_name, transaction_price FROM product WHERE product_id = new.product_id;
     INSERT INTO transaction(buyer_name, seller_name, product_id, price) VALUES
     (new.buyer_name, transaction_seller_name, new.product_id, transaction_price);
   END IF;
 END$
 
-CREATE TRIGGER return_trigger
+CREATE TRIGGER delete_trigger
 AFTER DELETE ON bargain
 FOR EACH ROW
 BEGIN
-  UPDATE product SET product_status = 'returned', hot = hot - 1 WHERE product_id = new.product_id;
+  IF old.bargain_status = 'done' THEN
+    UPDATE product SET product_status = 'returned' WHERE product_id = old.product_id;
+  END IF;
 END$
 
 DELIMITER ;
