@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 public class LoginResponse {
 
-	Boolean success;
-	User user;
+	public boolean success;
+	public User user;
 }

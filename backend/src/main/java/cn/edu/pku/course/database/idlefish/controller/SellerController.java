@@ -26,18 +26,19 @@ public class SellerController {
 
 	@PostMapping("manage")
 	public ActionResponse manage(@RequestParam Map<String, String> form) {
-		return sellerMod.PutOnOrModify(form.get("prodcut_id"), form.get("username"), form.get("title"),
-				form.get("category"), form.get("price"), form.get("description"), form.get("imgsrc"));
+		return sellerMod.PutOnOrModify(Integer.parseInt(form.get("prodcut_id")), form.get("username"),
+				form.get("title"), form.get("category"), form.get("price"), form.get("description"),
+				form.get("imgsrc"));
 	}
 
 	@PostMapping("visible")
 	public ActionResponse visible(@RequestParam int product_id) {
-		return productBasic.changeStatus(product_id, "sale");
+		return productBasic.changeStatus(product_id, "%r%", "sale");
 	}
 
 	@PostMapping("invisible")
 	public ActionResponse invisible(@RequestParam int product_id) {
-		return productBasic.changeStatus(product_id, "draft");
+		return productBasic.changeStatus(product_id, "sale", "draft");
 	}
 
 }

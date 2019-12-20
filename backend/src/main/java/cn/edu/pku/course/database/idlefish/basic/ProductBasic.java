@@ -1,5 +1,7 @@
 package cn.edu.pku.course.database.idlefish.basic;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,30 +31,30 @@ public class ProductBasic {
 	public ProductResponse fetch(String category, String titleKeyword, String buyer_name, String seller_name,
 			String product_status, String bargain_status, boolean timeLimit, String order, int pageNum,
 			int itemPerPage) {
-		String sql;
-		String selectFrom = "SELECT product.*, category.category_name FROM product INNER JOIN category USING (category) LEFT JOIN bargain USING (product_id)";
-		String where = "WHERE category LIKE ? AND title LIKE ? AND buyer_name LIKE ? AND seller_name LIKE ? AND product_status LIKE ? AND bargain_status LIKE ?";
+		String selectFrom = "SELECT product.*, category_name FROM product INNER JOIN category USING (category) LEFT JOIN bargain USING (product_id)";
+		String where = "WHERE category LIKE ? AND title LIKE ? AND IFNULL(buyer_name, '') LIKE ? AND seller_name LIKE ? AND product_status LIKE ? AND IFNULL(bargain_status, '') LIKE ?";
 		if (timeLimit) {
 			where += " AND DATEDIFF(NOW(), product.update_time) < 1800";
 		}
-		String group = "GROUP BY product_id";
+		String group = (buyer_name == "%") ? "GROUP BY product_id" : "";
 		String limit = (pageNum > 0) ? "LIMIT " + (pageNum - 1) * itemPerPage + ", " + itemPerPage : "";
-		sql = selectFrom + " " + where + " " + group + " " + order + " " + limit;
+		String sql = selectFrom + " " + where + " " + group + " " + order + " " + limit;
 		try {
-			return jdbcTemplate.queryForObject(sql, productResponseRowMapper, category, titleKeyword, seller_name,
-					product_status);
+			return jdbcTemplate.queryForObject(sql, productResponseRowMapper, category, titleKeyword, buyer_name,
+					seller_name, product_status, bargain_status);
 		} catch (EmptyResultDataAccessException e) {
-			return new ProductResponse(null);
+			return new ProductResponse(Collections.emptyList());
 		}
 	}
 
 	/**
-	 * change product_status according to product_id <br>
+	 * change product_status according to product_id and new_status <br>
+	 * product_status must be like old_status <br>
+	 * when old_status == '%', it doesn't matter <br>
 	 */
-	public ActionResponse changeStatus(int product_id, String product_status) {
-		String sql;
-		sql = "UPDATE product SET product_status = ?, update_time = NOW() WHERE product_id = ?";
-		return new ActionResponse(jdbcTemplate.update(sql, product_id, product_status) > 0);
+	public ActionResponse changeStatus(int product_id, String old_status, String new_status) {
+		String sql = "UPDATE product SET product_status = ? WHERE product_id = ? AND product_status LIKE ?";
+		return new ActionResponse(jdbcTemplate.update(sql, new_status, product_id, old_status) > 0);
 	}
 
 }

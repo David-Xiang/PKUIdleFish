@@ -22,16 +22,16 @@ public class LoginService {
 	 * if success, also return user information <br>
 	 */
 	public LoginResponse login(String username, String password) {
-		String sql, input_password, real_password;
+		String sql, input_password_hash, real_password_hash;
 		sql = "SELECT myhash(?)";
-		input_password = jdbcTemplate.queryForObject(sql, String.class, password);
+		input_password_hash = jdbcTemplate.queryForObject(sql, String.class, password);
 		sql = "SELECT en_password FROM account WHERE username = ? AND account_status <> 'deleted'";
 		try {
-			real_password = jdbcTemplate.queryForObject(sql, String.class, username);
+			real_password_hash = jdbcTemplate.queryForObject(sql, String.class, username);
 		} catch (EmptyResultDataAccessException e) {
 			return new LoginResponse(false, null);
 		}
-		if (input_password.contentEquals(real_password)) {
+		if (input_password_hash.contentEquals(real_password_hash)) {
 			return new LoginResponse(true, userBasic.get(username));
 		} else {
 			return new LoginResponse(false, null);
@@ -39,7 +39,7 @@ public class LoginService {
 	}
 
 	/**
-	 * register an account or modify user information <br>
+	 * register an new account or modify user information <br>
 	 * when type = 'register', it means to register, otherwise to modify <br>
 	 * username cannot duplicate <br>
 	 */

@@ -34,7 +34,7 @@ public class AdminController {
 
 	@GetMapping("user")
 	public UserResponse user() {
-		return userBasic.fetch("%", " ORDER BY account_status, update_time DESC", 0, 20);
+		return userBasic.fetch("%", " ORDER BY account_status DESC, update_time DESC", 0, 20);
 	}
 
 	@GetMapping("product")
@@ -45,17 +45,17 @@ public class AdminController {
 
 	@PostMapping("seller")
 	public ActionResponse seller(@RequestParam String username) {
-		return userBasic.changeStatus(username, "seller");
+		return userBasic.changeStatus(username, "forseller", "seller");
 	}
 
 	@PostMapping("offline/product")
-	public ActionResponse offlineProduct(@RequestParam int productid) {
-		return productBasic.changeStatus(productid, "deleted");
+	public ActionResponse offlineProduct(@RequestParam int product_id) {
+		return productBasic.changeStatus(product_id, "%", "deleted");
 	}
 
 	@PostMapping("offline/user")
 	public ActionResponse offlineUser(@RequestParam String username) {
-		return userBasic.changeStatus(username, "deleted");
+		return userBasic.changeStatus(username, "%e%", "deleted");
 	}
 
 }

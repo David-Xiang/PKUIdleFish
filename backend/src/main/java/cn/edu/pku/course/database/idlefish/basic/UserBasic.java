@@ -1,5 +1,7 @@
 package cn.edu.pku.course.database.idlefish.basic;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,7 +32,7 @@ public class UserBasic {
 		try {
 			return jdbcTemplate.queryForObject(sql, userRowMapper, username);
 		} catch (EmptyResultDataAccessException e) {
-			return null;
+			throw e;
 		}
 	}
 
@@ -47,17 +49,19 @@ public class UserBasic {
 		try {
 			return jdbcTemplate.queryForObject(sql, userResponseRowMapper, account_status);
 		} catch (EmptyResultDataAccessException e) {
-			return new UserResponse(null);
+			return new UserResponse(Collections.emptyList());
 		}
 	}
 
 	/**
-	 * change account_status according to username <br>
+	 * change account_status according to username and new_status <br>
+	 * account_status must be like old_status <br>
+	 * when old_status == '%', it doesn't matter <br>
 	 */
-	public ActionResponse changeStatus(String username, String account_status) {
+	public ActionResponse changeStatus(String username, String old_status, String new_status) {
 		String sql;
-		sql = "UPDATE account SET account_status = ?, update_time = NOW() WHERE username = ?";
-		return new ActionResponse(jdbcTemplate.update(sql, account_status, username) > 0);
+		sql = "UPDATE account SET account_status = ? WHERE username = ? AND account_status LIKE ?";
+		return new ActionResponse(jdbcTemplate.update(sql, new_status, username, old_status) > 0);
 	}
 
 }

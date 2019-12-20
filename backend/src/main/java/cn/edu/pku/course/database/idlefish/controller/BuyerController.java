@@ -18,13 +18,13 @@ import cn.edu.pku.course.database.idlefish.response.ProductResponse;
 public class BuyerController {
 
 	@Autowired
-	BuyerMod buyerMod;
+	ProductBasic productBasic;
 
 	@Autowired
 	UserBasic userBasic;
 
 	@Autowired
-	ProductBasic productBasic;
+	BuyerMod buyerMod;
 
 	@GetMapping("cart")
 	public ProductResponse cart(@RequestParam String username) {
@@ -40,27 +40,28 @@ public class BuyerController {
 
 	@PostMapping("forseller")
 	public ActionResponse forSeller(@RequestParam String username) {
-		return userBasic.changeStatus(username, "forseller");
+		return userBasic.changeStatus(username, "buyer", "forseller");
 	}
 
 	@PostMapping("addcart")
-	public ActionResponse addCart(@RequestParam String username, @RequestParam String product_id) {
+	public ActionResponse addCart(@RequestParam String username, @RequestParam int product_id) {
 		return buyerMod.addBargain(username, product_id);
 	}
 
-	@PostMapping("deletecart")
-	public ActionResponse deleteCart(@RequestParam String username, @RequestParam String product_id) {
-		return buyerMod.deleteBargain(username, product_id);
+	@PostMapping("removecart")
+	public ActionResponse removeCart(@RequestParam String username, @RequestParam int product_id) {
+		return buyerMod.removeBargain(username, product_id);
 	}
 
 	@PostMapping("buy")
-	public ActionResponse buy(@RequestParam String username, @RequestParam String product_id) {
+	public ActionResponse buy(@RequestParam String username, @RequestParam int product_id) {
 		return buyerMod.buyProduct(username, product_id);
 	}
 
 	@PostMapping("comment")
 	public ActionResponse comment(@RequestParam Map<String, String> form) {
-		return buyerMod.leaveComment(form.get("username"), form.get("product_id"), form.get("content"));
+		return buyerMod.leaveComment(form.get("username"), Integer.parseInt(form.get("product_id")),
+				form.get("content"));
 	}
 
 }

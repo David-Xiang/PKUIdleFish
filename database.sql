@@ -38,7 +38,9 @@ CREATE TABLE product(
 CREATE TABLE bargain(
     buyer_name VARCHAR(32),
     product_id INT UNSIGNED,
-    bargain_status ENUM('cart', 'done') DEFAULT 'cart'
+    bargain_status ENUM('cart', 'done') DEFAULT 'cart',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`buyer_name`,`product_id`)
 );
 
 CREATE TABLE transaction(
@@ -54,7 +56,7 @@ CREATE TABLE comment(
     buyer_name VARCHAR(32),
     product_id INT UNSIGNED,
     content TINYTEXT,
-    time DATE
+    time DATE DEFAULT CURRENT_DATE
 );
 
 -- 
@@ -80,34 +82,45 @@ GROUP BY buyer_name;
 
 DELIMITER $
 
-CREATE TRIGGER cart_trigger
-AFTER INSERT ON bargain
-FOR EACH ROW
-BEGIN
-  UPDATE product SET hot = hot + 1 WHERE product_id = new.product_id;
-END$
-
-CREATE TRIGGER buy_trigger
+CREATE TRIGGER set_product_sold
 AFTER UPDATE ON bargain
 FOR EACH ROW
 BEGIN
-  DECLARE transaction_seller_name VARCHAR(32);
-  DECLARE transaction_price DECIMAL(10,2);
-  IF new.bargain_status = 'done' THEN
-    UPDATE product SET product_status = 'sold', hot = hot - 1 WHERE product_id = new.product_id;
-    SELECT seller_name, price INTO transaction_seller_name, transaction_price FROM product WHERE product_id = new.product_id;
-    INSERT INTO transaction(buyer_name, seller_name, product_id, price) VALUES
-    (new.buyer_name, transaction_seller_name, new.product_id, transaction_price);
-  END IF;
+  UPDATE product SET product_status = 'sold' WHERE product_id = new.product_id;
 END$
 
-CREATE TRIGGER delete_trigger
+CREATE TRIGGER set_product_returned
 AFTER DELETE ON bargain
 FOR EACH ROW
 BEGIN
   IF old.bargain_status = 'done' THEN
     UPDATE product SET product_status = 'returned' WHERE product_id = old.product_id;
   END IF;
+END$
+
+CREATE TRIGGER auto_generate_transaction
+AFTER UPDATE ON bargain
+FOR EACH ROW
+BEGIN
+  DECLARE transaction_seller_name VARCHAR(32);
+  DECLARE transaction_price DECIMAL(10,2);
+  SELECT seller_name, price INTO transaction_seller_name, transaction_price FROM product WHERE product_id = new.product_id;
+  INSERT INTO transaction(buyer_name, seller_name, product_id, price) VALUES
+  (new.buyer_name, transaction_seller_name, new.product_id, transaction_price);
+END$
+
+CREATE TRIGGER increase_hot
+AFTER INSERT ON bargain
+FOR EACH ROW
+BEGIN
+  UPDATE product SET hot = hot + 1 WHERE product_id = new.product_id;
+END$
+
+CREATE TRIGGER decrease_hot
+AFTER DELETE ON bargain
+FOR EACH ROW
+BEGIN
+  UPDATE product SET hot = hot - 1 WHERE product_id = old.product_id;
 END$
 
 DELIMITER ;
@@ -120,9 +133,9 @@ INSERT INTO account(username, en_password, birth, sex, email, phone, account_sta
 ('user1', myhash('passwd1'), '2000-01-01', 'M', 'user1@pku.edu.cn', '10086000001', 'forseller', '2011-11-11'),
 ('user2', myhash('passwd2'), '2000-01-02', 'F', 'user2@pku.edu.cn', '10086000002', 'seller', '2010-10-10'),
 ('user3', myhash('passwd3'), '2000-01-03', 'M', 'user3@pku.edu.cn', '10086000003', 'forseller', '2009-09-09'),
-('user5', myhash('passwd5'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'seller', '2008-08-08'),
-('user6', myhash('passwd6'), '2000-01-05', 'M', 'user5@pku.edu.cn', '10086000005', 'buyer', '2006-06-06'),
-('user7', myhash('passwd7'), '2000-01-06', 'M', 'user6@pku.edu.cn', '10086000006', 'buyer', '2007-07-07');
+('user4', myhash('passwd4'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'seller', '2008-08-08'),
+('admin', myhash('admin'), '2000-01-05', 'M', 'admin@pku.edu.cn', '10086000005', 'admin', '2006-06-06'),
+('user6', myhash('passwd6'), '2000-01-06', 'M', 'user6@pku.edu.cn', '10086000006', 'buyer', '2007-07-07');
 
 INSERT INTO category (category, category_name) VALUES
 (1, 'category1'),
@@ -135,9 +148,20 @@ INSERT INTO product (category, title, imgsrc, price, seller_name, description, u
 (2, 'title5', 'imgsrc5', 15, 'user1', 'description5', '2018-10-05', 'draft');
 
 INSERT INTO bargain(product_id, buyer_name, bargain_status) VALUES
-(3, 'user1', 'cart'),
+(1, 'user1', 'cart'),
+(1, 'user2', 'cart'),
+(2, 'user3', 'cart'),
 (2, 'user1', 'cart');
 
 UPDATE bargain
 SET bargain_status = 'done'
-WHERE product_id = 3 AND buyer_name = 'user1';
+WHERE product_id = 1 AND buyer_name = 'user1';
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE product_id = 2 AND buyer_name = 'user3';
+
+INSERT INTO comment(product_id, buyer_name, content) VALUES
+(1, 'user1', 'good'),
+(1, 'user1', 'very good'),
+(1, 'user1', 'very very very good');

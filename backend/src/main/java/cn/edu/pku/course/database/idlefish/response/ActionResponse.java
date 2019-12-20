@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class ActionResponse {
 
-	Boolean success;
+	public boolean success;
 
 }
