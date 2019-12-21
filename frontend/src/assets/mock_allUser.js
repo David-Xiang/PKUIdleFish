@@ -3,8 +3,8 @@ export default{
     [
     {
         "id": 123763456,
-        "name": "向东伟",
-        "birthday": "1997-05-14",
+        "username": "向东伟",
+        "birth": "1997-05-14",
         "sex": "M",
         "email": "xingaondwe@pku.edu.cn",
         "phone": "15000000234",
@@ -12,8 +12,8 @@ export default{
     },
     {
         "id": 123114514,
-        "name": "田浩所",
-        "birthday": "1991-01-14",
+        "username": "田浩所",
+        "birth": "1991-01-14",
         "sex": "M",
         "email": "senpai@163.cn",
         "phone": "13611355987",
