@@ -4,7 +4,7 @@
       <el-menu mode="horizontal" default-active="1">
           <el-submenu index="0">
             <template slot="title" style="font-size: 40px;"><i class="el-icon-user-solid"></i>{{isLogin?"欢迎回来，" + userData.username:"登录/注册"}}</template>
-            <el-menu-item index="0-1" @click="loginDialogVisible = true" v-if="!isLogin">登陆</el-menu-item>
+            <el-menu-item index="0-1" @click="loginDialogVisible = true" v-if="!isLogin">登录</el-menu-item>
             <el-menu-item index="0-2" @click="registerDialogVisible = true" v-if="!isLogin">注册</el-menu-item>
             <el-menu-item index="0-3" @click="loadUserData();changeUserDataDialogVisible = true" v-if="isLogin">修改信息</el-menu-item>
             <el-menu-item index="0-4" @click="isLogin=false; userData=null;" v-if="isLogin">登出</el-menu-item>
@@ -383,8 +383,8 @@
 </template>
 
 <script>
-import mock_products from './assets/mock_products.js'
-import mock_user from './assets/mock_login.js'
+// import mock_products from './assets/mock_products.js'
+// import mock_user from './assets/mock_login.js'
 import detail from './components/detail.vue'
 import modifyProduct from './components/modifyProduct.vue'
 import newProduct from './components/newProduct.vue'
@@ -402,8 +402,8 @@ export default {
     return {
       domain: "http://localhost:8080",
       isLoading: false,
-      isLogin: true, // 登出置false
-      isSeller: true,
+      isLogin: false, // 登出置false
+      isSeller: false,
       isCartLoad: false, // 登出置false
       isOwnLoad: false, // 登出置false
       isOrderLoad: false, // 登出置false
@@ -472,8 +472,8 @@ export default {
   }, 
   created(){
     this.loadProduct(0, "");
-    this.userData = mock_user.user;
-    this.isLogin = mock_user.success;
+    // this.userData = mock_user.user;
+    // this.isLogin = mock_user.success;
   },
   methods: {
     formUrl(action, params) {
@@ -509,7 +509,7 @@ export default {
         method: 'GET',
         url: url,
       }).then((res)=>{
-        this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
+        this.products = res.data.products;
         this.isLoading = false;
       });
     },
@@ -532,83 +532,65 @@ export default {
       //   this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
       //   this.isLoading = false;
       // });
-      this.products = Array(20).fill(null).map((_, h)=>mock_products.products[h%3]);
+      // this.products = Array(20).fill(null).map((_, h)=>mock_products.products[h%3]);
       this.isLoading = false;
     },
     loadCart(res=null) {
       if (this.isCartLoad){
         return;
       }
-      // let url = this.formUrl("cart", {
-      //   "username": this.username
-      // });
-      // this.$axios({
-      //   method: 'GET',
-      //   url: url,
-      // }).then((resp)=>{
-      //   this.cartData = resp.data.products;
-      //   this.isCartLoad = true;
-      //   if (res != null) {
-      //     res();
-      //   }
-      // });
-      this.cartData = mock_products.products;
-      this.isCartLoad = true;
-      if (res != null) {
-        res();
-      }
+      let url = this.formUrl("cart", {
+        "username": this.userData.username
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((resp)=>{
+        this.cartData = resp.data.products;
+        this.isCartLoad = true;
+        if (res != null) {
+          res();
+        }
+      });
     },
     loadOrder(res=null) {
       if (this.isOrderLoad){
         return;
       }
-      // let url = this.formUrl("bought", {
-      //   "username": this.username
-      // });
-      // this.$axios({
-      //   method: 'GET',
-      //   url: url,
-      // }).then((resp)=>{
-      //   this.orderData = resp.data.products;
-      //   this.isOrderLoad = true;
-      //   if (res != null) {
-      //     res();
-      //   }
-      // });
-      this.orderData = mock_products.products;
-      this.isCartLoad = true;
-      if (res != null) {
-        res();
-      }
+      let url = this.formUrl("bought", {
+        "username": this.userData.username
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((resp)=>{
+        this.orderData = resp.data.products;
+        this.isOrderLoad = true;
+        if (res != null) {
+          res();
+        }
+      });
     },
     loadOwn(res=null) {
       if (this.isOwnLoad){
         return;
       }
-      // let url = this.formUrl("myproduct", { // TODO
-      //   "username": this.username
-      // });
-      // this.$axios({
-      //   method: 'GET',
-      //   url: url,
-      // }).then((resp)=>{
-      //   this.ownData = resp.data.products;
-      //   for (let p of this.ownData){
-      //     this.updateOwnInfo(p);
-      //   }
-      //   this.isOwnLoad = true;
-      //   if (res != null) {
-      //     res();
-      //   }
-      // });
-      this.ownData = mock_products.products;
-      for (let p of this.ownData){
-        this.updateOwnInfo(p);
-      }
-      this.isOwnLoad = true;
-      if (res != null) {
-        res();
-      }
+      let url = this.formUrl("myproduct", { // TODO
+        "username": this.userData.username
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((resp)=>{
+        this.ownData = resp.data.products;
+        for (let p of this.ownData){
+          this.updateOwnInfo(p);
+        }
+        this.isOwnLoad = true;
+        if (res != null) {
+          res();
+        }
+      });
     },
     updateOwnInfo(product){
       product.productInfo.statusText = this.getOwnStatus(product);
@@ -619,7 +601,7 @@ export default {
     addCart(product){
       this.loadCart(() => {
         // let url = this.formUrl("addcart", {
-        //   "username": this.username,
+        //   "username": this.userData.username,
         //   "product_id": product.product_id
         // });
         // this.$axios({
@@ -649,7 +631,7 @@ export default {
     },
     deleteCart(product) {
       // let url = this.formUrl("deletecart", {
-      //   "username": this.username,
+      //   "username": this.userData.username,
       //   "product_id": product.product_id
       // });
       // this.$axios({
@@ -689,7 +671,7 @@ export default {
     purchase(product){
       this.loadOrder(() => {
         // let url = this.formUrl("buy", {
-        //   "username": this.username,
+        //   "username": this.userData.username,
         //   "product_id": product.product_id
         // });
         // this.$axios({
@@ -720,7 +702,7 @@ export default {
     returnProduct(product){
       // this.loadOrder(() => {
       //   let url = this.formUrl("removecart", {
-      //     "username": this.username,
+      //     "username": this.userData.username,
       //     "product_id": product.product_id
       //   });
       //   this.$axios({
@@ -764,7 +746,7 @@ export default {
         //   method: 'POST',
         //   url: url,
         //   data: {
-        //     "username": this.username,
+        //     "username": gData.username,
         //     "product_id": product.product_id,
         //     "content": message
         //   }
@@ -807,7 +789,7 @@ export default {
         //   url: url,
         //   data: {
         //     "product_id": product.product_id.toString(),
-        //     "username": this.username,
+        //     "username": this.userData.username,
         //     "title": product.productInfo.title,
         //     "category": product.productInfo.category,
         //     "price": product.productInfo.price,
@@ -1008,6 +990,7 @@ export default {
             title: '',
             message: '登录成功!'
           });
+          this.loginDialogVisible = false;
         } else {
           this.$notify.error({
             title: '',
