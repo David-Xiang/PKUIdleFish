@@ -186,6 +186,17 @@
     
     <!--卖家修改/发布商品-->
     <el-dialog title="编辑商品" :visible.sync="editVisible">
+      <modifyProduct
+        v-bind:product="selectProduct"
+        v-on:modify="updateProduct"
+      />
+    </el-dialog>
+
+    <!--卖家修改/发布商品-->
+    <el-dialog title="编辑商品" :visible.sync="newProductVisible">
+      <newProduct
+        v-on:modify="updateProduct"
+      />
     </el-dialog>
 
     <!--购物车-->
@@ -297,13 +308,13 @@
               @click="$alert(scope.$index)">{{scope.row.productInfo.actionText}}</el-button>
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">编辑</el-button>
+              @click="selectProduct=scope.row; editVisible=true">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-row>
         <el-col :offset="9">
-          <el-button style="margin:15px" align="right" type="primary" icon="el-icon-plus" circle @click="editVisible=true;"></el-button>
+          <el-button style="margin:15px" align="right" type="primary" icon="el-icon-plus" circle @click="newProductVisible=true;"></el-button>
         </el-col>
       </el-row>
     </el-drawer>
@@ -341,13 +352,19 @@
 <script>
 import mock_products from './assets/mock_products.js'
 import mock_user from './assets/mock_login.js'
-import detail from './components/detail.vue'
 import mock_allUser from './assets/mock_allUser.js'
+import detail from './components/detail.vue'
+import modifyProduct from './components/modifyProduct.vue'
+import newProduct from './components/newProduct.vue'
+import category from './category.js'
+
 
 export default {
   name: 'app',
   components: {
-    detail
+    detail,
+    modifyProduct,
+    newProduct
   },
   data(){
     return {
@@ -375,6 +392,7 @@ export default {
       allUserVisible: false,
       selectProductVisible: false,
       editVisible: false,
+      newProductVisible: false,
       keyword:"",
       categorySelect: 0,
       loginRuleForm:{
@@ -417,9 +435,7 @@ export default {
         email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
         phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
       },
-      categoryLabel:[
-        "全部分类", "穿戴服饰", "手机数码", "美容化妆"
-      ]
+      categoryLabel:category.categoryLabel
     };
   }, 
   created(){
@@ -469,7 +485,7 @@ export default {
       this.isLoading = true;
       let params = {
         "sold": sold,
-        "page": page-1
+        "page": page
       };
       if(sold > 5000)//写上这句话，不然报params未使用
       {
@@ -537,7 +553,7 @@ export default {
       if (this.isOwnLoad){
         return;
       }
-      // let url = this.formUrl("own", { // TODO
+      // let url = this.formUrl("myproduct", { // TODO
       //   "username": this.username
       // });
       // this.$axios({
@@ -545,25 +561,27 @@ export default {
       //   url: url,
       // }).then((resp)=>{
       //   this.ownData = resp.data.products;
-      //   this.updateOwnInfo();
+      //   for (let p of this.ownData){
+      //     this.updateOwnInfo(p);
+      //   }
       //   this.isOwnLoad = true;
       //   if (res != null) {
       //     res();
       //   }
       // });
       this.ownData = mock_products.products;
-      this.updateOwnInfo();
+      for (let p of this.ownData){
+        this.updateOwnInfo(p);
+      }
       this.isOwnLoad = true;
       if (res != null) {
         res();
       }
     },
-    updateOwnInfo(){
-      for (let p of this.ownData) {
-        p.productInfo.statusText = this.getOwnStatus(p);
-        p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
-        p.productInfo.actionDisable = p.productInfo.product_status == 4;
-      }
+    updateOwnInfo(product){
+      product.productInfo.statusText = this.getOwnStatus(product);
+      product.productInfo.actionText = product.productInfo.product_status > 0 && product.productInfo.product_status < 3 ? "下架" : "上架";
+      product.productInfo.actionDisable = product.productInfo.product_status == 4;
     },
     // 动作类函数
     addCart(product){
@@ -750,6 +768,80 @@ export default {
           message: "评价提交成功！"
         });
     },
+    updateProduct(product){
+        // let url = this.formUrl("manage");
+        // this.$axios({
+        //   method: 'POST',
+        //   url: url,
+        //   data: {
+        //     "product_id": product.product_id.toString(),
+        //     "username": this.username,
+        //     "title": product.productInfo.title,
+        //     "category": product.productInfo.category,
+        //     "price": product.productInfo.price,
+        //     "description": product.productInfo.description,
+        //     "imgsrc": product.productInfo.imgsrc
+        //   }
+        // }).then((res)=>{
+        //   if (res.data.success == true) {
+            // product.productInfo.seller_name = this.userData.name;
+            // product.productInfo.update_time = this.getDateForOwn();
+            // product.productInfo.product_status = 0; // 未上架状态
+        //     this.updateOwnInfo(product);
+        //     if(product.product_id==0){
+        //       this.ownData.push(product);
+        //     } else {
+        //       for(let i = 0; i <  this.ownData.length; i++) {
+        //         if (this.ownData[i].product_id == product.product_id) {
+        //           this.ownData[i].productInfo.title = product.productInfo.title;
+        //           this.ownData[i].productInfo.imgsrc = product.productInfo.imgsrc;
+        //           this.ownData[i].productInfo.description= product.productInfo.description;
+        //           this.ownData[i].productInfo.product_status= product.productInfo.product_status;
+        //           this.ownData[i].productInfo.price= product.productInfo.price;
+        //           this.ownData[i].productInfo.category= product.productInfo.category;
+        //           this.updateOwnInfo(this.ownData[i]);
+        //           break;
+        //         }
+        //       }
+        //     }
+        //     this.$notify.info({
+        //       title: '成功',
+        //       message: "编辑成功！"
+        //     });
+        //   } else {
+        //     this.$notify.error({
+        //       title: '失败',
+        //       message: "编辑失败"
+        //     });
+        //   }
+        // });
+        // TODO delete
+        
+        product.productInfo.seller_name = this.userData.name;
+        product.productInfo.update_time = this.getDateForOwn();
+        product.productInfo.product_status = 0; // 未上架状态
+        this.updateOwnInfo(product);
+        if(product.product_id==0){
+          this.ownData.push(product);
+        } else {
+          for(let i = 0; i <  this.ownData.length; i++) {
+            if (this.ownData[i].product_id == product.product_id) {
+              this.ownData[i].productInfo.title = product.productInfo.title;
+              this.ownData[i].productInfo.imgsrc = product.productInfo.imgsrc;
+              this.ownData[i].productInfo.description= product.productInfo.description;
+              this.ownData[i].productInfo.product_status= product.productInfo.product_status;
+              this.ownData[i].productInfo.price= product.productInfo.price;
+              this.ownData[i].productInfo.category= product.productInfo.category;
+              this.updateOwnInfo(this.ownData[i]);
+              break;
+            }
+          }
+        }
+        this.$notify.info({
+          title: '成功',
+          message: "编辑成功！"
+        });
+    },
     loadUserData()//加载当前用户信息，用于修改信息
     {
         this.changeUserDataRuleForm.name=this.userData.name;
@@ -793,6 +885,14 @@ export default {
       } else if (status == 4) {
         return "删除";
       }
+    },
+    getDateForOwn() {
+      let d = new Date();
+      return [
+        d.getFullYear(),
+        ('0' + (d.getMonth() + 1)).slice(-2),
+        ('0' + d.getDate()).slice(-2)
+      ].join('-');
     },
     getDateForComment() {
       let d = new Date();

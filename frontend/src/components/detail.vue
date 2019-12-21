@@ -17,7 +17,7 @@
                         <el-button size="medium" @click="$emit('addCart', product)" icon="el-icon-circle-plus-outline">购物车</el-button>
                         <el-button size="medium" @click="$emit('purchase', product)">下单<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
                         <!--管理员下架,值得一提的是detail里找不到app的信息，所以userData是null会显示不出来，而且isLogin=false-->
-                        <el-button type = "warning" size="medium" @click="offlineDialogVisible = true" icon="el-icon-delete" v-if="isLogin && userData.status==2">下架</el-button>
+                        <!-- <el-button type = "warning" size="medium" @click="offlineDialogVisible = true" icon="el-icon-delete" v-if="isLogin && userData.status==2">下架</el-button> -->
 
                     </el-button-group>
                 </div>
@@ -57,7 +57,7 @@
         </el-row>
 
 <!--管理员下架-->
-        <el-dialog
+        <!-- <el-dialog
         title="即将永久下架商品"
         :visible.sync="offlineDialogVisible"
         width="500px"
@@ -74,21 +74,19 @@
             <el-button @click="offlineDialogVisible = false">取 消</el-button>
             <el-button type="danger" @click="offlineDialogVisible = false">确定下架</el-button>
         </span>
-        </el-dialog>
+        </el-dialog> -->
 
     </el-container>
 </template>
 <script>
+import category from '../category.js'
 export default{
     name: "detail",
     props: ["product"],
     data() {
         return {
-            categoryLabel:[
-                "全部分类", "穿戴服饰", "手机数码", "美容化妆"
-            ],
+            categoryLabel:category.categoryLabel,
             message: null,
-            iconClasses: ['icon-rate-face-1', 'icon-rate-face-2', 'icon-rate-face-3'],
             rate: null
         }
     }   
