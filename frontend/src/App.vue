@@ -305,7 +305,7 @@
               size="mini"
               prop="名字"
               :disabled="scope.row.productInfo.actionDisable"
-              @click="$alert(scope.$index)">{{scope.row.productInfo.actionText}}</el-button>
+              @click="handleAction(scope.row)">{{scope.row.productInfo.actionText}}</el-button>
             <el-button
               size="mini"
               @click="selectProduct=scope.row; editVisible=true">编辑</el-button>
@@ -874,6 +874,68 @@ export default {
           message: "编辑成功！"
         });
     },
+    invisible(product){
+      // let url = this.formUrl("invisible", {
+      //   "product_id": product.product_id
+      // });
+      // this.$axios({
+      //   method: 'POST',
+      //   url: url,
+      // }).then((res)=>{
+      //   if (res.data.success == true) {
+      //     product.productInfo.product_status = 0;
+      //     this.updateOwnInfo(product);
+      //     this.$notify.success({
+      //       title: '成功',
+      //       message: product.productInfo.title + " 已成功下架！"
+      //     });
+      //   } else {
+      //     this.$notify.error({
+      //       title: '失败',
+      //       message: product.productInfo.title + " 没能成功下架，这是为什么呢？"
+      //     });
+      //   }
+      // });
+
+
+      product.productInfo.product_status = 0;
+      this.updateOwnInfo(product);
+      window.console.log(product);
+      this.$notify.success({
+        title: '成功',
+        message: product.productInfo.title + " 已成功下架！"
+      });
+    },
+    visible(product){
+      // let url = this.formUrl("visible", {
+      //   "product_id": product.product_id
+      // });
+      // this.$axios({
+      //   method: 'POST',
+      //   url: url,
+      // }).then((res)=>{
+      //   if (res.data.success == true) {
+      //     product.productInfo.product_status = 1;
+      //     this.updateOwnInfo(product);
+      //     this.$notify.success({
+      //       title: '成功',
+      //       message: product.productInfo.title + " 已成功上架！"
+      //     });
+      //   } else {
+      //     this.$notify.error({
+      //       title: '失败',
+      //       message: product.productInfo.title + " 没能成功上架，这是为什么呢？"
+      //     });
+      //   }
+      // });
+
+      product.productInfo.product_status = 1;
+      this.updateOwnInfo(product);
+      this.$notify.success({
+        title: '成功',
+        message: product.productInfo.title + " 已成功上架！"
+      });
+    },
     loadUserData()//加载当前用户信息，用于修改信息
     {
         this.changeUserDataRuleForm.name=this.userData.name;
@@ -959,6 +1021,17 @@ export default {
     handleProduct(product) {
       this.selectProduct = product;
       this.selectProductVisible = true;
+    },
+    handleAction(product) {
+      if (product.productInfo.product_status == 0) {
+        this.visible(product);
+        this.updateOwnInfo(product);
+      } else if (product.productInfo.product_status == 1) {
+        this.invisible(product);
+        this.updateOwnInfo(product);
+      } else {
+        window.console.log("[handleAction] wrong action!!");
+      }
     }
   }
 }
