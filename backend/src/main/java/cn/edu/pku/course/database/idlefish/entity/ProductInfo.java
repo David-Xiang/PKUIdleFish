@@ -12,7 +12,7 @@ public class ProductInfo {
 	public Double price;
 	public String seller_name;
 	public String description;
-	public String product_status;
+	public int product_status;
 	public String update_time;
 	public int hot;
 	public String category_name;

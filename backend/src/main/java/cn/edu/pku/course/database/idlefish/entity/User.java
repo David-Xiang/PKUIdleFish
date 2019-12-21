@@ -13,6 +13,6 @@ public class User {
 	public String sex;
 	public String email;
 	public String phone;
-	public String account_status;
+	public int account_status;
 	public String update_time;
 }
