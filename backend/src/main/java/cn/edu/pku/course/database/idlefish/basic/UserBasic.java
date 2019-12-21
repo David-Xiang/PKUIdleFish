@@ -18,8 +18,10 @@ public class UserBasic {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+
 	@Autowired
 	UserRowMapper userRowMapper;
+
 	@Autowired
 	UserResponseRowMapper userResponseRowMapper;
 
@@ -27,8 +29,7 @@ public class UserBasic {
 	 * get user information according to username <br>
 	 */
 	public User get(String username) {
-		String sql;
-		sql = "SELECT * FROM account WHERE username = ?";
+		String sql = "SELECT * FROM account WHERE username = ?";
 		try {
 			return jdbcTemplate.queryForObject(sql, userRowMapper, username);
 		} catch (EmptyResultDataAccessException e) {
@@ -43,9 +44,8 @@ public class UserBasic {
 	 * *itemPerPage* if pageNum > 0 <br>
 	 */
 	public UserResponse fetch(String account_status, String order, int pageNum, int itemPerPage) {
-		String sql;
 		String limit = (pageNum > 0) ? " LIMIT " + (pageNum - 1) * itemPerPage + ", " + itemPerPage : "";
-		sql = "SELECT * FROM account WHERE account_status LIKE ?" + order + limit;
+		String sql = "SELECT * FROM account WHERE account_status LIKE ?" + order + limit;
 		try {
 			return jdbcTemplate.queryForObject(sql, userResponseRowMapper, account_status);
 		} catch (EmptyResultDataAccessException e) {
@@ -59,8 +59,7 @@ public class UserBasic {
 	 * when old_status == '%', it doesn't matter <br>
 	 */
 	public ActionResponse changeStatus(String username, String old_status, String new_status) {
-		String sql;
-		sql = "UPDATE account SET account_status = ? WHERE username = ? AND account_status LIKE ?";
+		String sql = "UPDATE account SET account_status = ? WHERE username = ? AND account_status LIKE ?";
 		return new ActionResponse(jdbcTemplate.update(sql, new_status, username, old_status) > 0);
 	}
 

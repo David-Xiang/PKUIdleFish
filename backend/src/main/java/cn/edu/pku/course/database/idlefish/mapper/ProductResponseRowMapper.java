@@ -26,16 +26,15 @@ public class ProductResponseRowMapper implements RowMapper<ProductResponse> {
 	@Override
 	public ProductResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
 		List<Product> products = new ArrayList<Product>();
-		while (rs.next()) {
-			String sql;
+		do {
 			int product_id = rs.getInt(1);
-			sql = "SELECT * FROM comment WHERE product_id = ?";
+			String sql = "SELECT * FROM comment WHERE product_id = ?";
 			List<Map<String, Object>> comments = jdbcTemplate.queryForList(sql, product_id);
 			products.add(new Product(product_id,
 					new ProductInfo(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getDouble(5), rs.getString(6),
 							rs.getString(7), rs.getString(8), rs.getString(9), rs.getInt(10), rs.getString(11)),
 					comments));
-		}
+		} while (rs.next());
 		return new ProductResponse(products);
 	}
 }

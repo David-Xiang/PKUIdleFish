@@ -36,9 +36,11 @@ public class ProductBasic {
 		if (timeLimit) {
 			where += " AND DATEDIFF(NOW(), product.update_time) < 1800";
 		}
-		String group = (buyer_name == "%") ? "GROUP BY product_id" : "";
-		String limit = (pageNum > 0) ? "LIMIT " + (pageNum - 1) * itemPerPage + ", " + itemPerPage : "";
+		String group = buyer_name.contentEquals("%") ? "GROUP BY product_id" : "";
+		String limit = pageNum > 0 ? "LIMIT " + (pageNum - 1) * itemPerPage + ", " + itemPerPage : "";
 		String sql = selectFrom + " " + where + " " + group + " " + order + " " + limit;
+		System.out.println(sql);
+		System.out.println(category + titleKeyword + buyer_name + seller_name + product_status + bargain_status);
 		try {
 			return jdbcTemplate.queryForObject(sql, productResponseRowMapper, category, titleKeyword, buyer_name,
 					seller_name, product_status, bargain_status);

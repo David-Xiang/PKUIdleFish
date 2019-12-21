@@ -21,7 +21,7 @@ public class SellerMod {
 			String description, String imgsrc) {
 		String sql;
 		if (product_id == 0) {
-			sql = "INSERT INTO product(title, seller_name, category, price, description, imgsrc) VALUES (?, ?, ?, ?, ?, ?, ?)";
+			sql = "INSERT INTO product(title, seller_name, category, price, description, imgsrc) VALUES (?, ?, ?, ?, ?, ?)";
 			return new ActionResponse(
 					jdbcTemplate.update(sql, title, seller_name, category, price, description, imgsrc) > 0);
 		} else {
