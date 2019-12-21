@@ -7,7 +7,7 @@
             <el-menu-item index="0-1" @click="loginDialogVisible = true" v-if="!isLogin">登录</el-menu-item>
             <el-menu-item index="0-2" @click="registerDialogVisible = true" v-if="!isLogin">注册</el-menu-item>
             <el-menu-item index="0-3" @click="loadUserData();changeUserDataDialogVisible = true" v-if="isLogin">修改信息</el-menu-item>
-            <el-menu-item index="0-4" @click="isLogin=false; userData=null;" v-if="isLogin">登出</el-menu-item>
+            <el-menu-item index="0-4" @click="logout()" v-if="isLogin">登出</el-menu-item>
           </el-submenu>
           <el-menu-item index="1">
             <template slot="title"><i class="el-icon-s-home"></i>首页</template>
@@ -403,7 +403,7 @@ export default {
       domain: "http://localhost:8080",
       isLoading: false,
       isLogin: false, // 登出置false
-      isSeller: false,
+      isSeller: false, // 登出置false
       isCartLoad: false, // 登出置false
       isOwnLoad: false, // 登出置false
       isOrderLoad: false, // 登出置false
@@ -472,13 +472,11 @@ export default {
   }, 
   created(){
     this.loadProduct(0, "");
-    // this.userData = mock_user.user;
-    // this.isLogin = mock_user.success;
   },
   methods: {
-    formUrl(action, params) {
+    formUrl(action, params=null) {
       let url = this.domain + "/" + action;
-      if (Object.keys(params).length > 0) {
+      if (params != null && Object.keys(params).length > 0) {
         let i = 0;
         for (let key in params) {
           if (i == 0){
@@ -685,7 +683,7 @@ export default {
           url: url,
         }).then((res)=>{
           if (res.data.success == true) {
-            product.productInfo.update_time = (new Date()).toString();
+            product.productInfo.update_time = (new Date()).toISOString();
             this.orderData.push(product);
             this.$notify.success({
               title: '成功',
@@ -701,44 +699,33 @@ export default {
       });
     },
     returnProduct(product){
-      // this.loadOrder(() => {
-      //   let url = this.formUrl("removecart", {
-      //     "username": this.userData.username,
-      //     "product_id": product.product_id
-      //   });
-      //   this.$axios({
-      //     method: 'POST',
-      //     url: url,
-      //   }).then((res)=>{
-      //     if (res.data.success == true) {
-      //       for(let i = 0; i <  this.orderData.length; i++) {
-      //         if (this.orderData[i].product_id == product.product_id) {
-      //           this.orderData.splice(i, 1);
-      //           break;
-      //         }
-      //       }
-      //       this.$notify.success({
-      //         title: '成功',
-      //         message: product.productInfo.title + " 已成功退货！"
-      //       });
-      //     } else {
-      //       this.$notify.error({
-      //         title: '失败',
-      //         message: product.productInfo.title + " 没能成功退货，这是为什么呢？"
-      //       });
-      //     }
-      //   });
-      // TODO delete
-      this.loadOrder();
-      for(let i = 0; i <  this.orderData.length; i++) {
-        if (this.orderData[i].product_id == product.product_id) {
-          this.orderData.splice(i, 1);
-          break;
-        }
-      }
-      this.$notify.success({
-        title: '成功',
-        message: product.productInfo.title + " 已成功退货！"
+      this.loadOrder(() => {
+        let url = this.formUrl("removecart", {
+          "username": this.userData.username,
+          "product_id": product.product_id
+        });
+        this.$axios({
+          method: 'POST',
+          url: url,
+        }).then((res)=>{
+          if (res.data.success == true) {
+            for(let i = 0; i <  this.orderData.length; i++) {
+              if (this.orderData[i].product_id == product.product_id) {
+                this.orderData.splice(i, 1);
+                break;
+              }
+            }
+            this.$notify.success({
+              title: '成功',
+              message: product.productInfo.title + " 已成功退货！"
+            });
+          } else {
+            this.$notify.error({
+              title: '失败',
+              message: product.productInfo.title + " 没能成功退货，这是为什么呢？"
+            });
+          }
+        });
       });
     },
     comment(product, message) {
@@ -749,181 +736,128 @@ export default {
         });
         return;
       }
-        // let url = this.formUrl("comment");
-        // this.$axios({
-        //   method: 'POST',
-        //   url: url,
-        //   data: {
-        //     "username": gData.username,
-        //     "product_id": product.product_id,
-        //     "content": message
-        //   }
-        // }).then((res)=>{
-        //   if (res.data.success == true) {
-        //     this.selectProduct.comments.push({
-        //       "product_id": this.selectProduct.product_id,
-        //       "time": this.getDateForComment(),
-        //       "buyer_name": this.userData.username,
-        //       "content": message
-        //     });
-        //     this.$notify.info({
-        //       title: '成功',
-        //       message: "评价提交成功！"
-        //     });
-        //   } else {
-        //     this.$notify.error({
-        //       title: '失败',
-        //       message: "评价提交失败"
-        //     });
-        //   }
-        // });
-        // TODO delete
-        
-        this.selectProduct.comments.push({
-          "product_id": this.selectProduct.product_id,
+      let url = this.formUrl("comment");
+      this.$axios({
+        method: 'POST',
+        url: url,
+        data: {
+          "username": this.userData.username,
+          "product_id": product.product_id.toString(),
           "time": this.getDateForComment(),
-          "buyer_name": this.userData.username,
           "content": message
-        });
-        this.$notify.info({
-          title: '成功',
-          message: "评价提交成功！"
-        });
+        }
+      }).then((res)=>{
+        if (res.data.success == true) {
+          this.selectProduct.comments.push({
+            "product_id": this.selectProduct.product_id,
+            "time": this.getDateForComment(),
+            "buyer_name": this.userData.username,
+            "content": message
+          });
+          this.$notify.info({
+            title: '成功',
+            message: "评价提交成功！"
+          });
+        } else {
+          this.$notify.error({
+            title: '失败',
+            message: "评价提交失败"
+          });
+        }
+      });
     },
     updateProduct(product){
-        // let url = this.formUrl("manage");
-        // this.$axios({
-        //   method: 'POST',
-        //   url: url,
-        //   data: {
-        //     "product_id": product.product_id.toString(),
-        //     "username": this.userData.username,
-        //     "title": product.productInfo.title,
-        //     "category": product.productInfo.category,
-        //     "price": product.productInfo.price,
-        //     "description": product.productInfo.description,
-        //     "imgsrc": product.productInfo.imgsrc
-        //   }
-        // }).then((res)=>{
-        //   if (res.data.success == true) {
-            // product.productInfo.seller_name = this.userData.username;
-            // product.productInfo.update_time = this.getDateForOwn();
-            // product.productInfo.product_status = 0; // 未上架状态
-        //     this.updateOwnInfo(product);
-        //     if(product.product_id==0){
-        //       this.ownData.push(product);
-        //     } else {
-        //       for(let i = 0; i <  this.ownData.length; i++) {
-        //         if (this.ownData[i].product_id == product.product_id) {
-        //           this.ownData[i].productInfo.title = product.productInfo.title;
-        //           this.ownData[i].productInfo.imgsrc = product.productInfo.imgsrc;
-        //           this.ownData[i].productInfo.description= product.productInfo.description;
-        //           this.ownData[i].productInfo.product_status= product.productInfo.product_status;
-        //           this.ownData[i].productInfo.price= product.productInfo.price;
-        //           this.ownData[i].productInfo.category= product.productInfo.category;
-        //           this.updateOwnInfo(this.ownData[i]);
-        //           break;
-        //         }
-        //       }
-        //     }
-        //     this.$notify.info({
-        //       title: '成功',
-        //       message: "编辑成功！"
-        //     });
-        //   } else {
-        //     this.$notify.error({
-        //       title: '失败',
-        //       message: "编辑失败"
-        //     });
-        //   }
-        // });
-        // TODO delete
-        
-        product.productInfo.seller_name = this.userData.username;
-        product.productInfo.update_time = this.getDateForOwn();
-        product.productInfo.product_status = 0; // 未上架状态
-        this.updateOwnInfo(product);
-        if(product.product_id==0){
-          this.ownData.push(product);
-        } else {
-          for(let i = 0; i <  this.ownData.length; i++) {
-            if (this.ownData[i].product_id == product.product_id) {
-              this.ownData[i].productInfo.title = product.productInfo.title;
-              this.ownData[i].productInfo.imgsrc = product.productInfo.imgsrc;
-              this.ownData[i].productInfo.description= product.productInfo.description;
-              this.ownData[i].productInfo.product_status= product.productInfo.product_status;
-              this.ownData[i].productInfo.price= product.productInfo.price;
-              this.ownData[i].productInfo.category= product.productInfo.category;
-              this.updateOwnInfo(this.ownData[i]);
-              break;
-            }
+        let url = this.formUrl("manage");
+        this.$axios({
+          method: 'POST',
+          url: url,
+          data: {
+            "product_id": product.product_id.toString(),
+            "username": this.userData.username,
+            "title": product.productInfo.title,
+            "category": product.productInfo.category,
+            "price": product.productInfo.price,
+            "description": product.productInfo.description,
+            "imgsrc": product.productInfo.imgsrc
           }
-        }
-        this.$notify.info({
-          title: '成功',
-          message: "编辑成功！"
+        }).then((res)=>{
+          if (res.data.success == true) {
+            product.productInfo.seller_name = this.userData.username;
+            product.productInfo.update_time = this.getDateForOwn();
+            product.productInfo.product_status = 0; // 未上架状态
+            this.updateOwnInfo(product);
+            if(product.product_id==0){
+              this.ownData.push(product);
+            } else {
+              for(let i = 0; i <  this.ownData.length; i++) {
+                if (this.ownData[i].product_id == product.product_id) {
+                  this.ownData[i].productInfo.title = product.productInfo.title;
+                  this.ownData[i].productInfo.imgsrc = product.productInfo.imgsrc;
+                  this.ownData[i].productInfo.description= product.productInfo.description;
+                  this.ownData[i].productInfo.product_status= product.productInfo.product_status;
+                  this.ownData[i].productInfo.price= product.productInfo.price;
+                  this.ownData[i].productInfo.category= product.productInfo.category;
+                  this.updateOwnInfo(this.ownData[i]);
+                  break;
+                }
+              }
+            }
+            this.$notify.info({
+              title: '成功',
+              message: "编辑成功！"
+            });
+          } else {
+            this.$notify.error({
+              title: '失败',
+              message: "编辑失败"
+            });
+          }
         });
     },
     invisible(product){
-      // let url = this.formUrl("invisible", {
-      //   "product_id": product.product_id
-      // });
-      // this.$axios({
-      //   method: 'POST',
-      //   url: url,
-      // }).then((res)=>{
-      //   if (res.data.success == true) {
-      //     product.productInfo.product_status = 0;
-      //     this.updateOwnInfo(product);
-      //     this.$notify.success({
-      //       title: '成功',
-      //       message: product.productInfo.title + " 已成功下架！"
-      //     });
-      //   } else {
-      //     this.$notify.error({
-      //       title: '失败',
-      //       message: product.productInfo.title + " 没能成功下架，这是为什么呢？"
-      //     });
-      //   }
-      // });
-
-
-      product.productInfo.product_status = 0;
-      this.updateOwnInfo(product);
-      window.console.log(product);
-      this.$notify.success({
-        title: '成功',
-        message: product.productInfo.title + " 已成功下架！"
+      let url = this.formUrl("invisible", {
+        "product_id": product.product_id
+      });
+      this.$axios({
+        method: 'POST',
+        url: url,
+      }).then((res)=>{
+        if (res.data.success == true) {
+          product.productInfo.product_status = 0;
+          this.updateOwnInfo(product);
+          this.$notify.success({
+            title: '成功',
+            message: product.productInfo.title + " 已成功下架！"
+          });
+        } else {
+          this.$notify.error({
+            title: '失败',
+            message: product.productInfo.title + " 没能成功下架，这是为什么呢？"
+          });
+        }
       });
     },
     visible(product){
-      // let url = this.formUrl("visible", {
-      //   "product_id": product.product_id
-      // });
-      // this.$axios({
-      //   method: 'POST',
-      //   url: url,
-      // }).then((res)=>{
-      //   if (res.data.success == true) {
-      //     product.productInfo.product_status = 1;
-      //     this.updateOwnInfo(product);
-      //     this.$notify.success({
-      //       title: '成功',
-      //       message: product.productInfo.title + " 已成功上架！"
-      //     });
-      //   } else {
-      //     this.$notify.error({
-      //       title: '失败',
-      //       message: product.productInfo.title + " 没能成功上架，这是为什么呢？"
-      //     });
-      //   }
-      // });
-
-      product.productInfo.product_status = 1;
-      this.updateOwnInfo(product);
-      this.$notify.success({
-        title: '成功',
-        message: product.productInfo.title + " 已成功上架！"
+      let url = this.formUrl("visible", {
+        "product_id": product.product_id
+      });
+      this.$axios({
+        method: 'POST',
+        url: url,
+      }).then((res)=>{
+        if (res.data.success == true) {
+          product.productInfo.product_status = 1;
+          this.updateOwnInfo(product);
+          this.$notify.success({
+            title: '成功',
+            message: product.productInfo.title + " 已成功上架！"
+          });
+        } else {
+          this.$notify.error({
+            title: '失败',
+            message: product.productInfo.title + " 没能成功上架，这是为什么呢？"
+          });
+        }
       });
     },
     loadUserData()//加载当前用户信息，用于修改信息
@@ -993,7 +927,9 @@ export default {
       }).then((res)=>{
         if (res.data.success == true) {
           this.userData = res.data.user;
+          window.console.log(this.userData);
           this.isLogin = true;
+          this.isSeller = this.userData.account_status == 1;
           this.$notify.info({
             title: '',
             message: '登录成功!'
@@ -1023,6 +959,14 @@ export default {
     resetForm(loginRuleForm) {
       this.$refs[loginRuleForm].resetFields();
     },
+    logout(){
+      this.isLogin = false;
+      this.isSeller = false;
+      this.isCartLoad = false;
+      this.isOwnLoad = false;
+      this.isOrderLoad = false;
+      this.userData = null;
+    },
     handleSearch() {
       window.console.log("[handleSearch] " + this.keyword);
       this.loadProduct(this.categorySelect, this.keyword);
@@ -1036,7 +980,7 @@ export default {
       this.selectProductVisible = true;
     },
     handleAction(product) {
-      if (product.productInfo.product_status == 0) {
+      if (product.productInfo.product_status == 0 || product.productInfo.product_status == 3) {
         this.visible(product);
         this.updateOwnInfo(product);
       } else if (product.productInfo.product_status == 1) {

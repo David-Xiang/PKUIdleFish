@@ -51,7 +51,7 @@
                     v-model="rate"
                     :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
                 </el-rate>
-                <el-button slot="append" @click="$emit('comment', product, message); message=null;" icon="el-icon-chat-dot-square" >评价</el-button>
+                <el-button slot="append" @click="$emit('comment', product, message);" icon="el-icon-chat-dot-square" >评价</el-button>
                 </el-input>
             </el-col>
         </el-row>
