@@ -14,7 +14,6 @@
                         <div style="display:inline; color: red; font-size: 22px">{{product.productInfo.price.toFixed(2)}}</div>
                     </div>
                     <el-button-group>
-                        <el-button size="medium" @click="$emit('comment', product)" icon="el-icon-chat-dot-square">评论</el-button>
                         <el-button size="medium" @click="$emit('addCart', product)" icon="el-icon-circle-plus-outline">购物车</el-button>
                         <el-button size="medium" @click="$emit('purchase', product)">下单<i class="el-icon-shopping-cart-1 el-icon--right"></i></el-button>
                         <!--管理员下架,值得一提的是detail里找不到app的信息，所以userData是null会显示不出来，而且isLogin=false-->
@@ -43,6 +42,20 @@
                 </el-table>
             </el-collapse-item>
         </el-collapse>
+
+        <el-row style="margin:20px;">
+            <el-col :span="24">
+                <el-input placeholder="说说你的感受吧！" v-model="message" clearable @keyup.enter.native="$emit('comment', product, message); message=null;" >
+                    <el-rate 
+                    slot="prepend"
+                    v-model="rate"
+                    :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
+                </el-rate>
+                <el-button slot="append" @click="$emit('comment', product, message); message=null;" icon="el-icon-chat-dot-square" >评价</el-button>
+                </el-input>
+            </el-col>
+        </el-row>
+
 <!--管理员下架-->
         <el-dialog
         title="即将永久下架商品"
@@ -73,7 +86,10 @@ export default{
         return {
             categoryLabel:[
                 "全部分类", "穿戴服饰", "手机数码", "美容化妆"
-            ]
+            ],
+            message: null,
+            iconClasses: ['icon-rate-face-1', 'icon-rate-face-2', 'icon-rate-face-3'],
+            rate: null
         }
     }   
 }

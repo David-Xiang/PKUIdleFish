@@ -64,10 +64,10 @@
                     <el-table height="200px" :data="product.comments.slice(0,Math.min(5,product.comments.length))">
                       <el-table-column width="100" property="buyer_name" show-overflow-tooltip label="姓名"></el-table-column>
                       <el-table-column width="70" property="time" label="日期"></el-table-column>
-                      <el-table-column width="330" property="content" :show-overflow-tooltip="true" label="评论"></el-table-column>
+                      <el-table-column width="330" property="content" :show-overflow-tooltip="true" label="评价"></el-table-column>
                     </el-table>
                     <el-badge class="hidden-md-and-down" v-bind:value="product.comments.length" style="margin-right: 7px" slot="reference">
-                      <el-button size="medium" icon="el-icon-chat-dot-square">评论</el-button>
+                      <el-button size="medium" @click="handleProduct(product)" icon="el-icon-chat-dot-square">评价</el-button>
                     </el-badge>
                   </el-popover>
                 </div>
@@ -360,11 +360,10 @@ export default {
       isOwnLoad: false, // 登出置false
       isOrderLoad: false, // 登出置false
       products: [],
-      selectProduct: null, // 商品详情展示 
+      selectProduct: null, // 商品详情/评价展示
       cartData: [],
       orderData: [],
       ownData: [],
-      commentData: [],
       allUserData: [],//所有用户信息
       userData: null,
       loginDialogVisible: false,
@@ -669,6 +668,48 @@ export default {
         });
       });
     },
+    comment(product, message) {
+        // let url = this.formUrl("comment");
+        // this.$axios({
+        //   method: 'POST',
+        //   url: url,
+        //   data: {
+        //     "username": this.username,
+        //     "product_id": product.product_id,
+        //     "content": message
+        //   }
+        // }).then((res)=>{
+        //   if (res.data.success == true) {
+        //     this.selectProduct.comments.push({
+        //       "product_id": this.selectProduct.product_id,
+        //       "time": this.getDateForComment(),
+        //       "buyer_name": this.userData.name,
+        //       "content": message
+        //     });
+        //     this.$notify.info({
+        //       title: '成功',
+        //       message: "评价提交成功！"
+        //     });
+        //   } else {
+        //     this.$notify.error({
+        //       title: '失败',
+        //       message: "评价提交失败"
+        //     });
+        //   }
+        // });
+        // TODO delete
+        
+        this.selectProduct.comments.push({
+          "product_id": this.selectProduct.product_id,
+          "time": this.getDateForComment(),
+          "buyer_name": this.userData.name,
+          "content": message
+        });
+        this.$notify.info({
+          title: '成功',
+          message: "评价提交成功！"
+        });
+    },
     loadUserData()//加载当前用户信息，用于修改信息
     {
         this.changeUserDataRuleForm.name=this.userData.name;
@@ -714,6 +755,14 @@ export default {
       } else if (status == 4) {
         return "删除";
       }
+    },
+    getDateForComment() {
+      let d = new Date();
+      return [
+        d.getFullYear()%100,
+        ('0' + (d.getMonth() + 1)).slice(-2),
+        ('0' + d.getDate()).slice(-2)
+      ].join('.');
     },
     // 注册登录函数
     submitLoginForm(formName) {
