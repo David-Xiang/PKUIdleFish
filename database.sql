@@ -164,7 +164,7 @@ UPDATE bargain
 SET bargain_status = 'done'
 WHERE buyer_name = 'user3' AND product_id = 2;
 
-INSERT INTO comment(product_id, buyer_name, content) VALUES
-(1, 'user1', 'good'),
-(1, 'user1', 'very good'),
-(1, 'user1', 'very very very good');
+INSERT INTO comment(buyer_name, product_id, content) VALUES
+('user1', 1, 'good'),
+('user1', 1, 'very good'),
+('user1', 1, 'very very very good');
