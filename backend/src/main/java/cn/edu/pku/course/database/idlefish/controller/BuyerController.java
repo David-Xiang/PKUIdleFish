@@ -3,10 +3,7 @@ package cn.edu.pku.course.database.idlefish.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cn.edu.pku.course.database.idlefish.basic.ProductBasic;
 import cn.edu.pku.course.database.idlefish.basic.UserBasic;
@@ -59,7 +56,7 @@ public class BuyerController {
 	}
 
 	@PostMapping("comment")
-	public ActionResponse comment(@RequestParam Map<String, String> form) {
+	public ActionResponse comment(@RequestBody Map<String, String> form) {
 		return buyerMod.leaveComment(form.get("username"), Integer.parseInt(form.get("product_id")),
 				form.get("content"));
 	}

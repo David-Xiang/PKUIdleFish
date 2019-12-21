@@ -3,10 +3,7 @@ package cn.edu.pku.course.database.idlefish.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cn.edu.pku.course.database.idlefish.basic.ProductBasic;
 import cn.edu.pku.course.database.idlefish.basic.UserBasic;
@@ -33,7 +30,7 @@ public class SellerController {
 	}
 
 	@PostMapping("manage")
-	public ActionResponse manage(@RequestParam Map<String, String> form) {
+	public ActionResponse manage(@RequestBody Map<String, String> form) {
 		return sellerMod.PutOnOrModify(Integer.parseInt(form.get("product_id")), form.get("username"),
 				form.get("title"), form.get("category"), form.get("price"), form.get("description"),
 				form.get("imgsrc"));
