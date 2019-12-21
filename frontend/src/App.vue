@@ -3,7 +3,7 @@
     <el-container style="overflow: scroll;">
       <el-menu mode="horizontal" default-active="1">
           <el-submenu index="0">
-            <template slot="title" style="font-size: 40px;"><i class="el-icon-user-solid"></i>{{isLogin?"欢迎回来，" + userData.name:"登录/注册"}}</template>
+            <template slot="title" style="font-size: 40px;"><i class="el-icon-user-solid"></i>{{isLogin?"欢迎回来，" + userData.username:"登录/注册"}}</template>
             <el-menu-item index="0-1" @click="loginDialogVisible = true" v-if="!isLogin">登陆</el-menu-item>
             <el-menu-item index="0-2" @click="registerDialogVisible = true" v-if="!isLogin">注册</el-menu-item>
             <el-menu-item index="0-3" @click="loadUserData();changeUserDataDialogVisible = true" v-if="isLogin">修改信息</el-menu-item>
@@ -94,8 +94,8 @@
       width="500px"
       center>
       <el-form :rules="loginRules" ref="loginRuleForm" :model="loginRuleForm" label-width="100px">
-        <el-form-item label="用户名" prop="name">
-          <el-input placeholder="请输入用户名" v-model = "loginRuleForm.name" size="small"></el-input>
+        <el-form-item label="用户名" prop="username">
+          <el-input placeholder="请输入用户名" v-model = "loginRuleForm.username" size="small"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input placeholder="请输入密码" v-model = "loginRuleForm.password" size="small" show-password></el-input>
@@ -103,7 +103,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="loginDialogVisible = false;registerDialogVisible = true">注 册</el-button>
-        <el-button type="primary" @click="submitLoginForm('loginRuleForm')">登 录</el-button>
+        <el-button type="primary" @click="submitLoginForm(loginRuleForm)">登 录</el-button>
       </span>
     </el-dialog>
     
@@ -113,14 +113,14 @@
         width="500px"
         center>
       <el-form :rules="registerRules" ref="registerRuleForm" :model="registerRuleForm" label-width="100px">
-        <el-form-item label="用户名" prop="name">
-          <el-input placeholder="起个什么名字好呢" v-model = "registerRuleForm.name" size="small"></el-input>
+        <el-form-item label="用户名" prop="username">
+          <el-input placeholder="起个什么名字好呢" v-model = "registerRuleForm.username" size="small"></el-input>
         </el-form-item>
           <el-form-item label="密码" prop="password">
           <el-input placeholder="密码要好好想想" v-model = "registerRuleForm.password" size="small" show-password></el-input>
         </el-form-item>
-          <el-form-item label="出生日期" prop="birthday">
-          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "registerRuleForm.birthday" style="width: 100%;"></el-date-picker>
+          <el-form-item label="出生日期" prop="birth">
+          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "registerRuleForm.birth" style="width: 100%;"></el-date-picker>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model= "registerRuleForm.sex">
@@ -147,14 +147,14 @@
         width="500px"
         center>
       <el-form  :rules="changeUserDataRules" ref="changeUserDataRuleForm" :model="changeUserDataRuleForm" label-width="100px">
-        <el-form-item label="用户名" prop="name">
-          <el-input  placeholder="起个什么名字好呢" v-model = "changeUserDataRuleForm.name" size="small"></el-input>
+        <el-form-item label="用户名" prop="username">
+          <el-input  placeholder="起个什么名字好呢" v-model = "changeUserDataRuleForm.username" size="small"></el-input>
         </el-form-item>
           <el-form-item label="密码" prop="password">
           <el-input placeholder="密码要好好想想" v-model = "changeUserDataRuleForm.password" size="small" show-password></el-input>
         </el-form-item>
-          <el-form-item label="出生日期" prop="birthday">
-          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "changeUserDataRuleForm.birthday" style="width: 100%;"></el-date-picker>
+          <el-form-item label="出生日期" prop="birth">
+          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "changeUserDataRuleForm.birth" style="width: 100%;"></el-date-picker>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model= "changeUserDataRuleForm.sex">
@@ -428,41 +428,41 @@ export default {
       keyword:"",
       categorySelect: 0,
       loginRuleForm:{
-        name:'',
+        username:'',
         password:'',
       },
       loginRules:{
-        name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
+        username:[{required:true,message:'用户名不能为空', trigger:'blur'}],
         password:[{required:true,message:'密码不能为空', trigger:'blur'}]
       },
       registerRuleForm:{
-        name:'',
+        username:'',
         password:'',
-        birthday:"",
+        birth:"",
         sex:"",
         email:"",
         phone:"",
       },
       changeUserDataRuleForm:{
-        name:'',
+        username:'',
         password:'',
-        birthday:'',
+        birth:'',
         sex:"",
         email:'',
         phone:'',
       },
       registerRules:{
-        name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
+        username:[{required:true,message:'用户名不能为空', trigger:'blur'}],
         password:[{required:true,message:'密码不能为空', trigger:'blur'}],
-        birthday:[{type:'date',required: true, message:'请选择出生日期', trigger:'change'}],
+        birth:[{type:'date',required: true, message:'请选择出生日期', trigger:'change'}],
         sex:[{required:true,message:'请选择性别', trigger:'change'}],
         email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
         phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
       },
       changeUserDataRules:{
-        name:[{required:true,message:'用户名不能为空', trigger:'blur'}],
+        username:[{required:true,message:'用户名不能为空', trigger:'blur'}],
         password:[{required:true,message:'密码不能为空', trigger:'blur'}],
-        birthday:[{type:'date',required: true, message:'请选择出生日期', trigger:'change'}],
+        birth:[{type:'date',required: true, message:'请选择出生日期', trigger:'change'}],
         sex:[{required:true,message:'请选择性别', trigger:'change'}],
         email:[{required:true,message:'电子邮件不能为空', trigger:'blur'}],
         phone:[{required:true,message:'电话号码不能为空', trigger:'blur'}],
@@ -773,7 +773,7 @@ export default {
         //     this.selectProduct.comments.push({
         //       "product_id": this.selectProduct.product_id,
         //       "time": this.getDateForComment(),
-        //       "buyer_name": this.userData.name,
+        //       "buyer_name": this.userData.username,
         //       "content": message
         //     });
         //     this.$notify.info({
@@ -792,7 +792,7 @@ export default {
         this.selectProduct.comments.push({
           "product_id": this.selectProduct.product_id,
           "time": this.getDateForComment(),
-          "buyer_name": this.userData.name,
+          "buyer_name": this.userData.username,
           "content": message
         });
         this.$notify.info({
@@ -816,7 +816,7 @@ export default {
         //   }
         // }).then((res)=>{
         //   if (res.data.success == true) {
-            // product.productInfo.seller_name = this.userData.name;
+            // product.productInfo.seller_name = this.userData.username;
             // product.productInfo.update_time = this.getDateForOwn();
             // product.productInfo.product_status = 0; // 未上架状态
         //     this.updateOwnInfo(product);
@@ -849,7 +849,7 @@ export default {
         // });
         // TODO delete
         
-        product.productInfo.seller_name = this.userData.name;
+        product.productInfo.seller_name = this.userData.username;
         product.productInfo.update_time = this.getDateForOwn();
         product.productInfo.product_status = 0; // 未上架状态
         this.updateOwnInfo(product);
@@ -938,8 +938,8 @@ export default {
     },
     loadUserData()//加载当前用户信息，用于修改信息
     {
-        this.changeUserDataRuleForm.name=this.userData.name;
-        this.changeUserDataRuleForm.birthday=this.userData.birthday;
+        this.changeUserDataRuleForm.username=this.userData.username;
+        this.changeUserDataRuleForm.birth=this.userData.birth;
         this.changeUserDataRuleForm.phone=this.userData.phone;
         this.changeUserDataRuleForm.email=this.userData.email;
         window.console.log(this.changeUserDataRuleForm);
@@ -992,11 +992,33 @@ export default {
       ].join('.');
     },
     // 注册登录函数
-    submitLoginForm(form) {
-      return formName;
+    submitLoginForm(loginRuleForm) {
+      let url = this.formUrl("login", {
+        "username": loginRuleForm.username,
+        "password": loginRuleForm.password
+      });
+      this.$axios({
+        method: 'POST',
+        url: url,
+      }).then((res)=>{
+        if (res.data.success == true) {
+          this.userData = res.data.user;
+          this.isLogin = true;
+          this.$notify.info({
+            title: '',
+            message: '登录成功!'
+          });
+        } else {
+          this.$notify.error({
+            title: '',
+            message: '用户名或密码错误'
+          });
+        }
+      });
+      return loginRuleForm;
     },
-    submitRegisterForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    submitRegisterForm(loginRuleForm) {
+      this.$refs[loginRuleForm].validate((valid) => {
         if (valid) {
           //TODO:成功注册需要做什么？
           if(!this.isLogin)
@@ -1007,8 +1029,8 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm(loginRuleForm) {
+      this.$refs[loginRuleForm].resetFields();
     },
     handleSearch() {
       window.console.log("[handleSearch] " + this.keyword);
