@@ -88,7 +88,6 @@
       </el-footer>
     </el-container>
 
-      <!--在这里加入了注册登录的弹出窗口。暂时让所有登录都失败，因为不知道怎么存放登录状态-->
     <el-dialog
       title="欢迎使用北大闲鱼"
       :visible.sync="loginDialogVisible"
@@ -352,7 +351,7 @@ export default {
   },
   data(){
     return {
-      domain: "http://localhost",
+      domain: "http://localhost:8080",
       isLoading: false,
       isLogin: true, // 登出置false
       isSeller: true,
@@ -429,42 +428,42 @@ export default {
     this.isLogin = mock_user.success;
   },
   methods: {
-    // formUrl(action, params) {
-    //   let url = this.domain + "/" + action;
-    //   if (Object.keys(params).length > 0) {
-    //     let i = 0;
-    //     for (let key in params) {
-    //       if (i == 0){
-    //         url += "?";
-    //       } else {
-    //         url += "&";
-    //       }
-    //       i++;
-    //       url += key + "=" + params[key];
-    //     }
-    //   }
-    //   window.console.log("[formUrl] " + url);
-    //   return url;
-    // },
+    formUrl(action, params) {
+      let url = this.domain + "/" + action;
+      if (Object.keys(params).length > 0) {
+        let i = 0;
+        for (let key in params) {
+          if (i == 0){
+            url += "?";
+          } else {
+            url += "&";
+          }
+          i++;
+          url += key + "=" + params[key];
+        }
+      }
+      window.console.log("[formUrl] " + url);
+      return url;
+    },
     loadProduct(category, keyword, page=1) {
       this.isLoading = true;
       let params = {
         "category": category,
-        "page": page-1
+        "page": page
       };
       if (keyword.length >0) {
         params["keyword"] = keyword;
+      } else {
+        params["keyword"] = "";
       }
-      // let url = this.formUrl("product", params);
-      // this.$axios({
-      //   method: 'GET',
-      //   url: url,
-      // }).then((res)=>{
-      //   this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
-      //   this.isLoading = false;
-      // });
-      this.products = Array(20).fill(null).map((_, h)=>mock_products.products[h%3]);
-      this.isLoading = false;
+      let url = this.formUrl("product", params);
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+        this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
+        this.isLoading = false;
+      });
     },
     loadProductAdmin(sold, page=1) {//管理员查看所有订单
       this.isLoading = true;
@@ -758,8 +757,6 @@ export default {
         this.changeUserDataRuleForm.phone=this.userData.phone;
         this.changeUserDataRuleForm.email=this.userData.email;
         window.console.log(this.changeUserDataRuleForm);
-
-
     },
     //加载所有用户数据
         loadAllUserData() {
@@ -807,14 +804,7 @@ export default {
     },
     // 注册登录函数
     submitLoginForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          //TODO:成功登录需要做什么？
-          this.loginDialogVisible = false;
-        } else {
-          return false;
-        }
-      });
+      return formName;
     },
     submitRegisterForm(formName) {
       this.$refs[formName].validate((valid) => {
