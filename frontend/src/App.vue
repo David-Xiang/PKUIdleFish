@@ -15,10 +15,10 @@
           <el-menu-item index="2" @click="cartVisible = true; loadCart();" :disabled="!isLogin"> 
             <template slot="title"><i class="el-icon-s-goods"></i>购物车</template>
           </el-menu-item>
-          <el-menu-item index="3" @click="orderVisible = true; loadRelated(0);" :disabled="!isLogin"> 
+          <el-menu-item index="3" @click="orderVisible = true; loadOrder();" :disabled="!isLogin"> 
             <template slot="title"><i class="el-icon-s-order"></i>订单</template>
           </el-menu-item>
-          <el-menu-item index="4" @click="ownVisible = true; loadRelated(1);" :disabled="!isLogin||!isSeller"> 
+          <el-menu-item index="4" @click="ownVisible = true; loadOwn();" :disabled="!isLogin||!isSeller"> 
             <template slot="title"><i class="el-icon-s-management"></i>自家宝贝</template>
           </el-menu-item>
           <el-menu-item index="5">
@@ -180,6 +180,8 @@
       <detail 
         v-bind:product="selectProduct"
         v-on:addCart="addCart"
+        v-on:comment="comment"
+        v-on:purchase="purchase"
       />
     </el-dialog>
     
@@ -212,7 +214,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="$alert(scope.row)">下单</el-button>
+              @click="purchase(scope.row)">下单</el-button>
             <el-button
               size="mini"
               type="danger"
@@ -356,6 +358,7 @@ export default {
       isSeller: true,
       isCartLoad: false, // 登出置false
       isOwnLoad: false, // 登出置false
+      isOrderLoad: false, // 登出置false
       products: [],
       selectProduct: null, // 商品详情展示 
       cartData: [],
@@ -509,58 +512,60 @@ export default {
         res();
       }
     },
-    loadBought() {
+    loadOrder(res=null) {
+      if (this.isOrderLoad){
+        return;
+      }
       // let url = this.formUrl("bought", {
       //   "username": this.username
       // });
       // this.$axios({
       //   method: 'GET',
       //   url: url,
-      // }).then((res)=>{
-      //   this.orderData = res.data.products;
+      // }).then((resp)=>{
+      //   this.orderData = resp.data.products;
+      //   this.isOrderLoad = true;
+      //   if (res != null) {
+      //     res();
+      //   }
       // });
       this.orderData = mock_products.products;
+      this.isCartLoad = true;
+      if (res != null) {
+        res();
+      }
     },
-    loadOwn() {
-      // TODO
-    },
-    loadRelated(type) {
-      // let url = this.formUrl("related", {
+    loadOwn(res=null) {
+      if (this.isOwnLoad){
+        return;
+      }
+      // let url = this.formUrl("own", { // TODO
       //   "username": this.username
       // });
       // this.$axios({
       //   method: 'GET',
       //   url: url,
-      // }).then((res)=>{
-      //   if (type == 0){
-      //     // 订单
-      //     this.orderData = res.data[0].products;
-      //   } else if (type == 1) {
-      //     // 自家宝贝
-      //     this.ownData = res.data[1].products;
-      //     window.console.log("ownData");
-      //     window.console.log(this.ownData);
-      //     for (let p of this.ownData) {
-      //       p.productInfo.statusText = this.getOwnStatus(p);
-      //       p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
-      //       p.productInfo.actionDisable = p.productInfo.product_status == 4;
-      //     }
+      // }).then((resp)=>{
+      //   this.ownData = resp.data.products;
+      //   this.updateOwnInfo();
+      //   this.isOwnLoad = true;
+      //   if (res != null) {
+      //     res();
       //   }
       // });
-      if (type == 0){
-          // 订单
-          this.orderData = mock_products.products;
-        } else if (type == 1) {
-          // 自家宝贝
-          this.ownData = mock_products.products;
-          window.console.log("ownData");
-          window.console.log(this.ownData);
-          for (let p of this.ownData) {
-            p.productInfo.statusText = this.getOwnStatus(p);
-            p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
-            p.productInfo.actionDisable = p.productInfo.product_status == 4;
-          }
-        }
+      this.ownData = mock_products.products;
+      this.updateOwnInfo();
+      this.isOwnLoad = true;
+      if (res != null) {
+        res();
+      }
+    },
+    updateOwnInfo(){
+      for (let p of this.ownData) {
+        p.productInfo.statusText = this.getOwnStatus(p);
+        p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
+        p.productInfo.actionDisable = p.productInfo.product_status == 4;
+      }
     },
     // 动作类函数
     addCart(product){
@@ -633,12 +638,36 @@ export default {
         message: product.productInfo.title + " 已成功从购物车删除"
       });
     },
-    buy(product){
-      this.$notify.error({
-            title: '未完工',
-            message: product.productInfo.title + " 没能成功放入购物车，这是为什么呢？"
-          });
-      // TODO XDW stops here
+    purchase(product){
+      this.loadOrder(() => {
+        // let url = this.formUrl("buy", {
+        //   "username": this.username,
+        //   "product_id": product.product_id
+        // });
+        // this.$axios({
+        //   method: 'POST',
+        //   url: url,
+        // }).then((res)=>{
+        //   if (res.data.success == true) {
+        //     this.orderData.push(product);
+        //     this.$notify.success({
+        //       title: '成功',
+        //       message: product.productInfo.title + " 已成功下单！"
+        //     });
+        //   } else {
+        //     this.$notify.error({
+        //       title: '失败',
+        //       message: product.productInfo.title + " 没能成功下单，这是为什么呢？"
+        //     });
+        //   }
+        // });
+        // TODO delete
+        this.orderData.push(product);
+        this.$notify.success({
+          title: '成功',
+          message: product.productInfo.title + " 已成功下单！"
+        });
+      });
     },
     loadUserData()//加载当前用户信息，用于修改信息
     {
