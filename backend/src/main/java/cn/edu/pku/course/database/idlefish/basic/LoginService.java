@@ -15,6 +15,7 @@ public class LoginService {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
+	@Autowired
 	UserBasic userBasic;
 
 	/**

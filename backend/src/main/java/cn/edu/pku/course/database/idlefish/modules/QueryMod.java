@@ -19,8 +19,7 @@ public class QueryMod {
 	 * fetch the buyers that spent the highest total amount of money
 	 */
 	public UserResponse spentHighest() {
-		String sql;
-		sql = "SELECT account.* FROM spent INNER JOIN account ON buyer_name = username WHERE amount = (SELECT max(amount) FROM spent)";
+		String sql = "SELECT account.* FROM spent INNER JOIN account ON buyer_name = username WHERE amount = (SELECT max(amount) FROM spent)";
 		return jdbcTemplate.queryForObject(sql, userResponseRowMapper);
 	}
 

@@ -20,8 +20,7 @@ public class TransactionBasic {
 	 * fetch all transactions <br>
 	 */
 	public TransactionResponse fetchAll() {
-		String sql;
-		sql = "SELECT * FROM transaction";
+		String sql = "SELECT * FROM transaction";
 		return jdbcTemplate.queryForObject(sql, transactionResponseRowMapper);
 	}
 

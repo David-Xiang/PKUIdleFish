@@ -17,10 +17,10 @@ public class TransactionResponseRowMapper implements RowMapper<TransactionRespon
 	@Override
 	public TransactionResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
 		List<Transaction> transactions = new ArrayList<Transaction>();
-		while (rs.next()) {
+		do {
 			transactions.add(new Transaction(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4),
 					rs.getDouble(5), rs.getString(6)));
-		}
+		} while (rs.next());
 		return new TransactionResponse(transactions);
 	}
 }
