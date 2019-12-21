@@ -254,10 +254,10 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">评价</el-button>
+              @click="handleProduct(scope.row)">评价</el-button>
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">退货</el-button>
+              @click="returnProduct(scope.row)">退货</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -621,7 +621,7 @@ export default {
       //   } else {
       //     this.$notify.error({
       //       title: '失败',
-      //       message: product.productInfo.title + " 没能成功放入购物车，这是为什么呢？"
+      //       message: product.productInfo.title + " 没能成功从购物车删除，这是为什么呢？"
       //     });
       //   }
       // });
@@ -666,6 +666,47 @@ export default {
           title: '成功',
           message: product.productInfo.title + " 已成功下单！"
         });
+      });
+    },
+    returnProduct(product){
+      // this.loadOrder(() => {
+      //   let url = this.formUrl("removecart", {
+      //     "username": this.username,
+      //     "product_id": product.product_id
+      //   });
+      //   this.$axios({
+      //     method: 'POST',
+      //     url: url,
+      //   }).then((res)=>{
+      //     if (res.data.success == true) {
+      //       for(let i = 0; i <  this.orderData.length; i++) {
+      //         if (this.orderData[i].product_id == product.product_id) {
+      //           this.orderData.splice(i, 1);
+      //           break;
+      //         }
+      //       }
+      //       this.$notify.success({
+      //         title: '成功',
+      //         message: product.productInfo.title + " 已成功退货！"
+      //       });
+      //     } else {
+      //       this.$notify.error({
+      //         title: '失败',
+      //         message: product.productInfo.title + " 没能成功退货，这是为什么呢？"
+      //       });
+      //     }
+      //   });
+      // TODO delete
+      this.loadOrder();
+      for(let i = 0; i <  this.orderData.length; i++) {
+        if (this.orderData[i].product_id == product.product_id) {
+          this.orderData.splice(i, 1);
+          break;
+        }
+      }
+      this.$notify.success({
+        title: '成功',
+        message: product.productInfo.title + " 已成功退货！"
       });
     },
     comment(product, message) {
