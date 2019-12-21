@@ -1,5 +1,6 @@
 USE pkuidlefish;
 TRUNCATE TABLE account;
+ALTER TABLE account AUTO_INCREMENT = 1000;
 TRUNCATE TABLE bargain;
 TRUNCATE TABLE category;
 TRUNCATE TABLE comment;

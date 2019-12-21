@@ -325,22 +325,55 @@
         :data="allUserData"
         style="width: 100%">
         <el-table-column
+          label="账号"
+          prop="id"
+          width="100px">
+        </el-table-column>
+        <el-table-column
           label="用户名"
-          prop="name"
+          prop="username"
           width="100px">
         </el-table-column>
         <el-table-column
           label="出生日期"
-          prop="birthday"
-          width="100px"/>  
+          prop="birth"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          label="性别"
+          prop="sex"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          label="邮箱"
+          prop="email"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          label="手机号"
+          prop="phone"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          label="用户状态"
+          prop="account_status"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          label="用户状态最后变化时间"
+          prop="update_time"
+          width="100px">
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">评价</el-button>
+              @click="$alert(scope.$index)">通过审核
+            </el-button>
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">退货</el-button>
+              @click="$alert(scope.$index)">删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -352,7 +385,6 @@
 <script>
 import mock_products from './assets/mock_products.js'
 import mock_user from './assets/mock_login.js'
-import mock_allUser from './assets/mock_allUser.js'
 import detail from './components/detail.vue'
 import modifyProduct from './components/modifyProduct.vue'
 import newProduct from './components/newProduct.vue'
@@ -850,27 +882,22 @@ export default {
         this.changeUserDataRuleForm.email=this.userData.email;
         window.console.log(this.changeUserDataRuleForm);
     },
-    //加载所有用户数据
-        loadAllUserData() {
-      // let url = this.formUrl("admin/user", {
-      // });
-      // this.$axios({
-      //   method: 'GET',
-      //   url: url,
-      // }).then((res)=>{
-      //     this.allUserData = res.allUserData.user;
-      //     window.console.log("allUserData");
-      //     window.console.log(this.allUserData);
-      //   }
-      // });
-          this.allUserData = mock_allUser.user;
+    // 加载所有用户数据
+    loadAllUserData() {
+      let url = this.formUrl("admin/user", {});
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+          this.allUserData = res.data.users;
           window.console.log("allUserData");
           window.console.log(this.allUserData);
-          // for (let p of this.ownData) {
-          //   p.productInfo.statusText = this.getOwnStatus(p);
-          //   p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
-          //   p.productInfo.actionDisable = p.productInfo.product_status == 4;
-          // }
+      });
+      // for (let p of this.ownData) {
+      //   p.productInfo.statusText = this.getOwnStatus(p);
+      //   p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
+      //   p.productInfo.actionDisable = p.productInfo.product_status == 4;
+      // }
     },
     getOwnStatus(product){
       let status = product.productInfo.product_status;
