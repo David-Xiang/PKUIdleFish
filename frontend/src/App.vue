@@ -536,7 +536,10 @@ export default {
       this.isLoading = false;
     },
     loadCart(res=null) {
-      if (this.isCartLoad){
+      if (this.isCartLoad && res==null){
+        return;
+      } else if (this.isCartLoad && res!= null) {
+        res();
         return;
       }
       let url = this.formUrl("cart", {
@@ -554,7 +557,10 @@ export default {
       });
     },
     loadOrder(res=null) {
-      if (this.isOrderLoad){
+      if (this.isOrderLoad && res==null){
+        return;
+      } else if (this.isOrderLoad && res!= null) {
+        res();
         return;
       }
       let url = this.formUrl("bought", {
@@ -572,7 +578,10 @@ export default {
       });
     },
     loadOwn(res=null) {
-      if (this.isOwnLoad){
+      if (this.isOwnLoad && res==null){
+        return;
+      } else if (this.isOwnLoad && res!= null) {
+        res();
         return;
       }
       let url = this.formUrl("myproduct", { // TODO
@@ -599,103 +608,95 @@ export default {
     },
     // 动作类函数
     addCart(product){
+      if(!this.isLogin){
+        this.$notify.error({
+          title: '失败',
+          message: "请先登录！"
+        });
+        return;
+      }
       this.loadCart(() => {
-        // let url = this.formUrl("addcart", {
-        //   "username": this.userData.username,
-        //   "product_id": product.product_id
-        // });
-        // this.$axios({
-        //   method: 'POST',
-        //   url: url,
-        // }).then((res)=>{
-        //   if (res.data.success == true) {
-        //     this.cartData.push(product);
-        //     this.$notify.info({
-        //       title: '成功',
-        //       message: product.productInfo.title + " 已成功放入购物车，快去看看吧～"
-        //     });
-        //   } else {
-        //     this.$notify.error({
-        //       title: '失败',
-        //       message: product.productInfo.title + " 没能成功放入购物车，这是为什么呢？"
-        //     });
-        //   }
-        // });
-        // TODO delete
-        this.cartData.push(product);
-        this.$notify.info({
-          title: '成功',
-          message: product.productInfo.title + " 已成功放入购物车，快去看看吧～"
+        let url = this.formUrl("addcart", {
+          "username": this.userData.username,
+          "product_id": product.product_id
+        });
+        this.$axios({
+          method: 'POST',
+          url: url,
+        }).then((res)=>{
+          if (res.data.success == true) {
+            this.cartData.push(product);
+            this.$notify.info({
+              title: '成功',
+              message: product.productInfo.title + " 已成功放入购物车，快去看看吧～"
+            });
+          } else {
+            this.$notify.error({
+              title: '失败',
+              message: product.productInfo.title + " 没能成功放入购物车，这是为什么呢？"
+            });
+          }
         });
       });
     },
     deleteCart(product) {
-      // let url = this.formUrl("deletecart", {
-      //   "username": this.userData.username,
-      //   "product_id": product.product_id
-      // });
-      // this.$axios({
-      //   method: 'POST',
-      //   url: url,
-      // }).then((res)=>{
-      //   if (res.data.success == true) {
-      //     for(let i = 0; i <  this.cartData.length; i++) {
-      //       if (this.cartData[i].product_id == product.product_id) {
-      //         this.cartData.splice(i, 1);
-      //         continue;
-      //       }
-      //     }
-      //     this.$notify.info({
-      //       title: '成功',
-      //       message: product.productInfo.title + " 已成功从购物车删除"
-      //     });
-      //   } else {
-      //     this.$notify.error({
-      //       title: '失败',
-      //       message: product.productInfo.title + " 没能成功从购物车删除，这是为什么呢？"
-      //     });
-      //   }
-      // });
-      // TODO delete
-      for(let i = 0; i <  this.cartData.length; i++) {
-        if (this.cartData[i].product_id == product.product_id) {
-          this.cartData.splice(i, 1);
-          break;
+      let url = this.formUrl("removecart", {
+        "username": this.userData.username,
+        "product_id": product.product_id
+      });
+      this.$axios({
+        method: 'POST',
+        url: url,
+      }).then((res)=>{
+        if (res.data.success == true) {
+          for(let i = 0; i <  this.cartData.length; i++) {
+            if (this.cartData[i].product_id == product.product_id) {
+              this.cartData.splice(i, 1);
+              continue;
+            }
+          }
+          this.$notify.info({
+            title: '成功',
+            message: product.productInfo.title + " 已成功从购物车删除"
+          });
+        } else {
+          this.$notify.error({
+            title: '失败',
+            message: product.productInfo.title + " 没能成功从购物车删除，这是为什么呢？"
+          });
         }
-      }
-      this.$notify.info({
-        title: '成功',
-        message: product.productInfo.title + " 已成功从购物车删除"
       });
     },
     purchase(product){
+      if(!this.isLogin){
+        this.$notify.error({
+          title: '失败',
+          message: "请先登录！"
+        });
+        return;
+      }
       this.loadOrder(() => {
-        // let url = this.formUrl("buy", {
-        //   "username": this.userData.username,
-        //   "product_id": product.product_id
-        // });
-        // this.$axios({
-        //   method: 'POST',
-        //   url: url,
-        // }).then((res)=>{
-        //   if (res.data.success == true) {
-        //     this.orderData.push(product);
-        //     this.$notify.success({
-        //       title: '成功',
-        //       message: product.productInfo.title + " 已成功下单！"
-        //     });
-        //   } else {
-        //     this.$notify.error({
-        //       title: '失败',
-        //       message: product.productInfo.title + " 没能成功下单，这是为什么呢？"
-        //     });
-        //   }
-        // });
-        // TODO delete
-        this.orderData.push(product);
-        this.$notify.success({
-          title: '成功',
-          message: product.productInfo.title + " 已成功下单！"
+        let url = this.formUrl("buy", {
+          "username": this.userData.username,
+          "product_id": product.product_id
+        });
+        this.$axios({
+          method: 'POST',
+          url: url,
+        }).then((res)=>{
+          if (res.data.success == true) {
+            product.productInfo.update_time = (new Date()).toString();
+            this.orderData.push(product);
+            this.$notify.success({
+              title: '成功',
+              message: product.productInfo.title + " 已成功下单！"
+            });
+          } else {
+            this.$notify.error({
+              title: '失败',
+              message: product.productInfo.title + " 没能成功下单，这是为什么呢？"
+            });
+          }
         });
       });
     },
@@ -741,6 +742,13 @@ export default {
       });
     },
     comment(product, message) {
+      if(!this.isLogin){
+        this.$notify.error({
+          title: '失败',
+          message: "请先登录！"
+        });
+        return;
+      }
         // let url = this.formUrl("comment");
         // this.$axios({
         //   method: 'POST',
