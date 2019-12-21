@@ -992,7 +992,7 @@ export default {
       ].join('.');
     },
     // 注册登录函数
-    submitLoginForm(formName) {
+    submitLoginForm(form) {
       return formName;
     },
     submitRegisterForm(formName) {
