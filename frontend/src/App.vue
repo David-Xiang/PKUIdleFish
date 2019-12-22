@@ -25,7 +25,13 @@
             <template slot="title"><i class="el-icon-s-data"></i>分析</template>
           </el-menu-item>
           <el-menu-item index="6" v-if="isLogin && userData.account_status == 2" @click="allUserVisible = true; loadAllUserData();">
-            <template slot="title"><i class="el-icon-s-check"></i>管理用户</template>
+            <template slot="title"><i class="el-icon-s-check"></i>用户管理</template>
+          </el-menu-item>
+          <!-- <el-menu-item index="7" v-if="isLogin && userData.account_status == 2" @click="allOrderVisible = true; loadAllOrderData();">
+            <template slot="title"><i class="el-icon-s-check"></i>订单管理</template>
+          </el-menu-item> -->
+          <el-menu-item index="8" v-if="isLogin && userData.account_status == 2" @click="allProductVisible = true; loadAllProductData(1);">
+            <template slot="title"><i class="el-icon-s-check"></i>商品管理</template>
           </el-menu-item>
 
         </el-menu>
@@ -320,6 +326,48 @@
       </el-row>
     </el-drawer>
 
+    <!--管理员商品管理-->
+    <el-drawer title="商品管理" :visible.sync="allProductVisible" size="1000px">
+      <el-table
+        :data="allProductData"
+        style="width: 100%">
+        <el-table-column
+          label="卖家昵称"
+          prop="productInfo.seller_name"
+          width="100px"/>
+        <el-table-column
+          label="名称"
+          prop="productInfo.title"
+          width="300px"/>
+        <el-table-column
+          label="价格"
+          prop="productInfo.price"
+          width="100px"/>
+        <el-table-column
+          label="交易状态"
+          width="100px">
+          <template slot-scope="scope">
+              {{getTransactionStatus(scope.row)}}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="adminAuditProduct(scope.row)"
+              :disabled="scope.row.productInfo.product_status!=1">强制下架</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+            background
+            layout="prev, pager, next"
+            @current-change="handleAdminPage"
+            :total="100"
+            style="margin-top:10px"/>
+
+    </el-drawer>
+
     <!--用户管理-->
     <el-drawer title="所有用户" :visible.sync="allUserVisible" size="1100px">
       <el-table
@@ -418,6 +466,8 @@ export default {
       orderData: [],
       ownData: [],
       allUserData: [],//所有用户信息
+      allOrderData: [],
+      allProductData: [],
       userData: null,
       loginDialogVisible: false,
       registerDialogVisible: false,
@@ -427,6 +477,8 @@ export default {
       orderVisible: false,
       ownVisible: false,
       allUserVisible: false,
+      allOrderVisible: false,
+      allProductVisible: false,
       selectProductVisible: false,
       editVisible: false,
       newProductVisible: false,
@@ -516,27 +568,16 @@ export default {
         this.isLoading = false;
       });
     },
-    loadProductAdmin(sold, page=1) {//管理员查看所有订单
-      this.isLoading = true;
-      let params = {
-        "sold": sold,
-        "page": page
-      };
-      if(sold > 5000)//写上这句话，不然报params未使用
-      {
-          params["0"] = sold;
-
-      }
-      // let url = this.formUrl("admin/product", params);
-      // this.$axios({
-      //   method: 'GET',
-      //   url: url,
-      // }).then((res)=>{
-      //   this.products = Array(20).fill(null).map((_, h)=>res.data.products[h%3]);
-      //   this.isLoading = false;
-      // });
-      // this.products = Array(20).fill(null).map((_, h)=>mock_products.products[h%3]);
-      this.isLoading = false;
+    loadAllProductData(page=1) {//管理员查看所有订单
+      let url = this.formUrl("admin/product", {
+        page: page
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+        this.allProductData = res.data.products;
+      });
     },
     loadCart(res=null) {
       if (this.isCartLoad && res==null){
@@ -914,6 +955,28 @@ export default {
         }
       });
     },
+    adminAuditProduct(product){
+      let url = this.formUrl("admin/offline/product", {
+         "product_id": product.product_id
+      });
+      this.$axios({
+        method: 'POST',
+        url: url,
+      }).then((res)=>{
+        if (res.data.success == true) {
+          product.product_status = 4;
+          this.$notify.success({
+            title: '成功',
+            message: product.productInfo.title + " 已强制下架！"
+          });
+        } else {
+          this.$notify.error({
+            title: '失败',
+            message: product.productInfo.title + " 没能成功下架，这是为什么呢？"
+          });
+        }
+      });
+    },
     loadUserData()//加载当前用户信息，用于修改信息
     {
         this.changeUserDataRuleForm.username=this.userData.username;
@@ -950,7 +1013,21 @@ export default {
       } else if (status == 3) {
         return "退货";
       } else if (status == 4) {
-        return "删除";
+        return "强制下架";
+      }
+    },
+    getTransactionStatus(product){
+      let status = product.productInfo.product_status;
+      if (status == 0) {
+        return "未上架";
+      } else if (status == 1) {
+        return "上架待售";
+      } else if (status == 2) {
+        return "已成交";
+      } else if (status == 3) {
+        return "已退货";
+      } else if (status == 4) {
+        return "已强制下架";
       }
     },
     getUserStatus(user){
@@ -1042,6 +1119,10 @@ export default {
     handlePage(page) {
       window.console.log("[handlePage] " + page);
       this.loadProduct(this.categorySelect, this.keyword, page);
+    },
+    handleAdminPage(page) {
+      window.console.log("[handleAdminPage] " + page);
+      this.loadAllProductData(page);
     },
     handleProduct(product) {
       this.selectProduct = product;
