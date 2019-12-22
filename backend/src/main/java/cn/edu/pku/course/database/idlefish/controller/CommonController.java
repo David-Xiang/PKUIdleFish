@@ -65,14 +65,13 @@ public class CommonController {
 		return productBasic.fetch("%", "%", "%", "%", "%", "%", true,
 				"ORDER BY category_name ASC, product.update_time DESC", 0, 20);
 	}
-
 	@GetMapping("mostagegroup")
 	public List<Map<String, Object>> mostAgeGroup() {
 		return queryMod.mostAgeGroup();
 	}
 
 	@GetMapping("similarbuyer")
-	public List<Map<String, Object>> similarBuyer(String username) {
+	public List<Map<String, Object>> similarBuyer(@RequestParam String username) {
 		return queryMod.similarBuyer(username);
 	}
 
