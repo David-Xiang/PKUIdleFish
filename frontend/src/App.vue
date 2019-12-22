@@ -27,9 +27,9 @@
           <el-menu-item index="6" v-if="isLogin && userData.account_status == 2" @click="allUserVisible = true; loadAllUserData();">
             <template slot="title"><i class="el-icon-s-check"></i>用户管理</template>
           </el-menu-item>
-          <!-- <el-menu-item index="7" v-if="isLogin && userData.account_status == 2" @click="allOrderVisible = true; loadAllOrderData();">
+          <el-menu-item index="7" v-if="isLogin && userData.account_status == 2" @click="allOrderVisible = true; loadAllOrderData();">
             <template slot="title"><i class="el-icon-s-check"></i>订单管理</template>
-          </el-menu-item> -->
+          </el-menu-item>
           <el-menu-item index="8" v-if="isLogin && userData.account_status == 2" @click="allProductVisible = true; loadAllProductData(1);">
             <template slot="title"><i class="el-icon-s-check"></i>商品管理</template>
           </el-menu-item>
@@ -372,6 +372,45 @@
 
     </el-drawer>
 
+
+    <el-drawer title="交易概览" :visible.sync="allOrderVisible" size="1000px">
+      <el-table
+        :data="allOrderData"
+        style="width: 100%">
+        <el-table-column
+          label="交易流水ID"
+          prop="transaction_id"
+          width="100px"/>
+        <el-table-column
+          label="买家昵称"
+          prop="buyer_name"
+          width="100px"/>
+        <el-table-column
+          label="卖家昵称"
+          prop="seller_name"
+          width="100px"/>
+        <el-table-column
+          label="商品ID"
+          prop="product_id"
+          width="100px"/>
+        <el-table-column
+          label="价格"
+          prop="price"
+          width="100px"/>
+        <el-table-column
+          label="时间"
+          prop="time"
+          width="300px"/>
+      </el-table>
+      <el-pagination
+            background
+            layout="prev, pager, next"
+            @current-change="handleAdminOrderPage"
+            :total="100"
+            style="margin-top:10px"/>
+
+    </el-drawer>
+
     <!--用户管理-->
     <el-drawer title="所有用户" :visible.sync="allUserVisible" size="1100px">
       <el-table
@@ -580,6 +619,18 @@ export default {
         url: url,
       }).then((res)=>{
         this.allProductData = res.data.products;
+      });
+    },
+    loadAllOrderData(page=1) {//管理员查看所有订单
+      let url = this.formUrl("admin/transaction", {
+        page: page
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+        this.allOrderData = res.data.transaction;
+        window.console.log(this.allOrderData);
       });
     },
     loadCart(res=null) {
@@ -1142,6 +1193,10 @@ export default {
     handleAdminPage(page) {
       window.console.log("[handleAdminPage] " + page);
       this.loadAllProductData(page);
+    },
+    handleAdminOrderPage(page) {
+      window.console.log("[handleAdminOrderPage] " + page);
+      this.loadAllOrderData(page);
     },
     handleProduct(product) {
       this.selectProduct = product;
