@@ -49,6 +49,7 @@
                   <div align="left">
                     <div style="display:inline; color: red; font-size: 14px">¥</div>
                     <div style="display:inline; color: red; font-size: 22px">{{product.productInfo.price.toFixed(2)}}</div>
+                    <img style="width: 30px; height: 16px; object-fit: cover; margin-left:5px" v-if="product.comments.length>0" src="./assets/hot.png"/>  
                   </div>
                   <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px" @click="handleProduct(product)">{{product.productInfo.title}}</div>
                   <div style="margin: 5px"/>
