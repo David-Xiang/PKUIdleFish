@@ -33,7 +33,7 @@ INSERT INTO bargain(buyer_name, product_id) VALUES
 ('user3', 1),
 ('user3', 2);
 
-INSERT INTO comment(buyer_name, product_id, content) VALUES
-('user1', 1, 'good'),
-('user1', 1, 'very good'),
-('user1', 1, 'very very very good');
+INSERT INTO comment(buyer_name, product_id, content, time) VALUES
+('user1', 1, 'good', '09.09.09'),
+('user1', 1, 'very good', '10.10.10'),
+('user1', 1, 'very very very good', '19.09.19');

@@ -1,5 +1,8 @@
 package cn.edu.pku.course.database.idlefish.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +16,6 @@ import cn.edu.pku.course.database.idlefish.modules.QueryMod;
 import cn.edu.pku.course.database.idlefish.response.ActionResponse;
 import cn.edu.pku.course.database.idlefish.response.LoginResponse;
 import cn.edu.pku.course.database.idlefish.response.ProductResponse;
-import cn.edu.pku.course.database.idlefish.response.UserResponse;
 
 @RestController
 public class CommonController {
@@ -48,9 +50,30 @@ public class CommonController {
 		return loginService.registerOrModify(type, username, password, birth, sex, email, phone);
 	}
 
-	@GetMapping("wealthiest")
-	public UserResponse wealthiest() {
+	@GetMapping("spenthighest")
+	public List<Map<String, Object>> spentHighest() {
 		return queryMod.spentHighest();
+	}
+
+	@GetMapping("morecommented")
+	public List<Map<String, Object>> moreCommented() {
+		return queryMod.moreCommented();
+	}
+
+	@GetMapping("allproduct")
+	public ProductResponse allProduct() {
+		return productBasic.fetch("%", "%", "%", "%", "%", "%", true,
+				"ORDER BY category_name ASC, product.update_time DESC", 0, 20);
+	}
+
+	@GetMapping("mostagegroup")
+	public List<Map<String, Object>> mostAgeGroup() {
+		return queryMod.mostAgeGroup();
+	}
+
+	@GetMapping("similarbuyer")
+	public List<Map<String, Object>> similarBuyer(String username) {
+		return queryMod.similarBuyer(username);
 	}
 
 }

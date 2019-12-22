@@ -34,7 +34,7 @@ public class ProductBasic {
 		String selectFrom = "SELECT product.*, category_name FROM product INNER JOIN category USING (category) LEFT JOIN bargain USING (product_id)";
 		String where = "WHERE category LIKE ? AND title LIKE ? AND IFNULL(buyer_name, '') LIKE ? AND seller_name LIKE ? AND product_status LIKE ? AND IFNULL(bargain_status, '') LIKE ?";
 		if (timeLimit) {
-			where += " AND DATEDIFF(NOW(), product.update_time) < 1800";
+			where += " AND TIMESTAMPDIFF(YEAR, product.update_time, CURDATE()) < 5";
 		}
 		String group = buyer_name.contentEquals("%") ? "GROUP BY product_id" : "";
 		String limit = pageNum > 0 ? "LIMIT " + (pageNum - 1) * itemPerPage + ", " + itemPerPage : "";

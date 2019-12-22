@@ -3,7 +3,6 @@ package cn.edu.pku.course.database.idlefish.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,23 +23,19 @@ public class ProductResponseRowMapper implements RowMapper<ProductResponse> {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
+	static Map<String, Integer> statusCodeMap = Map.of("draft", 0, "sale", 1, "sold", 2, "returned", 3, "deleted", 4);
+
 	@Override
 	public ProductResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
 		List<Product> products = new ArrayList<Product>();
-		Map<String, Integer> statusCodeMap = new HashMap<>();
-		statusCodeMap.put("draft", 0);
-		statusCodeMap.put("sale", 1);
-		statusCodeMap.put("sold", 2);
-		statusCodeMap.put("returned", 3);
-		statusCodeMap.put("deleted", 4);
-
 		do {
 			int product_id = rs.getInt(1);
 			String sql = "SELECT * FROM comment WHERE product_id = ?";
 			List<Map<String, Object>> comments = jdbcTemplate.queryForList(sql, product_id);
 			products.add(new Product(product_id,
 					new ProductInfo(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getDouble(5), rs.getString(6),
-							rs.getString(7), statusCodeMap.get(rs.getString(8)), rs.getString(9), rs.getInt(10), rs.getString(11)),
+							rs.getString(7), statusCodeMap.get(rs.getString(8)), rs.getString(9), rs.getInt(10),
+							rs.getString(11)),
 					comments));
 		} while (rs.next());
 		return new ProductResponse(products);

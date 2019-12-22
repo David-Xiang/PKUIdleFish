@@ -17,10 +17,13 @@ public class TransactionBasic {
 	TransactionResponseRowMapper transactionResponseRowMapper;
 
 	/**
-	 * fetch all transactions <br>
+	 * fetch transactions <br>
+	 * result will be ordered using *order* and divided by page using pageNum and
+	 * itemPerPage if pageNum > 0 <br>
 	 */
-	public TransactionResponse fetchAll() {
-		String sql = "SELECT * FROM transaction";
+	public TransactionResponse fetch(String order, int pageNum, int itemPerPage) {
+		String limit = pageNum > 0 ? "LIMIT " + (pageNum - 1) * itemPerPage + ", " + itemPerPage : "";
+		String sql = "SELECT * FROM transaction " + order + " " + limit;
 		return jdbcTemplate.queryForObject(sql, transactionResponseRowMapper);
 	}
 

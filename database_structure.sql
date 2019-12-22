@@ -56,7 +56,7 @@ CREATE TABLE comment(
     buyer_name VARCHAR(50),
     product_id INT UNSIGNED,
     content VARCHAR(500),
-    time DATE DEFAULT CURRENT_DATE
+    time CHAR(8)
 );
 
 -- 
@@ -66,15 +66,6 @@ CREATE TABLE comment(
 CREATE FUNCTION myhash(raw VARCHAR(20))
 RETURNS CHAR(128) DETERMINISTIC
 RETURN SHA2(CONCAT('sha2', raw, 'pkuidlefish2019'), 512);
-
---
--- Views
---
-
-CREATE VIEW spent AS
-SELECT buyer_name, sum(transaction.price) as amount
-FROM transaction INNER JOIN product USING (product_id)
-GROUP BY buyer_name;
 
 --
 -- Triggers
@@ -124,3 +115,30 @@ BEGIN
 END$
 
 DELIMITER ;
+
+--
+-- Views
+--
+
+CREATE VIEW buyer_related AS
+SELECT buyer_name AS username, COUNT(DISTINCT transaction.seller_name) AS num_of_sellers, COUNT(*) AS num_of_items, SUM(transaction.price) as total_spent
+FROM transaction INNER JOIN product USING (product_id)
+GROUP BY buyer_name;
+
+CREATE VIEW commented AS
+SELECT account.username AS seller_name, COUNT(buyer_name) AS times
+FROM account LEFT JOIN product ON username = seller_name LEFT JOIN comment USING (product_id)
+WHERE account_status = 'seller'
+GROUP BY account.username;
+
+CREATE VIEW user_age_group AS
+SELECT username, (CASE
+    WHEN TIMESTAMPDIFF(YEAR, birth, CURDATE()) < 30 THEN '青年'
+    WHEN TIMESTAMPDIFF(YEAR, birth, CURDATE()) > 50 THEN '老年'
+    ELSE '中年' END) as age_group
+FROM account;
+
+CREATE VIEW audience AS
+SELECT account.username AS seller_name, IFNULL(age_group, '暂无买家') as age_group, COUNT(DISTINCT buyer_name) AS num
+FROM account LEFT JOIN transaction ON username = seller_name LEFT JOIN user_age_group ON buyer_name = user_age_group.username
+GROUP BY account.username, age_group;
