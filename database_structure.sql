@@ -10,7 +10,7 @@ CREATE TABLE account(
     username VARCHAR(50) UNIQUE,
     en_password CHAR(128),
     birth DATE,
-    sex ENUM('M', 'F'),
+    sex ENUM('男', '女'),
     email VARCHAR(50),
     phone CHAR(11),
     account_status ENUM('buyer','forseller','seller','admin','deleted') DEFAULT 'buyer',

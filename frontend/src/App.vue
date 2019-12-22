@@ -100,17 +100,17 @@
       :visible.sync="loginDialogVisible"
       width="500px"
       center>
-      <el-form :rules="loginRules" ref="loginRuleForm" :model="loginRuleForm" label-width="100px">
+      <el-form :rules="loginRules" ref="loginForm" :model="loginForm" label-width="100px">
         <el-form-item label="用户名" prop="username">
-          <el-input placeholder="请输入用户名" v-model = "loginRuleForm.username" size="small"></el-input>
+          <el-input placeholder="请输入用户名" v-model = "loginForm.username" size="small"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input placeholder="请输入密码" v-model = "loginRuleForm.password" size="small" show-password></el-input>
+          <el-input placeholder="请输入密码" v-model = "loginForm.password" size="small" show-password></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="loginDialogVisible = false;registerDialogVisible = true">注 册</el-button>
-        <el-button type="primary" @click="submitLoginForm(loginRuleForm)">登 录</el-button>
+        <el-button type="primary" @click="submitLoginForm(loginForm)">登 录</el-button>
       </span>
     </el-dialog>
     
@@ -119,31 +119,31 @@
         :visible.sync="registerDialogVisible"
         width="500px"
         center>
-      <el-form :rules="registerRules" ref="registerRuleForm" :model="registerRuleForm" label-width="100px">
+      <el-form :rules="registerRules" ref="registerForm" :model="registerForm" label-width="100px">
         <el-form-item label="用户名" prop="username">
-          <el-input placeholder="起个什么名字好呢" v-model = "registerRuleForm.username" size="small"></el-input>
+          <el-input placeholder="起个什么名字好呢" v-model = "registerForm.username" size="small"></el-input>
         </el-form-item>
           <el-form-item label="密码" prop="password">
-          <el-input placeholder="密码要好好想想" v-model = "registerRuleForm.password" size="small" show-password></el-input>
+          <el-input placeholder="密码要好好想想" v-model = "registerForm.password" size="small" show-password></el-input>
         </el-form-item>
           <el-form-item label="出生日期" prop="birth">
-          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "registerRuleForm.birth" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "registerForm.birth" style="width: 100%;"></el-date-picker>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
-          <el-radio-group v-model= "registerRuleForm.sex">
+          <el-radio-group v-model= "registerForm.sex">
             <el-radio label="女"></el-radio>
             <el-radio label="男"></el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input placeholder="电子邮箱会梦见真实邮箱吗" v-model = "registerRuleForm.email" size="small"></el-input>
+          <el-input placeholder="电子邮箱会梦见真实邮箱吗" v-model = "registerForm.email" size="small"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
-          <el-input placeholder="怎么样才能联系到你呢" v-model = "registerRuleForm.phone" size="small"></el-input>
+          <el-input placeholder="怎么样才能联系到你呢" v-model = "registerForm.phone" size="small"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitRegisterForm('registerRuleForm')">注 册</el-button>
+        <el-button type="primary" @click="submitRegisterForm(registerForm, 'register')">注 册</el-button>
       </span>
     </el-dialog>
 
@@ -153,31 +153,28 @@
         :visible.sync="changeUserDataDialogVisible"
         width="500px"
         center>
-      <el-form  :rules="changeUserDataRules" ref="changeUserDataRuleForm" :model="changeUserDataRuleForm" label-width="100px">
-        <el-form-item label="用户名" prop="username">
-          <el-input  placeholder="起个什么名字好呢" v-model = "changeUserDataRuleForm.username" size="small"></el-input>
-        </el-form-item>
+      <el-form  :rules="changeUserDataRules" ref="changeUserDataForm" :model="changeUserDataForm" label-width="100px">
           <el-form-item label="密码" prop="password">
-          <el-input placeholder="密码要好好想想" v-model = "changeUserDataRuleForm.password" size="small" show-password></el-input>
+          <el-input placeholder="密码要好好想想" v-model = "changeUserDataForm.password" size="small" show-password></el-input>
         </el-form-item>
           <el-form-item label="出生日期" prop="birth">
-          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "changeUserDataRuleForm.birth" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="date" placeholder="日期是多少呢" v-model= "changeUserDataForm.birth" style="width: 100%;"></el-date-picker>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
-          <el-radio-group v-model= "changeUserDataRuleForm.sex">
+          <el-radio-group v-model= "changeUserDataForm.sex">
             <el-radio label="女"></el-radio>
             <el-radio label="男"></el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input placeholder="电子邮箱会梦见真实邮箱吗" v-model = "changeUserDataRuleForm.email" size="small"></el-input>
+          <el-input placeholder="电子邮箱会梦见真实邮箱吗" v-model = "changeUserDataForm.email" size="small"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
-          <el-input placeholder="怎么样才能联系到你呢" v-model = "changeUserDataRuleForm.phone" size="small"></el-input>
+          <el-input placeholder="怎么样才能联系到你呢" v-model = "changeUserDataForm.phone" size="small"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitRegisterForm('changeUserDataForm')">注 册</el-button>
+        <el-button type="primary" @click="submitRegisterForm(changeUserDataForm, 'modify')">修 改</el-button>
       </span>
     </el-dialog>
 
@@ -491,7 +488,7 @@ export default {
       newProductVisible: false,
       keyword:"",
       categorySelect: 0,
-      loginRuleForm:{
+      loginForm:{
         username:'',
         password:'',
       },
@@ -499,7 +496,7 @@ export default {
         username:[{required:true,message:'用户名不能为空', trigger:'blur'}],
         password:[{required:true,message:'密码不能为空', trigger:'blur'}]
       },
-      registerRuleForm:{
+      registerForm:{
         username:'',
         password:'',
         birth:"",
@@ -507,8 +504,7 @@ export default {
         email:"",
         phone:"",
       },
-      changeUserDataRuleForm:{
-        username:'',
+      changeUserDataForm:{
         password:'',
         birth:'',
         sex:"",
@@ -986,11 +982,11 @@ export default {
     },
     loadUserData()//加载当前用户信息，用于修改信息
     {
-        this.changeUserDataRuleForm.username=this.userData.username;
-        this.changeUserDataRuleForm.birth=this.userData.birth;
-        this.changeUserDataRuleForm.phone=this.userData.phone;
-        this.changeUserDataRuleForm.email=this.userData.email;
-        window.console.log(this.changeUserDataRuleForm);
+      this.changeUserDataForm.sex = this.userData.sex;  
+      this.changeUserDataForm.birth=new Date(this.userData.birth);
+      this.changeUserDataForm.phone=this.userData.phone;
+      this.changeUserDataForm.email=this.userData.email;
+      window.console.log(this.changeUserDataForm);
     },
     // 加载所有用户数据
     loadAllUserData() {
@@ -1068,10 +1064,10 @@ export default {
       ].join('.');
     },
     // 注册登录函数
-    submitLoginForm(loginRuleForm) {
+    submitLoginForm(form) {
       let url = this.formUrl("login", {
-        "username": loginRuleForm.username,
-        "password": loginRuleForm.password
+        "username": form.username,
+        "password": form.password
       });
       this.$axios({
         method: 'POST',
@@ -1094,22 +1090,35 @@ export default {
           });
         }
       });
-      return loginRuleForm;
+      return form;
     },
-    submitRegisterForm(loginRuleForm) {
-      this.$refs[loginRuleForm].validate((valid) => {
-        if (valid) {
-          //TODO:成功注册需要做什么？
-          if(!this.isLogin)
-            this.registerDialogVisible = false;
-            this.changeUserDataDialogVisible = false;
+    submitRegisterForm(form, type) {
+      let url = this.formUrl("register", {
+          "type" : type,
+          "username" : this.userData.username,
+          "password": form.password,
+          "birth": form.birth.toISOString().substring(0, 10),
+          "sex": form.sex,
+          "email": form.email,
+          "phone": form.phone,
+      });
+      this.$axios({
+        method: 'POST',
+        url: url,
+      }).then((res)=>{
+        if (res.data.success == true) {
+          this.$notify.info({
+            title: '',
+            message: type == "reigster" ? '注册成功!' : '修改成功!'
+          });
+          this.registerDialogVisible = false;
         } else {
-          return false;
+          this.$notify.error({
+            title: '',
+            message: type == "reigster" ? '注册失败，用户名已存在' : '修改失败'
+          });
         }
       });
-    },
-    resetForm(loginRuleForm) {
-      this.$refs[loginRuleForm].resetFields();
     },
     logout(){
       this.isLogin = false;

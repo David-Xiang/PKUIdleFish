@@ -8,12 +8,12 @@ TRUNCATE TABLE product;
 TRUNCATE TABLE transaction;
 
 INSERT INTO account(username, en_password, birth, sex, email, phone, account_status, update_time) VALUES
-('admin', myhash('admin'), '2000-01-05', 'M', 'admin@pku.edu.cn', '10086000005', 'admin', '2006-06-06'),
-('user1', myhash('password1'), '2000-01-01', 'M', 'user1@pku.edu.cn', '10086000001', 'seller', '2011-11-11'),
-('user2', myhash('password2'), '2000-01-02', 'F', 'user2@pku.edu.cn', '10086000002', 'forseller', '2010-10-10'),
-('user3', myhash('password3'), '2000-01-03', 'M', 'user3@pku.edu.cn', '10086000003', 'seller', '2009-09-09'),
-('user4', myhash('password4'), '2000-01-04', 'F', 'user4@pku.edu.cn', '10086000004', 'buyer', '2008-08-08'),
-('user5', myhash('password5'), '2000-01-05', 'M', 'user5@pku.edu.cn', '10086000005', 'buyer', '2007-07-07');
+('admin', myhash('admin'), '2000-01-05', '男', 'admin@pku.edu.cn', '10086000005', 'admin', '2006-06-06'),
+('user1', myhash('password1'), '2000-01-01', '男', 'user1@pku.edu.cn', '10086000001', 'seller', '2011-11-11'),
+('user2', myhash('password2'), '2000-01-02', '女', 'user2@pku.edu.cn', '10086000002', 'forseller', '2010-10-10'),
+('user3', myhash('password3'), '2000-01-03', '女', 'user3@pku.edu.cn', '10086000003', 'seller', '2009-09-09'),
+('user4', myhash('password4'), '2000-01-04', '女', 'user4@pku.edu.cn', '10086000004', 'buyer', '2008-08-08'),
+('user5', myhash('password5'), '2000-01-05', '男', 'user5@pku.edu.cn', '10086000005', 'buyer', '2007-07-07');
 
 INSERT INTO category (category, category_name) VALUES
 (1, 'category1'),
