@@ -24,7 +24,7 @@
           <el-menu-item index="5">
             <template slot="title"><i class="el-icon-s-data"></i>分析</template>
           </el-menu-item>
-          <el-menu-item index="6" v-if="isLogin && userData.status == 2" @click="allUserVisible = true; loadAllUserData();">
+          <el-menu-item index="6" v-if="isLogin && userData.account_status == 2" @click="allUserVisible = true; loadAllUserData();">
             <template slot="title"><i class="el-icon-s-check"></i>管理用户</template>
           </el-menu-item>
 
@@ -321,14 +321,14 @@
     </el-drawer>
 
     <!--用户管理-->
-    <el-drawer title="所有用户" :visible.sync="allUserVisible" size="900px">
+    <el-drawer title="所有用户" :visible.sync="allUserVisible" size="1100px">
       <el-table
         :data="allUserData"
         style="width: 100%">
         <el-table-column
           label="账号"
           prop="id"
-          width="100px">
+          width="70px">
         </el-table-column>
         <el-table-column
           label="用户名"
@@ -343,37 +343,41 @@
         <el-table-column
           label="性别"
           prop="sex"
-          width="100px">
+          width="50px">
         </el-table-column>
         <el-table-column
           label="邮箱"
           prop="email"
-          width="100px">
+          width="150px">
         </el-table-column>
         <el-table-column
           label="手机号"
           prop="phone"
-          width="100px">
+          width="120px">
         </el-table-column>
         <el-table-column
           label="用户状态"
-          prop="account_status"
           width="100px">
+          <template slot-scope="scope">
+              {{getUserStatus(scope.row)}}
+          </template>
         </el-table-column>
         <el-table-column
           label="用户状态最后变化时间"
           prop="update_time"
-          width="100px">
+          width="200px">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">通过审核
+              @click="adminAuditUser(scope.row)"
+              :disabled="scope.row.account_status!=4"
+              >通过审核
             </el-button>
             <el-button
               size="mini"
-              @click="$alert(scope.$index)">删除
+              @click="adminDeleteUser(scope.row)">删除
             </el-button>
           </template>
         </el-table-column>
@@ -861,6 +865,55 @@ export default {
         }
       });
     },
+    adminDeleteUser(user){
+      let url = this.formUrl("admin/offline/user", {
+          "username": user.username,
+        });
+        this.$axios({
+          method: 'POST',
+          url: url,
+        }).then((res)=>{
+          if (res.data.success == true) {
+            for(let i = 0; i <  this.allUserData.length; i++) {
+              if (this.allUserData[i].id == user.id) {
+                this.orderData.splice(i, 1);
+                break;
+              }
+            }
+            this.$notify.success({
+              title: '成功',
+              message: user.username + " 已成功删除"
+            });
+          } else {
+            this.$notify.error({
+              title: '失败',
+              message: user.username + " 没能成功删除，这是为什么呢？"
+            });
+          }
+        });
+    },
+    adminAuditUser(user){
+      let url = this.formUrl("admin/seller", {
+         "username": user.username
+      });
+      this.$axios({
+        method: 'POST',
+        url: url,
+      }).then((res)=>{
+        if (res.data.success == true) {
+          user.account_status = 1;
+          this.$notify.success({
+            title: '成功',
+            message: user.username + " 已成为卖家！"
+          });
+        } else {
+          this.$notify.error({
+            title: '失败',
+            message: user.username + " 没能成为卖家，这是为什么呢？"
+          });
+        }
+      });
+    },
     loadUserData()//加载当前用户信息，用于修改信息
     {
         this.changeUserDataRuleForm.username=this.userData.username;
@@ -898,6 +951,20 @@ export default {
         return "退货";
       } else if (status == 4) {
         return "删除";
+      }
+    },
+    getUserStatus(user){
+      let status = user.account_status;
+      if (status == 0) {
+        return "买家";
+      } else if (status == 1) {
+        return "卖家";
+      } else if (status == 2) {
+        return "管理员";
+      } else if (status == 3) {
+        return "已删除";
+      } else if (status == 4) {
+        return "申请卖家";
       }
     },
     getDateForOwn() {

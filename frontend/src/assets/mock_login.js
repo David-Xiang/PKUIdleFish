@@ -7,6 +7,6 @@ export default{
         "sex": "M",
         "email": "xingaondwe@pku.edu.cn",
         "phone": "15000000234",
-        "status": 2
+        "account_status": 2
     }
 }

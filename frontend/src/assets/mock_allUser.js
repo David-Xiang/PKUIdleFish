@@ -8,7 +8,7 @@ export default{
         "sex": "M",
         "email": "xingaondwe@pku.edu.cn",
         "phone": "15000000234",
-        "status": 2
+        "account_status": 2
     },
     {
         "id": 123114514,
@@ -17,7 +17,7 @@ export default{
         "sex": "M",
         "email": "senpai@163.cn",
         "phone": "13611355987",
-        "status": 4
+        "account_status": 4
     },
     ]
 }
