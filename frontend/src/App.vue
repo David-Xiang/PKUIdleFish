@@ -55,7 +55,7 @@
                   <div align="left">
                     <div style="display:inline; color: red; font-size: 14px">¥</div>
                     <div style="display:inline; color: red; font-size: 22px">{{product.productInfo.price.toFixed(2)}}</div>
-                    <img style="width: 30px; height: 16px; object-fit: cover; margin-left:5px" v-if="product.hot>2" src="./assets/hot.png"/>  
+                    <img style="width: 30px; height: 16px; object-fit: cover; margin-left:5px" v-if="product.productInfo.hot>2" src="./assets/hot.png"/>  
                   </div>
                   <div class="title" align="left" style="font-color: #F56C6C; font-size: 14px" @click="handleProduct(product)">{{product.productInfo.title}}</div>
                   <div style="margin: 5px"/>
@@ -1127,6 +1127,9 @@ export default {
       this.isOwnLoad = false;
       this.isOrderLoad = false;
       this.userData = null;
+      this.ownData = null;
+      this.cartData = null;
+      this.orderData = null;
     },
     handleSearch() {
       window.console.log("[handleSearch] " + this.keyword);
