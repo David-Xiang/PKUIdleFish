@@ -21,9 +21,14 @@
           <el-menu-item index="4" @click="ownVisible = true; loadOwn();" :disabled="!isLogin||!isSeller"> 
             <template slot="title"><i class="el-icon-s-management"></i>自家宝贝</template>
           </el-menu-item>
-          <el-menu-item index="5">
+          <el-submenu index="5">
             <template slot="title"><i class="el-icon-s-data"></i>分析</template>
-          </el-menu-item>
+            <el-menu-item index="5-1" @click="loadSpendest()">土豪买家</el-menu-item>
+            <el-menu-item index="5-2" @click="recommendUserVisible = true; loadRecommendUser()">热门卖家</el-menu-item>
+            <el-menu-item index="5-3" @click="allProductStatVisible = true; loadAllProductStat();">商品一览</el-menu-item>
+            <el-menu-item index="5-4" @click="receiverStatVisible = true; loadReceiverStat();">受众年龄</el-menu-item>
+            <el-menu-item index="5-4" @click="similarStatVisible = true;">相似卖家</el-menu-item>
+          </el-submenu>
           <el-menu-item index="6" v-if="isLogin && userData.account_status == 2" @click="allUserVisible = true; loadAllUserData();">
             <template slot="title"><i class="el-icon-s-check"></i>用户管理</template>
           </el-menu-item>
@@ -372,6 +377,56 @@
 
     </el-drawer>
 
+    <!--统计分析商品一览-->
+    <el-drawer title="商品一览" :visible.sync="allProductStatVisible" size="700px">
+      <el-table
+        :data="allProductStatData"
+        style="width: 100%">
+        <el-table-column
+          label="卖家昵称"
+          prop="productInfo.seller_name"
+          width="100px"/>
+        <el-table-column
+          label="名称"
+          prop="productInfo.title"
+          width="300px"/>
+        <el-table-column
+          label="类目"
+          width="100px">
+          <template slot-scope="scope">
+              {{categoryLabel[scope.row.productInfo.category]}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="价格"
+          prop="productInfo.price"
+          width="100px"/>
+        <el-table-column
+          label="交易状态"
+          width="100px">
+          <template slot-scope="scope">
+              {{getTransactionStatus(scope.row)}}
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-drawer>
+
+<!--统计分析受众一览-->
+    <el-drawer title="受众群体一览" :visible.sync="receiverStatVisible" size="300px">
+      <el-table
+        :data="receiverStatData"
+        style="width: 100%">
+        <el-table-column
+          label="卖家昵称"
+          prop="seller_name"
+          width="150px"/>
+        <el-table-column
+          label="受众群体"
+          prop="most_age_group"
+          width="150px"/>
+      </el-table>
+    </el-drawer>
+
 
     <el-drawer title="交易概览" :visible.sync="allOrderVisible" size="1000px">
       <el-table
@@ -475,6 +530,59 @@
       </el-table>
     </el-drawer>
 
+    <!--用户管理-->
+    <el-drawer title="热门用户" :visible.sync="recommendUserVisible" size="400px">
+      <el-table
+        :data="recommmendUserData"
+        style="width: 100%">
+        <el-table-column
+          label="用户名"
+          prop="username"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          label="性别"
+          prop="sex"
+          width="50px">
+        </el-table-column>
+        <el-table-column
+          label="邮箱"
+          prop="email"
+          width="150px">
+        </el-table-column>
+        <el-table-column
+          label="评论总数"
+          prop="times"
+          width="100px">
+        </el-table-column>
+      </el-table>
+    </el-drawer>
+
+    <!--相似用户分析-->
+    <el-drawer title="相似用户" :visible.sync="similarStatVisible" size="600px">
+      <el-input placeholder="请输入用户昵称" v-model="similarUserName" clearable @keyup.enter.native="similarUserSearch">
+          <el-button slot="append" icon="el-icon-search" @click="similarUserSearch"></el-button>
+      </el-input> 
+      <el-table
+        :data="similarUserData"
+        style="width: 100%">
+        <el-table-column
+          label="用户名"
+          prop="username"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          label="性别"
+          prop="sex"
+          width="50px">
+        </el-table-column>
+        <el-table-column
+          label="邮箱"
+          prop="email"
+          width="150px">
+        </el-table-column>
+      </el-table>
+    </el-drawer>
   </div>
 </template>
 
@@ -509,8 +617,12 @@ export default {
       orderData: [],
       ownData: [],
       allUserData: [],//所有用户信息
+      recommmendUserData: [],
+      similarUserData: [],
       allOrderData: [],
       allProductData: [],
+      allProductStatData: [],
+      receiverStatData: [],
       userData: null,
       loginDialogVisible: false,
       registerDialogVisible: false,
@@ -522,9 +634,14 @@ export default {
       allUserVisible: false,
       allOrderVisible: false,
       allProductVisible: false,
+      allProductStatVisible: false,
       selectProductVisible: false,
       editVisible: false,
       newProductVisible: false,
+      recommendUserVisible: false,
+      receiverStatVisible: false,
+      similarStatVisible: false,
+      similarUserName: null,
       keyword:"",
       categorySelect: 0,
       loginForm:{
@@ -621,6 +738,26 @@ export default {
         this.allProductData = res.data.products;
       });
     },
+    loadAllProductStat(page=1) {//管理员查看所有订单
+      let url = this.formUrl("allproduct", {
+        page: page
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+        this.allProductStatData = res.data.products;
+      });
+    },
+    loadReceiverStat() {
+      let url = this.formUrl("mostagegroup");
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+        this.receiverStatData = res.data;
+      });
+    },
     loadAllOrderData(page=1) {//管理员查看所有订单
       let url = this.formUrl("admin/transaction", {
         page: page
@@ -697,6 +834,30 @@ export default {
         if (res != null) {
           res();
         }
+      });
+    },
+    loadSpendest() {
+      let url = this.formUrl("spenthighest");
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((resp)=>{
+        window.console.log(resp.data);
+        this.$alert('用户 ' + resp.data[0].username + " 买的最多，一共花费 " + resp.data[0].total_spent + " 元！", '土豪买家', {
+          confirmButtonText: '确定',
+        });
+      });
+    },
+    similarUserSearch() {
+      let url = this.formUrl("similarbuyer", {
+        "username": this.similarUserName
+      });
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((resp)=>{
+        window.console.log(resp.data);
+        this.similarUserData = resp.data;
       });
     },
     updateOwnInfo(product){
@@ -1047,14 +1208,16 @@ export default {
         url: url,
       }).then((res)=>{
           this.allUserData = res.data.users;
-          window.console.log("allUserData");
-          window.console.log(this.allUserData);
       });
-      // for (let p of this.ownData) {
-      //   p.productInfo.statusText = this.getOwnStatus(p);
-      //   p.productInfo.actionText = p.productInfo.product_status > 0 && p.productInfo.product_status < 3 ? "下架" : "上架";
-      //   p.productInfo.actionDisable = p.productInfo.product_status == 4;
-      // }
+    },
+    loadRecommendUser(){
+      let url = this.formUrl("morecommented", {});
+      this.$axios({
+        method: 'GET',
+        url: url,
+      }).then((res)=>{
+          this.recommmendUserData = res.data;
+      });
     },
     getOwnStatus(product){
       let status = product.productInfo.product_status;
