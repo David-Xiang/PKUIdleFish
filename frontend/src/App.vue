@@ -340,6 +340,13 @@
           prop="productInfo.title"
           width="300px"/>
         <el-table-column
+          label="类目"
+          width="100px">
+          <template slot-scope="scope">
+              {{categoryLabel[scope.row.productInfo.category]}}
+          </template>
+        </el-table-column>
+        <el-table-column
           label="价格"
           prop="productInfo.price"
           width="100px"/>
