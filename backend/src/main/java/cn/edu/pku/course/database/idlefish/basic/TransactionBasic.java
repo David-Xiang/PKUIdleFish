@@ -1,6 +1,9 @@
 package cn.edu.pku.course.database.idlefish.basic;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +27,11 @@ public class TransactionBasic {
 	public TransactionResponse fetch(String order, int pageNum, int itemPerPage) {
 		String limit = pageNum > 0 ? "LIMIT " + (pageNum - 1) * itemPerPage + ", " + itemPerPage : "";
 		String sql = "SELECT * FROM transaction " + order + " " + limit;
-		return jdbcTemplate.queryForObject(sql, transactionResponseRowMapper);
+		try {
+			return jdbcTemplate.queryForObject(sql, transactionResponseRowMapper);
+		} catch (EmptyResultDataAccessException e) {
+			return new TransactionResponse(Collections.emptyList());
+		}
 	}
 
 }
