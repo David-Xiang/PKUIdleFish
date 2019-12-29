@@ -2,7 +2,8 @@
 -- Structure
 -- 
 
-CREATE OR REPLACE DATABASE pkuidlefish;
+DROP DATABASE IF EXISTS pkuidlefish;
+CREATE DATABASE pkuidlefish;
 USE pkuidlefish;
 
 CREATE TABLE account(
@@ -14,7 +15,7 @@ CREATE TABLE account(
     email VARCHAR(50),
     phone CHAR(11),
     account_status ENUM('buyer','forseller','seller','admin','deleted') DEFAULT 'buyer',
-    update_time DATETIME DEFAULT CURRENT_TIMESTAMP
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) AUTO_INCREMENT = 1000;
 
 CREATE TABLE category(
@@ -31,8 +32,10 @@ CREATE TABLE product(
     seller_name VARCHAR(50),
     description VARCHAR(1000),
     product_status ENUM('draft','sale','sold','returned','deleted') DEFAULT 'draft',
-    update_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    hot INT UNSIGNED DEFAULT 0
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    hot INT UNSIGNED DEFAULT 0,
+    FOREIGN KEY (category) REFERENCES category(category) ON UPDATE CASCADE,
+    FOREIGN KEY (seller_name) REFERENCES account(username) ON UPDATE CASCADE
 );
 
 CREATE TABLE bargain(
@@ -40,7 +43,8 @@ CREATE TABLE bargain(
     product_id INT UNSIGNED,
     bargain_status ENUM('cart', 'done') DEFAULT 'cart',
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`buyer_name`,`product_id`)
+    FOREIGN KEY (buyer_name) REFERENCES account(username) ON UPDATE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE
 );
 
 CREATE TABLE transaction(
@@ -49,14 +53,19 @@ CREATE TABLE transaction(
     seller_name VARCHAR(50),
     product_id INT UNSIGNED,
     price DECIMAL(10, 2),
-    time DATETIME DEFAULT CURRENT_TIMESTAMP
+    time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (buyer_name) REFERENCES account(username) ON UPDATE CASCADE,
+    FOREIGN KEY (seller_name) REFERENCES account(username) ON UPDATE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE
 );
 
 CREATE TABLE comment(
     buyer_name VARCHAR(50),
     product_id INT UNSIGNED,
     content VARCHAR(500),
-    time CHAR(8)
+    time CHAR(8),
+    FOREIGN KEY (buyer_name) REFERENCES account(username) ON UPDATE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE
 );
 
 -- 
