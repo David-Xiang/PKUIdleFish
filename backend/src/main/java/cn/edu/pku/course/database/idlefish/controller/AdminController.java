@@ -55,7 +55,7 @@ public class AdminController {
 
 	@PostMapping("seller")
 	public ActionResponse seller(@RequestParam String username) {
-		return userBasic.changeStatus(username, "forseller", "seller");
+		return userBasic.changeStatus(username, "%", "seller");
 	}
 
 	@PostMapping("offline/product")
