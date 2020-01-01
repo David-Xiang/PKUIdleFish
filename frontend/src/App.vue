@@ -201,7 +201,7 @@
       />
     </el-dialog>
 
-    <!--卖家修改/发布商品-->
+    <!--卖家添加商品-->
     <el-dialog title="编辑商品" :visible.sync="newProductVisible">
       <newProduct
         v-on:modify="updateProduct"
@@ -332,7 +332,8 @@
     <el-drawer title="商品管理" :visible.sync="allProductVisible" size="1000px">
       <el-table
         :data="allProductData"
-        style="width: 100%">
+        style="width: 100%"
+        height="500">
         <el-table-column
           label="卖家昵称"
           prop="productInfo.seller_name"
@@ -381,7 +382,8 @@
     <el-drawer title="商品一览" :visible.sync="allProductStatVisible" size="700px">
       <el-table
         :data="allProductStatData"
-        style="width: 100%">
+        style="width: 100%"
+        height="500">
         <el-table-column
           label="卖家昵称"
           prop="productInfo.seller_name"
@@ -415,7 +417,8 @@
     <el-drawer title="受众群体一览" :visible.sync="receiverStatVisible" size="300px">
       <el-table
         :data="receiverStatData"
-        style="width: 100%">
+        style="width: 100%"
+        height="500">
         <el-table-column
           label="卖家昵称"
           prop="seller_name"
@@ -431,7 +434,8 @@
     <el-drawer title="交易概览" :visible.sync="allOrderVisible" size="1000px">
       <el-table
         :data="allOrderData"
-        style="width: 100%">
+        style="width: 100%"
+        height="500">
         <el-table-column
           label="交易流水ID"
           prop="transaction_id"
@@ -470,7 +474,8 @@
     <el-drawer title="所有用户" :visible.sync="allUserVisible" size="1100px">
       <el-table
         :data="allUserData"
-        style="width: 100%">
+        style="width: 100%"
+        height="500">
         <el-table-column
           label="账号"
           prop="id"
@@ -530,11 +535,12 @@
       </el-table>
     </el-drawer>
 
-    <!--用户管理-->
+    <!--热门用户-->
     <el-drawer title="热门用户" :visible.sync="recommendUserVisible" size="400px">
       <el-table
         :data="recommmendUserData"
-        style="width: 100%">
+        style="width: 100%"
+        height="500">
         <el-table-column
           label="用户名"
           prop="username"
@@ -565,7 +571,8 @@
       </el-input> 
       <el-table
         :data="similarUserData"
-        style="width: 100%">
+        style="width: 100%"
+        height="500">
         <el-table-column
           label="用户名"
           prop="username"
@@ -813,13 +820,7 @@ export default {
       });
     },
     loadOwn(res=null) {
-      if (this.isOwnLoad && res==null){
-        return;
-      } else if (this.isOwnLoad && res!= null) {
-        res();
-        return;
-      }
-      let url = this.formUrl("myproduct", { // TODO
+      let url = this.formUrl("myproduct", {
         "username": this.userData.username
       });
       this.$axios({
