@@ -201,7 +201,7 @@
       />
     </el-dialog>
 
-    <!--卖家修改/发布商品-->
+    <!--卖家添加商品-->
     <el-dialog title="编辑商品" :visible.sync="newProductVisible">
       <newProduct
         v-on:modify="updateProduct"
@@ -820,13 +820,7 @@ export default {
       });
     },
     loadOwn(res=null) {
-      if (this.isOwnLoad && res==null){
-        return;
-      } else if (this.isOwnLoad && res!= null) {
-        res();
-        return;
-      }
-      let url = this.formUrl("myproduct", { // TODO
+      let url = this.formUrl("myproduct", {
         "username": this.userData.username
       });
       this.$axios({
