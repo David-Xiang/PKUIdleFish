@@ -1,19 +1,48 @@
 USE pkuidlefish;
-TRUNCATE TABLE account;
 ALTER TABLE account AUTO_INCREMENT = 1000;
-TRUNCATE TABLE bargain;
-TRUNCATE TABLE category;
-TRUNCATE TABLE comment;
-TRUNCATE TABLE product;
-TRUNCATE TABLE transaction;
 
 INSERT INTO account(username, en_password, birth, sex, email, phone, account_status, update_time) VALUES
 ('admin', myhash('admin'), '2000-01-05', '男', 'admin@pku.edu.cn', '10086000005', 'admin', '2006-06-06'),
 ('user1', myhash('password1'), '2000-01-01', '男', 'user1@pku.edu.cn', '10086000001', 'seller', '2011-11-11'),
-('user2', myhash('password2'), '2000-01-02', '女', 'user2@pku.edu.cn', '10086000002', 'forseller', '2010-10-10'),
+('user2', myhash('password2'), '2000-01-02', '女', 'user2@pku.edu.cn', '10086000002', 'seller', '2010-10-10'),
 ('user3', myhash('password3'), '2000-01-03', '女', 'user3@pku.edu.cn', '10086000003', 'seller', '2009-09-09'),
-('user4', myhash('password4'), '2000-01-04', '女', 'user4@pku.edu.cn', '10086000004', 'buyer', '2008-08-08'),
-('user5', myhash('password5'), '2000-01-05', '男', 'user5@pku.edu.cn', '10086000005', 'buyer', '2007-07-07');
+('user4', myhash('password4'), '2000-01-04', '女', 'user4@pku.edu.cn', '10086000004', 'seller', '2008-08-08'),
+('user5', myhash('password5'), '2000-01-05', '男', 'user5@pku.edu.cn', '10086000005', 'seller', '2007-07-07'),
+('user6', myhash('password6'), '2000-01-06', '男', 'user6@pku.edu.cn', '10086000006', 'seller', '2011-11-11'),
+('user7', myhash('password7'), '2000-01-07', '女', 'user7@pku.edu.cn', '10086000007', 'seller', '2010-10-10'),
+('user8', myhash('password8'), '2000-01-08', '女', 'user8@pku.edu.cn', '10086000008', 'seller', '2009-09-09'),
+('user9', myhash('password9'), '2000-01-09', '女', 'user9@pku.edu.cn', '10086000009', 'seller', '2008-08-08'),
+('user10', myhash('password10'), '2000-01-10', '男', 'user10@pku.edu.cn', '10086000010', 'seller', '2007-07-07'),
+('user11', myhash('password11'), '2000-01-11', '男', 'user11@pku.edu.cn', '10086000011', 'seller', '2011-11-11'),
+('user12', myhash('password12'), '2000-01-12', '女', 'user12@pku.edu.cn', '10086000012', 'seller', '2010-10-10'),
+('user13', myhash('password13'), '2000-01-13', '女', 'user13@pku.edu.cn', '10086000013', 'seller', '2009-09-09'),
+('user14', myhash('password14'), '2000-01-14', '女', 'user14@pku.edu.cn', '10086000014', 'seller', '2008-08-08'),
+('user15', myhash('password15'), '2000-01-15', '男', 'user15@pku.edu.cn', '10086000015', 'seller', '2007-07-07'),
+('user16', myhash('password16'), '2001-01-01', '男', 'user16@pku.edu.cn', '10086000016', 'seller', '2011-11-11'),
+('user17', myhash('password17'), '2001-01-02', '女', 'user17@pku.edu.cn', '10086000017', 'seller', '2010-10-10'),
+('user18', myhash('password18'), '2001-01-03', '女', 'user18@pku.edu.cn', '10086000018', 'seller', '2009-09-09'),
+('user19', myhash('password19'), '2001-01-04', '女', 'user19@pku.edu.cn', '10086000019', 'seller', '2008-08-08'),
+('user20', myhash('password20'), '2001-01-05', '男', 'user20@pku.edu.cn', '10086000020', 'seller', '2007-07-07'),
+('user21', myhash('password21'), '2001-01-06', '男', 'user21@pku.edu.cn', '10086000021', 'forseller', '2011-11-11'),
+('user22', myhash('password22'), '2001-01-07', '女', 'user22@pku.edu.cn', '10086000022', 'forseller', '2010-10-10'),
+('user23', myhash('password23'), '2001-01-08', '女', 'user23@pku.edu.cn', '10086000023', 'forseller', '2009-09-09'),
+('user24', myhash('password24'), '2001-01-09', '女', 'user24@pku.edu.cn', '10086000024', 'buyer', '2008-08-08'),
+('user25', myhash('password25'), '2001-01-10', '男', 'user25@pku.edu.cn', '10086000025', 'buyer', '2007-07-07'),
+('user26', myhash('password26'), '2001-01-11', '男', 'user26@pku.edu.cn', '10086000026', 'buyer', '2011-11-11'),
+('user27', myhash('password27'), '2001-01-12', '女', 'user27@pku.edu.cn', '10086000027', 'buyer', '2010-10-10'),
+('user28', myhash('password28'), '2001-01-13', '女', 'user28@pku.edu.cn', '10086000028', 'buyer', '2009-09-09'),
+('user29', myhash('password29'), '2001-01-14', '女', 'user29@pku.edu.cn', '10086000029', 'buyer', '2008-08-08'),
+('user30', myhash('password30'), '2001-01-15', '男', 'user30@pku.edu.cn', '10086000030', 'buyer', '2007-07-07'),
+('user31', myhash('password31'), '2001-01-01', '男', 'user31@pku.edu.cn', '10086000031', 'buyer', '2011-11-11'),
+('user32', myhash('password32'), '2001-01-02', '女', 'user32@pku.edu.cn', '10086000032', 'buyer', '2010-10-10'),
+('user33', myhash('password33'), '2001-01-03', '女', 'user33@pku.edu.cn', '10086000033', 'buyer', '2009-09-09'),
+('user34', myhash('password34'), '2001-01-04', '女', 'user34@pku.edu.cn', '10086000034', 'buyer', '2008-08-08'),
+('user35', myhash('password35'), '2001-01-05', '男', 'user35@pku.edu.cn', '10086000035', 'buyer', '2007-07-07'),
+('user36', myhash('password36'), '2001-01-06', '男', 'user36@pku.edu.cn', '10086000036', 'buyer', '2011-11-11'),
+('user37', myhash('password37'), '2001-01-07', '女', 'user37@pku.edu.cn', '10086000037', 'buyer', '2010-10-10'),
+('user38', myhash('password38'), '2001-01-08', '女', 'user38@pku.edu.cn', '10086000038', 'buyer', '2009-09-09'),
+('user39', myhash('password39'), '2001-01-09', '女', 'user39@pku.edu.cn', '10086000039', 'buyer', '2008-08-08'),
+('user40', myhash('password40'), '2001-01-10', '男', 'user40@pku.edu.cn', '10086000040', 'buyer', '2007-07-07');
 
 INSERT INTO category (category, category_name) VALUES
 (1, '穿戴服饰'),
@@ -43,11 +72,7 @@ INSERT INTO product
 (2, '直播支架手机补光灯美颜三脚架全套设备抖音神器网红主播多功能落地户外快手桌面拍摄通用配件双拍照自拍便携', '/product17.jpg', 7750.9, 'user18', '证书编号：2019011606187963证书状态：有效产品名称：TD-LTE数字移动电话机3C规格型号：SEA-AL10(开关电源适配器：HW-100400C00，输出：5VDC，2A 或 9VDC，2A...产品名称：HUAWEI nova 5 Pro华为型号: nova 5 Pro机身颜色: 苏音蓝 绮境森林 珊瑚橙 仲夏紫 珊瑚橙·星耀礼盒版 亮黑色运行内存RAM: 8GB存储容量: 8+128GB 8+256GB网络模式: 双卡双待CPU型号: 987', '2015-12-12' , 'sale'),
 (2, '手机红外线发射器苹果7安卓万能遥控器空调电视接收遥控头精灵x外接配件iphone8外置小米通用型vivo华为oppo', '/product18.jpg', 4419.5, 'user19', '证书编号：2019011606187963证书状态：有效产品名称：TD-LTE数字移动电话机3C规格型号：SEA-AL10(开关电源适配器：HW-100400C00，输出：5VDC，2A 或 9VDC，2A...产品名称：HUAWEI nova 5 Pro华为型号: nova 5 Pro机身颜色: 苏音蓝 绮境森林 珊瑚橙 仲夏紫 珊瑚橙·星耀礼盒版 亮黑色运行内存RAM: 8GB存储容量: 8+128GB 8+256GB网络模式: 双卡双待CPU型号: 988', '2016-05-05' , 'sale'),
 (2, '手机指环扣支架手机扣环指扣女壳男磁吸支撑扣环懒人伸缩多功能超薄个性创意桌面架车载贴吸盘式隐形防摔配件', '/product19.jpg', 8446.7, 'user20', '证书编号：2019011606187963证书状态：有效产品名称：TD-LTE数字移动电话机3C规格型号：SEA-AL10(开关电源适配器：HW-100400C00，输出：5VDC，2A 或 9VDC，2A...产品名称：HUAWEI nova 5 Pro华为型号: nova 5 Pro机身颜色: 苏音蓝 绮境森林 珊瑚橙 仲夏紫 珊瑚橙·星耀礼盒版 亮黑色运行内存RAM: 8GB存储容量: 8+128GB 8+256GB网络模式: 双卡双待CPU型号: 989', '2017-06-01' , 'sale'),
-(2, 'MARTVSEN手机稳定器三脚架延长杆DJI大疆灵眸手机云台osmo mobile3智云Soomth4Q2M2配件视频加长杆便携可伸缩', '/product20.jpg', 1490.9, 'user1', '证书编号：2019011606187963证书状态：有效产品名称：TD-LTE数字移动电话机3C规格型号：SEA-AL10(开关电源适配器：HW-100400C00，输出：5VDC，2A 或 9VDC，2A...产品名称：HUAWEI nova 5 Pro华为型号: nova 5 Pro机身颜色: 苏音蓝 绮境森林 珊瑚橙 仲夏紫 珊瑚橙·星耀礼盒版 亮黑色运行内存RAM: 8GB存储容量: 8+128GB 8+256GB网络模式: 双卡双待CPU型号: 990', '2018-05-30' , 'sale');
-
-
-INSERT INTO product
-(category, title, imgsrc, price, seller_name, description, update_time, product_status) VALUES
+(2, 'MARTVSEN手机稳定器三脚架延长杆DJI大疆灵眸手机云台osmo mobile3智云Soomth4Q2M2配件视频加长杆便携可伸缩', '/product20.jpg', 1490.9, 'user1', '证书编号：2019011606187963证书状态：有效产品名称：TD-LTE数字移动电话机3C规格型号：SEA-AL10(开关电源适配器：HW-100400C00，输出：5VDC，2A 或 9VDC，2A...产品名称：HUAWEI nova 5 Pro华为型号: nova 5 Pro机身颜色: 苏音蓝 绮境森林 珊瑚橙 仲夏紫 珊瑚橙·星耀礼盒版 亮黑色运行内存RAM: 8GB存储容量: 8+128GB 8+256GB网络模式: 双卡双待CPU型号: 990', '2018-05-30' , 'sale'),
 (3, '花印日本进口面霜女保湿补水滋润控油学生护肤品化妆品', '/product21.jpg', 4310.5, 'user2', '35 年来始终如一。备受瞩目、畅销全球的 SK-II 护肤精华露（神仙水）蕴含超过90%的天然生物成分PITERA，集维生素、矿物质和氨基酸等多种微量营养素于一身。', '2019-08-30' , 'sale'),
 (3, '诗莎娜糖果色化妆刷套装全套散粉刷腮红刷粉底刷子化妆工具眼影刷', '/product22.jpg', 3135.7, 'user3', '36 年来始终如一。备受瞩目、畅销全球的 SK-II 护肤精华露（神仙水 ）蕴含超过90%的天然生物成分PITERA ，集维生素、矿物质和氨基酸等多种微量营养素于一身。', '2019-10-09' , 'sale'),
 (3, '法兰琳卡精油玫瑰护肤修护倍润精华油滋养渗透锁水保湿美容化妆品', '/product23.jpg', 6112.2, 'user4', '37 年来始终如一。备受瞩目、畅销全球的 SK-II 护肤精华露（神仙水 ）蕴含超过90%的天然生物成分PITERA ，集维生素、矿物质和氨基酸等多种微量营养素于一身。', '2015-12-12' , 'sale'),
@@ -67,10 +92,7 @@ INSERT INTO product
 (4, '北山狼烤鱼夹烧烤夹子网夹不锈铁烧烤工具户外用品烧烤炉配件9寸', '/product37.jpg', 2423.9, 'user18', '适合雪地徒步： 全面包覆头部的连帽，保暖口袋，拉链后面较大的翻盖，可将身体感知温度提高3°C。防水，保暖温度不低于-10°C', '2017-06-01' , 'sale'),
 (4, '900压缩饼干200g*20铁盒装户外旅行代餐充饥饱腹零食', '/product38.jpg', 994.9, 'user19', '适合雪地徒步： 全面包覆头部的连帽，保暖口袋，拉链后面较大的翻盖，可将身体感知温度提高3°C。防水，保暖温度不低于-10°C', '2018-05-30' , 'sale'),
 (4, '探路者防护面罩 19秋冬户外男女通款登山防风HIMEX面罩TELH90328', '/product39.jpg', 361.1, 'user20', '适合雪地徒步： 全面包覆头部的连帽，保暖口袋，拉链后面较大的翻盖，可将身体感知温度提高3°C。防水，保暖温度不低于-10°C', '2019-08-30' , 'sale'),
-(4, '上海丽能压缩饼干90g*20包户外代餐干粮饱腹即食零食品批发', '/product40.jpg', 163.5, 'user1', '适合雪地徒步： 全面包覆头部的连帽，保暖口袋，拉链后面较大的翻盖，可将身体感知温度提高3°C。防水，保暖温度不低于-10°C', '2019-10-09' , 'sale');
-
-INSERT INTO product
-(category, title, imgsrc, price, seller_name, description, update_time, product_status) VALUES
+(4, '上海丽能压缩饼干90g*20包户外代餐干粮饱腹即食零食品批发', '/product40.jpg', 163.5, 'user1', '适合雪地徒步： 全面包覆头部的连帽，保暖口袋，拉链后面较大的翻盖，可将身体感知温度提高3°C。防水，保暖温度不低于-10°C', '2019-10-09' , 'sale'),
 (5, '哈利波特书全套1-8册正版 2019新版纪念版中文全套8册被诅咒的孩子魔法石死亡圣器 8-9-10-15周岁三四五六年级小学生畅销儿童文学', '/product41.jpg', 4469.6, 'user2', '一岁的哈利·波特失去父母后，神秘地出现在姨父姨妈家的门前。哈利在姨父家饱受欺凌，度过十年极其痛苦的日子。姨父和姨妈好似凶神恶煞，他们那混世魔王儿子达力——一个肥胖、娇惯、欺负人的大块头，更是经济对哈利拳脚相加。哈利的“房间”是位于楼梯口的一个又暗又小的碗橱。十年来，从来没有人为他过过生日。', '2015-12-12' , 'sale'),
 (5, 'DHS/红双喜T919乒乓球桌迷你家用室内折叠乒乓球台多功能娱乐', '/product42.jpg', 9697.7, 'user3', '一岁的哈利·波特失去父母后，神秘地出现在姨父姨妈家的门前。哈利在姨父家饱受欺凌，度过十年极其痛苦的日子。姨父和姨妈好似凶神恶煞，他们那混世魔王儿子达力——一个肥胖、娇惯、欺负人的大块头，更是经济对哈利拳脚相加。哈利的“房间”是位于楼梯口的一个又暗又小的碗橱。十年来，从来没有人为他过过生日。', '2016-05-05' , 'sale'),
 (5, '迪卡侬飞镖盘套装 家用室内电子飞镖靶双人娱乐软式飞镖GEOLOGIC', '/product43.jpg', 4635.3, 'user4', '一岁的哈利·波特失去父母后，神秘地出现在姨父姨妈家的门前。哈利在姨父家饱受欺凌，度过十年极其痛苦的日子。姨父和姨妈好似凶神恶煞，他们那混世魔王儿子达力——一个肥胖、娇惯、欺负人的大块头，更是经济对哈利拳脚相加。哈利的“房间”是位于楼梯口的一个又暗又小的碗橱。十年来，从来没有人为他过过生日。', '2017-06-01' , 'sale'),
@@ -83,15 +105,199 @@ INSERT INTO product
 (5, '樊登推荐【当当网 正版包邮】亲密关系 通往灵魂的桥梁 新版 知见领袖克里斯多福孟新体悟新观念', '/product50.jpg', 9102.2, 'user11', '一岁的哈利·波特失去父母后，神秘地出现在姨父姨妈家的门前。哈利在姨父家饱受欺凌，度过十年极其痛苦的日子。姨父和姨妈好似凶神恶煞，他们那混世魔王儿子达力——一个肥胖、娇惯、欺负人的大块头，更是经济对哈利拳脚相加。哈利的“房间”是位于楼梯口的一个又暗又小的碗橱。十年来，从来没有人为他过过生日。', '2018-05-30' , 'sale');
 
 INSERT INTO bargain(buyer_name, product_id) VALUES
-('user1', 1),
-('user1', 2),
-('user1', 3),
-('user2', 1),
-('user2', 3),
-('user3', 1),
-('user3', 2);
+('user1',  40), ('user1', 1),   ('user1', 2),
+('user2',  40), ('user2', 2),   ('user2', 3),
+('user3',  40), ('user3', 1),   ('user3', 3),
+('user4',  40), ('user4', 4),   ('user4', 5),
+('user5',  40), ('user5', 5),   ('user5', 6),
+('user6',  40), ('user6', 4),   ('user6', 6),
+('user7',  40), ('user7', 7),   ('user7', 8),
+('user8',  40), ('user8', 9),   ('user8', 10),
+('user9',  40), ('user9', 7),   ('user9', 9),
+('user10', 42), ('user10', 8),  ('user10', 10),
+('user11', 42), ('user11', 9),  ('user11', 1),
+('user12', 42), ('user12', 10), ('user12', 1),
+('user13', 42), ('user13', 11), ('user13', 6),
+('user14', 42), ('user14', 12), ('user14', 5),
+('user15', 42), ('user15', 13), ('user15', 4),
+('user16', 42), ('user16', 14), ('user16', 4),
+('user17', 42), ('user17', 15), ('user17', 3),
+('user18', 42), ('user18', 16), ('user18', 2),
+('user19', 42), ('user19', 17), ('user19', 1),
+('user20', 42), ('user20', 18), ('user20', 9),
+('user21', 42), ('user21', 19), ('user21', 8),
+('user22', 42), ('user22', 20), ('user22', 7),
+('user23', 42), ('user23', 21), ('user23', 6),
+('user24', 42), ('user24', 22), ('user24', 5),
+('user25', 43), ('user25', 23), ('user25', 4),
+('user26', 44), ('user26', 24), ('user26', 3),
+('user27', 45), ('user27', 25), ('user27', 2),
+('user28', 46), ('user28', 26), ('user28', 1),
+('user29', 47), ('user29', 27), ('user29', 50),
+('user30', 48), ('user30', 28), ('user30', 49),
+('user31', 50), ('user31', 29), ('user31', 48),
+('user32', 50), ('user32', 30), ('user32', 47),
+('user33', 41), ('user33', 31), ('user33', 46),
+('user34', 42), ('user34', 32), ('user34', 45),
+('user35', 43), ('user35', 33), ('user35', 44),
+('user36', 44), ('user36', 34), ('user36', 43),
+('user37', 45), ('user37', 35), ('user37', 42),
+('user38', 43), ('user38', 36), ('user38', 41),
+('user39', 43), ('user39', 37), ('user39', 40),
+('user40', 40), ('user40', 38), ('user40', 39);
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user1' AND product_id = 2;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user2' AND product_id = 3;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user3' AND product_id = 1;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user4' AND product_id = 5;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user5' AND product_id = 6;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user6' AND product_id = 4;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user7' AND product_id = 8;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user8' AND product_id = 9;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user12' AND product_id = 10;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user13' AND product_id = 11;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user14' AND product_id = 12;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user15' AND product_id = 13;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user16' AND product_id = 14;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user17' AND product_id = 15;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user18' AND product_id = 16;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user19' AND product_id = 17;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user20' AND product_id = 18;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user21' AND product_id = 19;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user22' AND product_id = 20;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user23' AND product_id = 21;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user24' AND product_id = 22;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user25' AND product_id = 23;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user26' AND product_id = 24;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user27' AND product_id = 25;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user28' AND product_id = 26;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user29' AND product_id = 27;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user30' AND product_id = 28;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user31' AND product_id = 29;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user32' AND product_id = 30;
+
+UPDATE bargain
+SET bargain_status = 'done'
+WHERE buyer_name = 'user33' AND product_id = 31;
 
 INSERT INTO comment(buyer_name, product_id, content, time) VALUES
-('user1', 1, 'good', '09.09.09'),
-('user1', 1, 'very good', '10.10.10'),
-('user1', 1, 'very very very good', '19.09.19');
+('user1', 1, 'good', '09.03.09'),   ('user35', 2, 'very bad', '11.10.11'),
+('user4', 3, 'bad', '09.09.09'),    ('user36', 4, 'very good', '12.09.12'),
+('user6', 5, 'good', '09.02.09'),   ('user37', 6, 'very good', '13.08.13'),
+('user7', 7, 'good', '09.01.09'),   ('user38', 8, 'very good', '14.07.14'),
+('user11', 9, 'good', '09.04.09'),  ('user39', 10, 'very bad', '15.06.15'),
+('user2', 11, 'good', '09.05.09'),  ('user40', 12, 'very good', '16.05.16'),
+('user4', 13, 'bad', '09.06.09'),   ('user4', 14, 'very good', '17.04.17'),
+('user6', 15, 'good', '09.02.19'),  ('user4', 16, 'very good', '18.03.18'),
+('user28', 17, 'good', '09.09.19'), ('user2', 18, 'very good', '19.02.19'),
+('user25', 19, 'good', '09.09.19'), ('user10', 20, 'very good', '10.01.20'),
+('user24', 21, 'bad', '11.03.19'),  ('user11', 22, 'very good', '11.12.21'),
+('user23', 23, 'good', '05.05.29'), ('user12', 24, 'very bad', '12.11.22'),
+('user21', 25, 'good', '15.08.29'), ('user13', 26, 'very good', '13.10.23'),
+('user30', 27, 'good', '18.08.19'), ('user14', 28, 'very good', '14.09.25'),
+('user31', 29, 'good', '17.07.29'), ('user15', 30, 'very bad', '15.08.26'),
+('user32', 31, 'good', '12.04.09'), ('user16', 32, 'very good', '16.07.27'),
+('user33', 33, 'good', '13.09.09'), ('user17', 34, 'very good', '17.06.02'),
+('user15', 35, 'good', '14.09.19'), ('user18', 36, 'very good', '18.05.03'),
+('user38', 37, 'good', '15.10.09'), ('user19', 37, 'very good', '19.04.04'),
+('user38', 39, 'bad', '13.09.09'),  ('user20', 38, 'very good', '10.03.06'),
+('user12', 41, 'good', '09.11.29'), ('user21', 40, 'very good', '11.02.08'),
+('user26', 43, 'good', '09.09.09'), ('user22', 42, 'very good', '12.01.09'),
+('user7', 45, 'good', '09.12.09'),  ('user23', 44, 'very good', '13.12.10'),
+('user40', 47, 'bad', '09.09.19'),  ('user24', 46, 'very good', '14.11.11'),
+('user38', 49, 'good', '19.11.09'), ('user25', 48, 'very good', '15.10.13'),
+('user38', 42, 'good', '09.09.29'), ('user26', 50, 'very good', '16.09.15'),
+('user26', 44, 'good', '19.01.09'), ('user27', 2, 'very good', '17.08.03'),
+('user13', 41, 'bad', '16.09.09'),  ('user28', 4, 'very good', '18.07.14'),
+('user26', 40, 'good', '17.09.09'), ('user29', 46, 'very good', '19.06.20'),
+('user34', 46, 'bad', '18.09.29'),  ('user30', 48, 'very bad', '10.05.04'),
+('user25', 48, 'good', '18.06.09'), ('user31', 40, 'very good', '11.04.30'),
+('user18', 50, 'bad', '19.05.19'),  ('user32', 42, 'very good', '12.03.03'),
+('user33', 50, 'bad', '19.04.09'),  ('user33', 44, 'very good', '13.02.24'),
+('user9', 47, 'good', '09.09.09'),  ('user34', 46, 'very good', '14.01.31');
