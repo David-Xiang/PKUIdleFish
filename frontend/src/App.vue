@@ -8,6 +8,7 @@
             <el-menu-item index="0-2" @click="registerDialogVisible = true" v-if="!isLogin">注册</el-menu-item>
             <el-menu-item index="0-3" @click="loadUserData();changeUserDataDialogVisible = true" v-if="isLogin">修改信息</el-menu-item>
             <el-menu-item index="0-4" @click="logout()" v-if="isLogin">登出</el-menu-item>
+            <el-menu-item index="0-5" @click="applyForSeller()" v-if="isLogin&&userData.account_status==0">申请成为卖家</el-menu-item>
           </el-submenu>
           <el-menu-item index="1">
             <template slot="title"><i class="el-icon-s-home"></i>首页</template>
@@ -1106,6 +1107,29 @@ export default {
           this.$notify.error({
             title: '失败',
             message: product.productInfo.title + " 没能成功上架，这是为什么呢？"
+          });
+        }
+      });
+    },
+    applyForSeller(){
+      let params = {
+        "username": this.userData.username
+      };
+      let url = this.formUrl("forseller", params);
+      this.$axios({
+        method: 'POST',
+        url: url,
+      }).then((res)=>{
+        if (res.data.success == true) {
+          this.userData.account_status = 4;
+          this.$notify.success({
+            title: '成功',
+            message: "申请成功！"
+          });
+        } else {
+          this.$notify.error({
+            title: '失败',
+            message: "申请失败，这是为什么呢？"
           });
         }
       });
