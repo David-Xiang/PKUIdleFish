@@ -1322,7 +1322,7 @@ export default {
     submitRegisterForm(form, type) {
       let url = this.formUrl("register", {
           "type" : type,
-          "username" : this.userData.username,
+          "username" : type=="register" ? form.username : this.userData.username,
           "password": form.password,
           "birth": form.birth.toISOString().substring(0, 10),
           "sex": form.sex,
@@ -1336,13 +1336,13 @@ export default {
         if (res.data.success == true) {
           this.$notify.info({
             title: '',
-            message: type == "reigster" ? '注册成功!' : '修改成功!'
+            message: type == "register" ? '注册成功!' : '修改成功!'
           });
           this.registerDialogVisible = false;
         } else {
           this.$notify.error({
             title: '',
-            message: type == "reigster" ? '注册失败，用户名已存在' : '修改失败'
+            message: type == "register" ? '注册失败，用户名已存在' : '修改失败'
           });
         }
       });
