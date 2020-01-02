@@ -27,7 +27,7 @@
             <el-menu-item index="5-2" @click="recommendUserVisible = true; loadRecommendUser()">热门卖家</el-menu-item>
             <el-menu-item index="5-3" @click="allProductStatVisible = true; loadAllProductStat();">商品一览</el-menu-item>
             <el-menu-item index="5-4" @click="receiverStatVisible = true; loadReceiverStat();">受众年龄</el-menu-item>
-            <el-menu-item index="5-4" @click="similarStatVisible = true;">相似卖家</el-menu-item>
+            <el-menu-item index="5-4" @click="similarStatVisible = true;">相似买家</el-menu-item>
           </el-submenu>
           <el-menu-item index="6" v-if="isLogin && userData.account_status == 2" @click="allUserVisible = true; loadAllUserData();">
             <template slot="title"><i class="el-icon-s-check"></i>用户管理</template>
@@ -778,12 +778,6 @@ export default {
       });
     },
     loadCart(res=null) {
-      if (this.isCartLoad && res==null){
-        return;
-      } else if (this.isCartLoad && res!= null) {
-        res();
-        return;
-      }
       let url = this.formUrl("cart", {
         "username": this.userData.username
       });
@@ -799,12 +793,6 @@ export default {
       });
     },
     loadOrder(res=null) {
-      if (this.isOrderLoad && res==null){
-        return;
-      } else if (this.isOrderLoad && res!= null) {
-        res();
-        return;
-      }
       let url = this.formUrl("bought", {
         "username": this.userData.username
       });
